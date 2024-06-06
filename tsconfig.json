@@ -1,7 +1,13 @@
 {
     "compilerOptions": {
+        "useDefineForClassFields": true,
+        "lib": ["DOM", "DOM.Iterable", "ESNext"],
+        "skipLibCheck": true,
+        "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": true,
         "allowJs": true,
         "module": "ESNext",
+        "types": ["node", "vitest/globals"],
         "moduleResolution": "bundler",
         "jsx": "react-jsx",
         "strict": true,
@@ -12,7 +18,8 @@
         "noEmit": true,
         "paths": {
             "@/*": ["./resources/js/*"],
-            "ziggy-js": ["./vendor/tightenco/ziggy"]
+            "ziggy-js": ["./vendor/tightenco/ziggy"],
+            "@test-utils": ["./test-utils"]
         }
     },
     "include": ["resources/js/**/*.ts", "resources/js/**/*.tsx", "resources/js/**/*.d.ts"]
