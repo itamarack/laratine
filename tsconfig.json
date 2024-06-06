@@ -19,7 +19,7 @@
         "paths": {
             "@/*": ["./resources/js/*"],
             "ziggy-js": ["./vendor/tightenco/ziggy"],
-            "@test-utils": ["./test-utils"]
+            "@test-utils": ["./resources/js/test-utils"]
         }
     },
     "include": ["resources/js/**/*.ts", "resources/js/**/*.tsx", "resources/js/**/*.d.ts"]
