@@ -12,14 +12,14 @@ const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 const glob = import.meta.glob('./Pages/**/*.tsx');
 
 createInertiaApp({
-  title: (title) => `${title} - ${appName}`,
-  resolve: (name) => resolvePageComponent(`./Pages/${name}.tsx`, glob),
+  title: title => `${title} - ${appName}`,
+  resolve: name => resolvePageComponent(`./Pages/${name}.tsx`, glob),
   setup({ el, App, props }) {
     if (import.meta.env.DEV) {
       createRoot(el).render(
         <MantineProvider theme={theme}>
           <App {...props} />
-        </MantineProvider>
+        </MantineProvider>,
       );
       return;
     }
@@ -28,7 +28,7 @@ createInertiaApp({
       el,
       <MantineProvider theme={theme}>
         <App {...props} />
-      </MantineProvider>
+      </MantineProvider>,
     );
   },
   progress: {

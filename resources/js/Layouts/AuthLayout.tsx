@@ -5,7 +5,7 @@ import ApplicationLogo from '@/Components/ApplicationLogo';
 
 function AuthLayout({ children }: PropsWithChildren) {
   return (
-    <Flex className={'bg-gray-50 h-screen w-screen'}>
+    <Flex className={'bg-gray-50 h-screen w-full'}>
       <Link href="/" className={'p-6 h-full absolute'}>
         <ApplicationLogo className="w-12 h-12 text-gray-500 fill-current" />
       </Link>
