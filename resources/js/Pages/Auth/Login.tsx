@@ -1,98 +1,107 @@
-import { Head, Link, useForm } from '@inertiajs/react';
-import { useEffect, FormEventHandler } from 'react';
-import Checkbox from '@/Components/Checkbox';
-import GuestLayout from '@/Layouts/GuestLayout';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
+import {
+  Button,
+  Checkbox,
+  Group,
+  PasswordInput,
+  TextInput,
+  Title,
+  Center,
+  Paper,
+  Text,
+} from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { Head, Link, router, usePage } from '@inertiajs/react';
+import { RequestPayload } from '@inertiajs/core';
+import AuthLayout from '@/Layouts/AuthLayout';
+import { Surface } from '@/Components';
+import classes from './css/login.module.css';
 
-export default function Login({
-  status,
-  canResetPassword,
-}: {
-  status?: string;
-  canResetPassword: boolean;
-}) {
-  const { data, setData, post, processing, errors, reset } = useForm({
-    email: '',
-    password: '',
-    remember: false,
+function Login({ status, canResetPassword }: { status?: string; canResetPassword: boolean }) {
+  const { errors } = usePage().props;
+
+  const form = useForm({
+    mode: 'uncontrolled',
+    initialValues: {
+      email: '',
+      password: '',
+      remember: false,
+    },
+
+    validate: {
+      email: value => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
+    },
   });
 
-  useEffect(() => reset('password'), []);
-
-  const submit: FormEventHandler = (e) => {
-    e.preventDefault();
-    post(route('login'));
+  const onSubmit = (values: RequestPayload) => {
+    router.post(route('login'), values);
+    form.setErrors(errors);
+    console.log(errors);
   };
 
   return (
-    <GuestLayout>
+    <AuthLayout>
       <Head title="Log in" />
 
       {status && <div className="mb-4 text-sm font-medium text-green-600">{status}</div>}
 
-      <form onSubmit={submit}>
-        <div>
-          <InputLabel htmlFor="email" value="Email" />
+      <Title ta="center">Welcome back!</Title>
+      <Text ta="center">Sign in to your account to continue</Text>
 
+      <Surface component={Paper} className={classes.card}>
+        <form onSubmit={form.onSubmit(values => onSubmit(values))}>
           <TextInput
-            id="email"
-            type="email"
-            name="email"
-            value={data.email}
-            className="block w-full mt-1"
-            autoComplete="username"
-            isFocused
-            onChange={(e) => setData('email', e.target.value)}
+            label="Email"
+            withAsterisk
+            placeholder="your@email.com"
+            key={form.key('email')}
+            {...form.getInputProps('email')}
+            classNames={{ label: classes.label }}
           />
-
-          <InputError message={errors.email} className="mt-2" />
-        </div>
-
-        <div className="mt-4">
-          <InputLabel htmlFor="password" value="Password" />
-
-          <TextInput
-            id="password"
-            type="password"
-            name="password"
-            value={data.password}
-            className="block w-full mt-1"
-            autoComplete="current-password"
-            onChange={(e) => setData('password', e.target.value)}
+          <PasswordInput
+            withAsterisk
+            label="Password"
+            placeholder="Your password"
+            mt="md"
+            key={form.key('password')}
+            {...form.getInputProps('password')}
+            classNames={{ label: classes.label }}
           />
-
-          <InputError message={errors.password} className="mt-2" />
-        </div>
-
-        <div className="block mt-4">
-          <label className="flex items-center">
+          <Group justify="space-between" mt="lg">
             <Checkbox
-              name="remember"
-              checked={data.remember}
-              onChange={(e) => setData('remember', e.target.checked)}
+              label="Remember me"
+              key={form.key('password')}
+              {...form.getInputProps('remember')}
+              classNames={{ label: classes.label }}
             />
-            <span className="text-sm text-gray-600 ms-2 dark:text-gray-400">Remember me</span>
-          </label>
-        </div>
-
-        <div className="flex items-center justify-end mt-4">
-          {canResetPassword && (
-            <Link
-              href={route('password.request')}
-              className="text-sm text-gray-600 underline rounded-md dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
-            >
-              Forgot your password?
-            </Link>
-          )}
-
-          <PrimaryButton className="ms-4" disabled={processing}>
-            Log in
-          </PrimaryButton>
-        </div>
-      </form>
-    </GuestLayout>
+            {canResetPassword && (
+              <Text
+                component={Link}
+                href={route('password.request')}
+                size="sm"
+                className={classes.link}
+              >
+                Forgot password?
+              </Text>
+            )}
+          </Group>
+          <Button fullWidth mt="xl" type="submit">
+            Sign in
+          </Button>
+        </form>
+        <Center mt="md">
+          <Text
+            fz="sm"
+            ta="center"
+            component={Link}
+            href={route('register')}
+            className={classes.link}
+          >
+            Do not have an account yet? Create account
+          </Text>
+        </Center>
+      </Surface>
+    </AuthLayout>
   );
 }
+
+export default Login;
