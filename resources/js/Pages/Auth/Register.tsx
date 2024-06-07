@@ -1,112 +1,124 @@
-import { useEffect, FormEventHandler } from 'react';
-import { Head, Link, useForm } from '@inertiajs/react';
-import GuestLayout from '@/Layouts/GuestLayout';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
+import {
+  Button,
+  PasswordInput,
+  TextInput,
+  Title,
+  Center,
+  Paper,
+  Text,
+  Stack,
+  SimpleGrid,
+} from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { Head, Link, router, usePage } from '@inertiajs/react';
+import { RequestPayload } from '@inertiajs/core';
+import { AuthLayout } from '@/Layouts';
+import { Surface } from '@/Components';
+import classes from '~/css/auth.module.css';
 
-export default function Register() {
-  const { data, setData, post, processing, errors, reset } = useForm({
-    name: '',
-    email: '',
-    password: '',
-    password_confirmation: '',
+function Register() {
+  const { errors } = usePage().props;
+
+  const form = useForm({
+    mode: 'uncontrolled',
+    initialValues: {
+      firstname: '',
+      lastname: '',
+      email: '',
+      password: '',
+      password_confirmation: '',
+    },
+
+    validate: {
+      email: value => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
+      firstname: value => (value.length < 2 ? 'Name must have at least 2 letters' : null),
+      lastname: value => (value.length < 2 ? 'Name must have at least 2 letters' : null),
+      password_confirmation: (value, values) =>
+        value !== values.password ? 'Passwords did not match' : null,
+    },
   });
 
-  useEffect(() => reset('password', 'password_confirmation'), []);
-
-  const submit: FormEventHandler = (e) => {
-    e.preventDefault();
-    post(route('register'));
+  const onSubmit = (values: RequestPayload) => {
+    router.post(route('register'), values);
+    form.setErrors(errors);
   };
 
   return (
-    <GuestLayout>
+    <AuthLayout>
       <Head title="Register" />
 
-      <form onSubmit={submit}>
-        <div>
-          <InputLabel htmlFor="name" value="Name" />
+      <Center>
+        <Stack>
+          <Title ta="center">Welcome!</Title>
+          <Text ta="center">Register your account to continue</Text>
 
-          <TextInput
-            id="name"
-            name="name"
-            value={data.name}
-            className="block w-full mt-1"
-            autoComplete="name"
-            isFocused
-            onChange={(e) => setData('name', e.target.value)}
-            required
-          />
-
-          <InputError message={errors.name} className="mt-2" />
-        </div>
-
-        <div className="mt-4">
-          <InputLabel htmlFor="email" value="Email" />
-
-          <TextInput
-            id="email"
-            type="email"
-            name="email"
-            value={data.email}
-            className="block w-full mt-1"
-            autoComplete="username"
-            onChange={(e) => setData('email', e.target.value)}
-            required
-          />
-
-          <InputError message={errors.email} className="mt-2" />
-        </div>
-
-        <div className="mt-4">
-          <InputLabel htmlFor="password" value="Password" />
-
-          <TextInput
-            id="password"
-            type="password"
-            name="password"
-            value={data.password}
-            className="block w-full mt-1"
-            autoComplete="new-password"
-            onChange={(e) => setData('password', e.target.value)}
-            required
-          />
-
-          <InputError message={errors.password} className="mt-2" />
-        </div>
-
-        <div className="mt-4">
-          <InputLabel htmlFor="password_confirmation" value="Confirm Password" />
-
-          <TextInput
-            id="password_confirmation"
-            type="password"
-            name="password_confirmation"
-            value={data.password_confirmation}
-            className="block w-full mt-1"
-            autoComplete="new-password"
-            onChange={(e) => setData('password_confirmation', e.target.value)}
-            required
-          />
-
-          <InputError message={errors.password_confirmation} className="mt-2" />
-        </div>
-
-        <div className="flex items-center justify-end mt-4">
-          <Link
-            href={route('login')}
-            className="text-sm text-gray-600 underline rounded-md dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
-          >
-            Already registered?
-          </Link>
-
-          <PrimaryButton className="ms-4" disabled={processing}>
-            Register
-          </PrimaryButton>
-        </div>
-      </form>
-    </GuestLayout>
+          <Surface component={Paper} className={classes.card}>
+            <form onSubmit={form.onSubmit(values => onSubmit(values))}>
+              <SimpleGrid cols={{ base: 1, sm: 2 }}>
+                <TextInput
+                  label="Firstname"
+                  withAsterisk
+                  placeholder="Firstname"
+                  key={form.key('firstname')}
+                  {...form.getInputProps('firstname')}
+                  classNames={{ label: classes.label }}
+                />
+                <TextInput
+                  label="Lastname"
+                  withAsterisk
+                  placeholder="Lastname"
+                  key={form.key('lastname')}
+                  {...form.getInputProps('lastname')}
+                  classNames={{ label: classes.label }}
+                />
+              </SimpleGrid>
+              <TextInput
+                label="Email"
+                withAsterisk
+                mt="md"
+                placeholder="your@email.com"
+                key={form.key('email')}
+                {...form.getInputProps('email')}
+                classNames={{ label: classes.label }}
+              />
+              <PasswordInput
+                withAsterisk
+                label="Password"
+                placeholder="Your password"
+                mt="md"
+                key={form.key('password')}
+                {...form.getInputProps('password')}
+                classNames={{ label: classes.label }}
+              />
+              <PasswordInput
+                withAsterisk
+                label="Confirm Password"
+                placeholder="Confirm password"
+                mt="md"
+                key={form.key('password_confirmation')}
+                {...form.getInputProps('password_confirmation')}
+                classNames={{ label: classes.label }}
+              />
+              <Button fullWidth mt="xl" type="submit">
+                Register
+              </Button>
+            </form>
+            <Center mt="md">
+              <Text
+                fz="sm"
+                ta="center"
+                component={Link}
+                href={route('login')}
+                className={classes.link}
+              >
+                Already registered? Log In
+              </Text>
+            </Center>
+          </Surface>
+        </Stack>
+      </Center>
+    </AuthLayout>
   );
 }
+
+export default Register;

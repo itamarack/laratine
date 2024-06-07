@@ -13,9 +13,9 @@ import {
 import { useForm } from '@mantine/form';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { RequestPayload } from '@inertiajs/core';
-import { LoginAuthLayout } from '@/Layouts';
+import { AuthLayout } from '@/Layouts';
 import { Surface } from '@/Components';
-import classes from '~/css/login.module.css';
+import classes from '~/css/auth.module.css';
 
 function Login({ status, canResetPassword }: { status?: string; canResetPassword: boolean }) {
   const { errors } = usePage().props;
@@ -39,7 +39,7 @@ function Login({ status, canResetPassword }: { status?: string; canResetPassword
   };
 
   return (
-    <LoginAuthLayout>
+    <AuthLayout>
       <Head title="Log in" />
 
       {status && <div className="mb-4 text-sm font-medium text-green-600">{status}</div>}
@@ -87,7 +87,7 @@ function Login({ status, canResetPassword }: { status?: string; canResetPassword
                 )}
               </Group>
               <Button fullWidth mt="xl" type="submit">
-                Sign in
+                Log In
               </Button>
             </form>
             <Center mt="md">
@@ -104,7 +104,7 @@ function Login({ status, canResetPassword }: { status?: string; canResetPassword
           </Surface>
         </Stack>
       </Center>
-    </LoginAuthLayout>
+    </AuthLayout>
   );
 }
 
