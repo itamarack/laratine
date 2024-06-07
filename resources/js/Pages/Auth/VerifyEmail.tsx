@@ -1,46 +1,66 @@
-import GuestLayout from '@/Layouts/GuestLayout';
-import PrimaryButton from '@/Components/PrimaryButton';
-import { Head, Link, useForm } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
+import { Button, Group, Center, Paper, Text, Stack, UnstyledButton, rem } from '@mantine/core';
+import { Head, Link, router } from '@inertiajs/react';
+import { IconCheck } from '@tabler/icons-react';
+import { notifications } from '@mantine/notifications';
+import { IconChevronLeft } from '@tabler/icons-react';
+import { useMediaQuery } from '@mantine/hooks';
+import { AuthLayout } from '@/Layouts';
+import { Surface } from '@/Components';
+import classes from '~/css/auth.module.css';
 
-export default function VerifyEmail({ status }: { status?: string }) {
-    const { post, processing } = useForm({});
+function VerifyEmail({ status }: { status?: string }) {
+  const mobile_match = useMediaQuery('(max-width: 425px)');
 
-    const submit: FormEventHandler = (e) => {
-        e.preventDefault();
+  const onSubmit = (event: any) => {
+    event.preventDefault();
+    router.post(route('verification.send'));
 
-        post(route('verification.send'));
-    };
+    if (status === 'verification-link-sent') {
+      notifications.show({
+        title: 'Verification Link Sent!',
+        message:
+          'A new verification link has been sent to the email address you provided during registration.',
+        color: 'green',
+        icon: <IconCheck />,
+      });
+    }
+  };
 
-    return (
-        <GuestLayout>
-            <Head title="Email Verification" />
+  return (
+    <AuthLayout>
+      <Head title="Email Verification" />
 
-            <div className="mb-4 text-sm text-gray-600 dark:text-gray-400">
-                Thanks for signing up! Before getting started, could you verify your email address by clicking on the
-                link we just emailed to you? If you didn't receive the email, we will gladly send you another.
-            </div>
-
-            {status === 'verification-link-sent' && (
-                <div className="mb-4 font-medium text-sm text-green-600 dark:text-green-400">
-                    A new verification link has been sent to the email address you provided during registration.
-                </div>
-            )}
-
-            <form onSubmit={submit}>
-                <div className="mt-4 flex items-center justify-between">
-                    <PrimaryButton disabled={processing}>Resend Verification Email</PrimaryButton>
-
-                    <Link
-                        href={route('logout')}
-                        method="post"
-                        as="button"
-                        className="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
-                    >
-                        Log Out
-                    </Link>
-                </div>
+      <Center>
+        <Stack>
+          <Surface component={Paper} className={classes.card}>
+            <Text ta="center">
+              Thanks for signing up! Before getting started, could you verify your email address by
+              clicking on the link we just emailed to you? If you didn't receive the email, we will
+              gladly send you another.
+            </Text>
+            <form onSubmit={onSubmit}>
+              <Group justify="space-between" align={'center'} mt="xl">
+                <Button type="submit" fullWidth={mobile_match}>
+                  Resend Verification Email
+                </Button>
+                <UnstyledButton
+                  color="dimmed"
+                  component={Link}
+                  href={route('logout')}
+                  className={classes.control}
+                >
+                  <Group gap={2} align="center">
+                    <IconChevronLeft stroke={1.5} style={{ width: rem(14), height: rem(14) }} />
+                    <Text size="sm">Log Out</Text>
+                  </Group>
+                </UnstyledButton>
+              </Group>
             </form>
-        </GuestLayout>
-    );
+          </Surface>
+        </Stack>
+      </Center>
+    </AuthLayout>
+  );
 }
+
+export default VerifyEmail;

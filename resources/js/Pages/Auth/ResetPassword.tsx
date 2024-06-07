@@ -1,15 +1,4 @@
-import {
-  Notification,
-  Button,
-  PasswordInput,
-  TextInput,
-  Title,
-  Center,
-  Paper,
-  Text,
-  Stack,
-  Box,
-} from '@mantine/core';
+import { Button, PasswordInput, TextInput, Title, Center, Paper, Text, Stack } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { IconX } from '@tabler/icons-react';
 import { Head, router, usePage } from '@inertiajs/react';
