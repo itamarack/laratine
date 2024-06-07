@@ -17,7 +17,7 @@
   }
 
   @media (max-width: $mantine-breakpoint-sm) {
-    width: rem(360);
+    width: rem(340);
   }
 }
 
@@ -36,10 +36,7 @@
   }
 
   @mixin hover {
-    background-color: light-dark(
-      var(--mantine-color-dark-5),
-      var(--mantine-color-gray-2)
-    );
+    background-color: light-dark(var(--mantine-color-dark-5), var(--mantine-color-gray-2));
     text-decoration: none;
     transition: all ease 150ms;
 
