@@ -14,6 +14,8 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useMediaQuery } from '@mantine/hooks';
+import { IconX, IconCheck } from '@tabler/icons-react';
+import { notifications } from '@mantine/notifications';
 import { IconChevronLeft } from '@tabler/icons-react';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { RequestPayload } from '@inertiajs/core';
@@ -22,13 +24,14 @@ import { Surface } from '@/Components';
 import classes from '~/css/auth.module.css';
 
 function ResetPassword({ status }: { status: string }) {
-  const { errors } = usePage().props;
+  const { errors, flash } = usePage().props;
   const mobile_match = useMediaQuery('(max-width: 425px)');
 
   const form = useForm({
     mode: 'uncontrolled',
     initialValues: {
       email: '',
+      status: status,
     },
 
     validate: {
@@ -39,6 +42,26 @@ function ResetPassword({ status }: { status: string }) {
   const onSubmit = (values: RequestPayload) => {
     router.post(route('password.email'), values);
     form.setErrors(errors);
+
+    if (status) {
+      notifications.show({
+        title: 'Verification Sent!',
+        message: status,
+        color: 'green',
+        icon: <IconCheck />,
+      });
+    }
+
+    if (Object.keys(errors).length) {
+      Object.values(errors).forEach(error => {
+        notifications.show({
+          title: 'Error!',
+          message: error,
+          color: 'red',
+          icon: <IconX />,
+        });
+      });
+    }
   };
 
   return (

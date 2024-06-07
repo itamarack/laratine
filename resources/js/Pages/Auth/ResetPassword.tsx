@@ -1,90 +1,106 @@
-import { useEffect, FormEventHandler } from 'react';
-import GuestLayout from '@/Layouts/GuestLayout';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import { Head, useForm } from '@inertiajs/react';
+import {
+  Notification,
+  Button,
+  PasswordInput,
+  TextInput,
+  Title,
+  Center,
+  Paper,
+  Text,
+  Stack,
+  Box,
+} from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { IconX } from '@tabler/icons-react';
+import { Head, router, usePage } from '@inertiajs/react';
+import { notifications } from '@mantine/notifications';
+import { RequestPayload } from '@inertiajs/core';
+import { AuthLayout } from '@/Layouts';
+import { Surface } from '@/Components';
+import classes from '~/css/auth.module.css';
 
-export default function ResetPassword({ token, email }: { token: string; email: string }) {
-  const { data, setData, post, processing, errors, reset } = useForm({
-    token: token,
-    email: email,
-    password: '',
-    password_confirmation: '',
+function ResetPassword({ token, email }: { token: string; email: string }) {
+  const { errors } = usePage().props;
+
+  const form = useForm({
+    mode: 'uncontrolled',
+    initialValues: {
+      token: token,
+      email: email,
+      password: '',
+      password_confirmation: '',
+    },
+
+    validate: {
+      email: value => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
+      password_confirmation: (value, values) =>
+        value !== values.password ? 'Passwords did not match' : null,
+    },
   });
 
-  useEffect(() => {
-    return () => {
-      reset('password', 'password_confirmation');
-    };
-  }, []);
+  const onSubmit = (values: RequestPayload) => {
+    router.post(route('password.store'), values);
+    form.setErrors(errors);
 
-  const submit: FormEventHandler = e => {
-    e.preventDefault();
-
-    post(route('password.store'));
+    if (Object.keys(errors).length) {
+      Object.values(errors).forEach(error => {
+        notifications.show({
+          title: 'Error!',
+          message: error,
+          color: 'red',
+          icon: <IconX />,
+        });
+      });
+    }
   };
 
   return (
-    <GuestLayout>
+    <AuthLayout>
       <Head title="Reset Password" />
 
-      <form onSubmit={submit}>
-        <div>
-          <InputLabel htmlFor="email" value="Email" />
+      <Center>
+        <Stack>
+          <Title ta="center">Password Reset!</Title>
+          <Text ta="center">Reset your account to continue</Text>
 
-          <TextInput
-            id="email"
-            type="email"
-            name="email"
-            value={data.email}
-            className="block w-full mt-1"
-            autoComplete="username"
-            onChange={e => setData('email', e.target.value)}
-          />
-
-          <InputError message={errors.email} className="mt-2" />
-        </div>
-
-        <div className="mt-4">
-          <InputLabel htmlFor="password" value="Password" />
-
-          <TextInput
-            id="password"
-            type="password"
-            name="password"
-            value={data.password}
-            className="block w-full mt-1"
-            autoComplete="new-password"
-            isFocused={true}
-            onChange={e => setData('password', e.target.value)}
-          />
-
-          <InputError message={errors.password} className="mt-2" />
-        </div>
-
-        <div className="mt-4">
-          <InputLabel htmlFor="password_confirmation" value="Confirm Password" />
-
-          <TextInput
-            type="password"
-            name="password_confirmation"
-            value={data.password_confirmation}
-            className="block w-full mt-1"
-            autoComplete="new-password"
-            onChange={e => setData('password_confirmation', e.target.value)}
-          />
-
-          <InputError message={errors.password_confirmation} className="mt-2" />
-        </div>
-
-        <div className="flex items-center justify-end mt-4">
-          <PrimaryButton className="ms-4" disabled={processing}>
-            Reset Password
-          </PrimaryButton>
-        </div>
-      </form>
-    </GuestLayout>
+          <Surface component={Paper} className={classes.card}>
+            <form onSubmit={form.onSubmit(values => onSubmit(values))}>
+              <TextInput
+                label="Email"
+                withAsterisk
+                mt="md"
+                placeholder="your@email.com"
+                key={form.key('email')}
+                {...form.getInputProps('email')}
+                classNames={{ label: classes.label }}
+              />
+              <PasswordInput
+                withAsterisk
+                label="Password"
+                placeholder="Your password"
+                mt="md"
+                key={form.key('password')}
+                {...form.getInputProps('password')}
+                classNames={{ label: classes.label }}
+              />
+              <PasswordInput
+                withAsterisk
+                label="Confirm Password"
+                placeholder="Confirm password"
+                mt="md"
+                key={form.key('password_confirmation')}
+                {...form.getInputProps('password_confirmation')}
+                classNames={{ label: classes.label }}
+              />
+              <Button fullWidth mt="xl" type="submit">
+                Reset Password
+              </Button>
+            </form>
+          </Surface>
+        </Stack>
+      </Center>
+    </AuthLayout>
   );
 }
+
+export default ResetPassword;
