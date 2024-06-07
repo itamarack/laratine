@@ -5,7 +5,7 @@ import ApplicationLogo from '@/Components/ApplicationLogo';
 
 function AuthLayout({ children }: PropsWithChildren) {
   return (
-    <Center style={{ height: '100vh', width: '100vw' }}>
+    <Center className={'bg-gray-50 h-screen w-screen'}>
       <Stack>
         <Center>
           <Link href="/">
