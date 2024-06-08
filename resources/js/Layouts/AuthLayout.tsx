@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { Center, Flex, Box, SimpleGrid } from '@mantine/core';
+import { Center, Flex } from '@mantine/core';
 import { PropsWithChildren } from 'react';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 
