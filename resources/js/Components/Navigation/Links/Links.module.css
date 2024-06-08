@@ -14,7 +14,7 @@
   }
 
   @mixin hover {
-    transition: all ease .2s;
+    transition: all ease 0.2s;
 
     @mixin light {
       background-color: var(--mantine-color-white);
@@ -61,7 +61,7 @@
   }
 
   @mixin hover {
-    transition: all ease .2s;
+    transition: all ease 0.2s;
 
     @mixin light {
       background-color: var(--mantine-color-white);

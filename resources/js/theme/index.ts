@@ -1,8 +1,9 @@
 import { ActionIcon, createTheme, Loader } from '@mantine/core';
+import { generateColors } from '@mantine/colors-generator';
 
 export const myTheme = createTheme({
   primaryColor: 'indigo',
-  defaultRadius: 'md',
+  // defaultRadius: 'md',
   focusRing: 'always',
   fontFamily: 'Open Sans, sans-serif',
   headings: { fontFamily: 'Open Sans, sans-serif' },
@@ -18,4 +19,7 @@ export const myTheme = createTheme({
       },
     }),
   },
+  colors: {
+    whiteAlpha: generateColors('#FAFAFA'),
+  }
 });

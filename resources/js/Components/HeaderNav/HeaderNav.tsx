@@ -28,9 +28,10 @@ import {
   IconSearch,
   IconSunHigh,
 } from '@tabler/icons-react';
-import { LanguagePicker } from '@/Components';
 import { upperFirst, useMediaQuery } from '@mantine/hooks';
 import { showNotification } from '@mantine/notifications';
+import { router } from '@inertiajs/react';
+import { LanguagePicker } from '@/Components';
 
 const ICON_SIZE = 20;
 
@@ -141,6 +142,10 @@ const HeaderNav = (props: HeaderNavProps) => {
   const laptop_match = useMediaQuery('(max-width: 992px)');
   const tablet_match = useMediaQuery('(max-width: 768px)');
   const mobile_match = useMediaQuery('(max-width: 425px)');
+
+  const onLogOut = () => {
+    router.post(route('logout'));
+  };
 
   const messages = MESSAGES.map(m => (
     <Menu.Item
@@ -298,7 +303,7 @@ const HeaderNav = (props: HeaderNavProps) => {
           </Menu.Dropdown>
         </Menu>
         <Tooltip label="Logout">
-          <ActionIcon>
+          <ActionIcon onClick={onLogOut}>
             <IconPower size={ICON_SIZE} />
           </ActionIcon>
         </Tooltip>

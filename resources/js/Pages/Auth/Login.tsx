@@ -15,7 +15,7 @@ import { Head, Link, router, usePage } from '@inertiajs/react';
 import { RequestPayload } from '@inertiajs/core';
 import { AuthLayout } from '@/Layouts';
 import { Surface } from '@/Components';
-import classes from '~/css/auth.module.css';
+import classes from './Auth.module.css';
 
 function Login({ status, canResetPassword }: { status?: string; canResetPassword: boolean }) {
   const { errors } = usePage().props;

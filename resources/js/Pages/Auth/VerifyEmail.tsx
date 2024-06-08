@@ -6,7 +6,7 @@ import { IconChevronLeft } from '@tabler/icons-react';
 import { useMediaQuery } from '@mantine/hooks';
 import { AuthLayout } from '@/Layouts';
 import { Surface } from '@/Components';
-import classes from '~/css/auth.module.css';
+import classes from './Auth.module.css';
 
 function VerifyEmail({ status }: { status?: string }) {
   const mobile_match = useMediaQuery('(max-width: 425px)');

@@ -21,7 +21,7 @@ import { Head, Link, router, usePage } from '@inertiajs/react';
 import { RequestPayload } from '@inertiajs/core';
 import { AuthLayout } from '@/Layouts';
 import { Surface } from '@/Components';
-import classes from '~/css/auth.module.css';
+import classes from './Auth.module.css';
 
 function ResetPassword({ status }: { status: string }) {
   const { errors, flash } = usePage().props;

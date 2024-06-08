@@ -1,16 +1,15 @@
-import { Link } from '@inertiajs/react';
-import { Center, Flex } from '@mantine/core';
+import { Center, Flex, Box } from '@mantine/core';
 import { PropsWithChildren } from 'react';
-import ApplicationLogo from '@/Components/ApplicationLogo';
+import { Logo } from '@/Components';
 
 function AuthLayout({ children }: PropsWithChildren) {
   return (
-    <Flex className={'bg-white h-screen w-full'}>
-      <Link href="/" className={'p-6 h-full absolute'}>
-        <ApplicationLogo className="w-12 h-12 text-gray-500 fill-current" />
-      </Link>
+    <Flex bg={'white'} h={'100vh'} w={'100%'}>
+      <Box style={{ padding: 24, position: 'absolute', height: '100%' }}>
+        <Logo text={'Laratine Admin'} href={'/'} style={{ color: 'blue' }} />
+      </Box>
       <Center w={'100%'} px={{ sm: 32 }} pl={{ lg: 100 }}>
-        <Flex w={'100%'} justify={'center'} gap={{ sm: 32, lg: 0 }}>
+        <Flex w={'100%'} justify={'center'} align={'center'} gap={{ sm: 32, lg: 0 }}>
           <Center w={'100%'} display={{ base: 'none', sm: 'block' }}>
             <svg
               xmlns="http://www.w3.org/2000/svg"

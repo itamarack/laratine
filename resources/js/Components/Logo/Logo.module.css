@@ -1,9 +1,10 @@
 .logo {
-  padding: rem(4px) rem(8px);
+  padding: 0;
   font-size: var(--mantine-font-size-md);
   border-radius: var(--mantine-radius-sm);
   color: light-dark(var(--mantine-color-dark-7), var(--mantine-color-white));
   font-weight: 600;
+  text-decoration: none;
 
   @mixin hover {
     transition: all ease 150ms;
