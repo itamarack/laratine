@@ -1,18 +1,21 @@
 import { ActionIcon, Box, Flex, Group, ScrollArea, Text } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
 import { Logo, UserProfileButton } from '@/Components';
-import UserProfileData from '@/mocks/UserProfile.json';
 import { useMediaQuery } from '@mantine/hooks';
 import classes from './Navigation.module.css';
 import { LinksGroup } from '@/Components/Navigation/Links/Links';
 import { SidebarNavigation } from '@/static';
+import { User } from '@/types';
 
 type NavigationProps = {
+  user?: User;
   onClose: () => void;
 };
 
-const Navigation = ({ onClose }: NavigationProps) => {
+const Navigation = ({ user, onClose }: NavigationProps) => {
   const tablet_match = useMediaQuery('(max-width: 768px)');
+
+  console.log(user);
 
   const links = SidebarNavigation.map(m => (
     <Box pl={0} mb="md" key={m.title}>
@@ -52,13 +55,9 @@ const Navigation = ({ onClose }: NavigationProps) => {
         <div className={classes.linksInner}>{links}</div>
       </ScrollArea>
 
-      <div className={classes.footer}>
-        <UserProfileButton
-          email={UserProfileData.email}
-          image={UserProfileData.avatar}
-          name={UserProfileData.name}
-        />
-      </div>
+      <Flex className={classes.footer}>
+        <UserProfileButton user={user} />
+      </Flex>
     </nav>
   );
 };

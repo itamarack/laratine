@@ -1,7 +1,7 @@
 'use client';
 
 import { AppShell, Container, rem, useMantineTheme } from '@mantine/core';
-import { useState, PropsWithChildren, ReactNode } from 'react';
+import { PropsWithChildren, ReactNode } from 'react';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import AppMain from '@/Components/AppMain';
 import Navigation from '@/Components/Navigation';
@@ -42,6 +42,7 @@ function AuthenticatedLayout(props: PropsWithChildren<AuthenticatedProps>) {
       >
         <Container fluid py="sm" px="lg">
           <HeaderNav
+            user={props.user}
             desktopOpened={desktopOpened}
             mobileOpened={mobileOpened}
             toggleDesktop={toggleDesktop}
@@ -50,7 +51,7 @@ function AuthenticatedLayout(props: PropsWithChildren<AuthenticatedProps>) {
         </Container>
       </AppShell.Header>
       <AppShell.Navbar>
-        <Navigation onClose={toggleMobile} />
+        <Navigation user={props.user} onClose={toggleMobile} />
       </AppShell.Navbar>
       <AppShell.Main>
         <AppMain>{props.children}</AppMain>
