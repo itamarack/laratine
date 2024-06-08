@@ -25,7 +25,7 @@ import {
 } from '@tabler/icons-react';
 import { Logo, UserProfileButton } from '@/Components';
 import { PATH_ABOUT, PATH_APPS, PATH_AUTH, PATH_DASHBOARD, PATH_DOCS, PATH_PAGES } from '@/routes';
-import UserProfileData from '@/public/mocks/UserProfile.json';
+import UserProfileData from '@/mocks/UserProfile.json';
 import { useMediaQuery } from '@mantine/hooks';
 import classes from './Navigation.module.css';
 import { LinksGroup } from '@/Components/Navigation/Links/Links';
@@ -144,7 +144,7 @@ const Navigation = ({ onClose }: NavigationProps) => {
       <div className={classes.header}>
         <Flex justify="space-between" align="center" gap="sm">
           <Group justify="space-between" style={{ flex: tablet_match ? 'auto' : 1 }}>
-            <Logo className={classes.logo} />
+            <Logo className={classes.logo} style={{}} />
           </Group>
           {tablet_match && (
             <ActionIcon onClick={onClose} variant="transparent">

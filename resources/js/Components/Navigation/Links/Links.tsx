@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Box, Collapse, Group, Text, UnstyledButton } from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
-import { usePathname, useRouter } from 'next/navigation';
 import * as _ from 'lodash';
 import classes from './Links.module.css';
 
@@ -18,48 +17,37 @@ interface LinksGroupProps {
 }
 
 export function LinksGroup(props: LinksGroupProps) {
-  const {
-    icon: Icon,
-    label,
-    initiallyOpened,
-    link,
-    links,
-    closeSidebar,
-  } = props;
-  const router = useRouter();
-  const pathname = usePathname();
+  const { icon: Icon, label, initiallyOpened, link, links, closeSidebar } = props;
   const hasLinks = Array.isArray(links);
   const [opened, setOpened] = useState(initiallyOpened || false);
   const [currentPath, setCurrentPath] = useState<string | undefined>();
   const ChevronIcon = IconChevronRight;
 
-  const items = (hasLinks ? links : []).map((link) => (
+  const items = (hasLinks ? links : []).map(link => (
     <Text
       component="button"
       className={classes.link}
       onClick={() => {
-        router.push(link.link);
         closeSidebar();
       }}
       key={link.label}
-      data-active={link.link.toLowerCase() === pathname || undefined}
+      data-active={undefined}
     >
       {link.label}
     </Text>
   ));
 
   useEffect(() => {
-    const paths = pathname.split('/');
+    const paths = '';
     setOpened(paths.includes(label.toLowerCase()));
-    setCurrentPath(_.last(paths)?.toLowerCase() || undefined);
-  }, [pathname, label]);
+    setCurrentPath(undefined);
+  }, [label]);
 
   return (
     <>
       <UnstyledButton
         onClick={() => {
-          setOpened((o) => !o);
-          link && router.push(link || '#');
+          setOpened(o => !o);
           closeSidebar();
         }}
         className={classes.control}

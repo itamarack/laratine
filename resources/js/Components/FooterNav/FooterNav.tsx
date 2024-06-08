@@ -26,8 +26,7 @@ const FooterNav = () => {
 
       '&:hover': {
         transition: 'all ease 150ms',
-        backgroundColor:
-          colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[2],
+        backgroundColor: colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[2],
         textDecoration: 'none',
       },
     },
@@ -58,13 +57,7 @@ const FooterNav = () => {
           <Button {...BUTTON_PROPS}>Terms of Use</Button>
         </Group>
       )}
-      <Text
-        c="dimmed"
-        fz="sm"
-        component="a"
-        href={PATH_GITHUB.org}
-        target="_blank"
-      >
+      <Text c="dimmed" fz="sm" component="a" href={PATH_GITHUB.org} target="_blank">
         &copy;&nbsp;{new Date().getFullYear()}&nbsp;DesignSparx
       </Text>
     </Group>

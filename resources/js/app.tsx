@@ -1,14 +1,14 @@
 import './bootstrap';
-import '../css/app.css';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
+import '../css/app.css';
 
 import { createRoot, hydrateRoot } from 'react-dom/client';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
-import { theme } from './theme';
+import { myTheme } from './theme';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 const glob = import.meta.glob('./Pages/**/*.tsx');
@@ -19,7 +19,7 @@ createInertiaApp({
   setup({ el, App, props }) {
     if (import.meta.env.DEV) {
       createRoot(el).render(
-        <MantineProvider theme={theme}>
+        <MantineProvider theme={myTheme}>
           <Notifications position="top-right" zIndex={1000} />
           <App {...props} />
         </MantineProvider>,
@@ -29,7 +29,7 @@ createInertiaApp({
 
     hydrateRoot(
       el,
-      <MantineProvider theme={theme}>
+      <MantineProvider theme={myTheme}>
         <Notifications position="top-right" zIndex={1000} />
         <App {...props} />
       </MantineProvider>,

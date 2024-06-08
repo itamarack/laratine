@@ -40,7 +40,7 @@ type LanguagePickerProps = {
 const LanguagePicker = ({ type }: LanguagePickerProps) => {
   const [opened, setOpened] = useState(false);
   const [selected, setSelected] = useState(data[0]);
-  const items = data.map((item) => (
+  const items = data.map(item => (
     <Menu.Item
       leftSection={<Image src={item.image} width={18} height={18} alt="flag" />}
       onClick={() => setSelected(item)}
@@ -62,16 +62,10 @@ const LanguagePicker = ({ type }: LanguagePickerProps) => {
         <UnstyledButton className={classes.control}>
           <Group gap="xs">
             <Image src={selected.image} width={22} height={22} alt="flag" />
-            {type === 'expanded' && (
-              <span className={classes.label}>{selected.label}</span>
-            )}
+            {type === 'expanded' && <span className={classes.label}>{selected.label}</span>}
           </Group>
           {type === 'expanded' && (
-            <IconChevronDown
-              size="1rem"
-              className={classes.icon}
-              stroke={1.5}
-            />
+            <IconChevronDown size="1rem" className={classes.icon} stroke={1.5} />
           )}
         </UnstyledButton>
       </Menu.Target>
