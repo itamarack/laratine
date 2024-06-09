@@ -8,7 +8,7 @@ function AuthLayout({ children }: PropsWithChildren) {
     <BackgroundImage src={LoginIllustration}>
       <Flex h={'100vh'} w={'100vw'}>
         <Box style={{ padding: 24, position: 'absolute', height: '100%' }}>
-          <Logo text={'Laratine Admin'} href={'/'} style={{ color: 'indigo' }} />
+          <Logo text={'Laratine Admin'} href={'/'} />
         </Box>
         <Center w={'100%'} h={'100%'}>
           <Card p={12} bg={'#F8F9FAAA'} radius={6}>

@@ -20,8 +20,6 @@ import {
 import {
   IconBell,
   IconCircleHalf2,
-  IconLayoutSidebarLeftCollapse,
-  IconLayoutSidebarLeftExpand,
   IconMessageCircle,
   IconMoonStars,
   IconPower,
@@ -40,14 +38,11 @@ const ICON_SIZE = 20;
 
 type HeaderNavProps = {
   user?: User;
-  mobileOpened?: boolean;
-  toggleMobile?: () => void;
-  desktopOpened?: boolean;
-  toggleDesktop?: () => void;
+  isOpen?: boolean;
+  onOpen?: () => void;
 };
 
 const HeaderNav = (props: HeaderNavProps) => {
-  const { desktopOpened, toggleDesktop, toggleMobile, mobileOpened } = props;
   const theme = useMantineTheme();
   const { setColorScheme, colorScheme } = useMantineColorScheme();
   const laptop_match = useMediaQuery('(max-width: 992px)');
@@ -151,12 +146,13 @@ const HeaderNav = (props: HeaderNavProps) => {
     <Group justify="space-between">
       <Group gap={0}>
         <Tooltip label="Toggle side navigation">
-          <ActionIcon visibleFrom="md" onClick={toggleDesktop}>
-            {desktopOpened ? <IconLayoutSidebarLeftCollapse /> : <IconLayoutSidebarLeftExpand />}
-          </ActionIcon>
+          <Burger
+            opened={props.isOpen}
+            onClick={props.onOpen}
+            size="sm"
+            color={theme.primaryColor}
+          />
         </Tooltip>
-        <Burger opened={mobileOpened} onClick={toggleMobile} hiddenFrom="md" size="sm" />
-        {/*<Burger opened={desktopOpened} onClick={toggleDesktop} visibleFrom="md" size="sm"/>*/}
         {!mobile_match && (
           <TextInput
             placeholder="search"

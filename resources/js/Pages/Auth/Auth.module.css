@@ -88,4 +88,5 @@
 .title {
   font-size: rem(26px);
   font-weight: 900;
+  color: var(--mantine-primary-color-filled);
 }

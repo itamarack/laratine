@@ -49,7 +49,7 @@ function ResetPassword({ token, email }: { token: string; email: string }) {
 
       <Center>
         <Stack>
-          <Stack style={{ color: 'indigo' }}>
+          <Stack className={classes.title}>
             <Title ta="center">Password Reset!</Title>
             <Text ta="center">Reset your account to continue</Text>
           </Stack>

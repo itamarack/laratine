@@ -49,7 +49,7 @@ function Register() {
 
       <Center>
         <Stack>
-          <Stack style={{ color: 'indigo' }}>
+          <Stack className={classes.title}>
             <Title ta="center">Welcome!</Title>
             <Text ta="center">Register your account to continue</Text>
           </Stack>

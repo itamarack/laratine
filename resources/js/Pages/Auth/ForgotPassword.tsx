@@ -70,7 +70,7 @@ function ResetPassword({ status }: { status: string }) {
 
       <Center>
         <Stack align={'center'}>
-          <Stack style={{ color: 'indigo' }}>
+          <Stack className={classes.title}>
             <Title ta="center">Forgot your password?</Title>
             <Text ta="center">Enter your email to get a reset link</Text>
           </Stack>

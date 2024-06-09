@@ -17,9 +17,10 @@ interface AuthenticatedProps {
 
 function AuthenticatedLayout(props: PropsWithChildren<AuthenticatedProps>) {
   const theme = useMantineTheme();
+  const laptop_match = useMediaQuery('(min-width: 769px)');
   const tablet_match = useMediaQuery('(max-width: 768px)');
-  const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
-  const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
+  const mobile_match = useMediaQuery('(max-width: 425px)');
+  const [isOpen, { toggle: onOpen }] = useDisclosure(laptop_match);
 
   return (
     <AppShell
@@ -29,7 +30,7 @@ function AuthenticatedLayout(props: PropsWithChildren<AuthenticatedProps>) {
       navbar={{
         width: 250,
         breakpoint: 'md',
-        collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
+        collapsed: { mobile: !isOpen, desktop: isOpen },
       }}
       padding={0}
     >
@@ -41,17 +42,11 @@ function AuthenticatedLayout(props: PropsWithChildren<AuthenticatedProps>) {
         }}
       >
         <Container fluid py="sm" px="lg">
-          <HeaderNav
-            user={props.user}
-            desktopOpened={desktopOpened}
-            mobileOpened={mobileOpened}
-            toggleDesktop={toggleDesktop}
-            toggleMobile={toggleMobile}
-          />
+          <HeaderNav user={props.user} isOpen={isOpen} onOpen={onOpen} />
         </Container>
       </AppShell.Header>
       <AppShell.Navbar>
-        <Navigation user={props.user} onClose={toggleMobile} />
+        <Navigation user={props.user} onClose={onOpen} />
       </AppShell.Navbar>
       <AppShell.Main>
         <AppMain>{props.children}</AppMain>

@@ -15,8 +15,6 @@ type NavigationProps = {
 const Navigation = ({ user, onClose }: NavigationProps) => {
   const tablet_match = useMediaQuery('(max-width: 768px)');
 
-  console.log(user);
-
   const links = SidebarNavigation.map(m => (
     <Box pl={0} mb="md" key={m.title}>
       <Text tt="uppercase" size="xs" pl="md" fw={500} mb="sm" className={classes.linkHeader}>

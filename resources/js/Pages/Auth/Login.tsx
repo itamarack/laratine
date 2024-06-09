@@ -50,7 +50,7 @@ function Login({ status, canResetPassword }: LoginType) {
 
       <Center>
         <Stack>
-          <Stack style={{ color: 'indigo' }}>
+          <Stack className={classes.title}>
             <Title ta="center">Welcome back :)</Title>
             <Text ta="center">Sign in to your account to continue</Text>
           </Stack>
