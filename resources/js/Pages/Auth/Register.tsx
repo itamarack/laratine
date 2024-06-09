@@ -49,8 +49,10 @@ function Register() {
 
       <Center>
         <Stack>
-          <Title ta="center">Welcome!</Title>
-          <Text ta="center">Register your account to continue</Text>
+          <Stack style={{ color: 'indigo' }}>
+            <Title ta="center">Welcome!</Title>
+            <Text ta="center">Register your account to continue</Text>
+          </Stack>
 
           <Surface component={Paper} className={classes.card}>
             <form onSubmit={form.onSubmit(values => onSubmit(values))}>

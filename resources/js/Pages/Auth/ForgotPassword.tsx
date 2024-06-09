@@ -70,8 +70,10 @@ function ResetPassword({ status }: { status: string }) {
 
       <Center>
         <Stack align={'center'}>
-          <Title ta="center">Forgot your password?</Title>
-          <Text ta="center">Enter your email to get a reset link</Text>
+          <Stack style={{ color: 'indigo' }}>
+            <Title ta="center">Forgot your password?</Title>
+            <Text ta="center">Enter your email to get a reset link</Text>
+          </Stack>
 
           <Surface component={Paper} className={classes.card}>
             <form onSubmit={form.onSubmit(values => onSubmit(values))}>

@@ -1,4 +1,4 @@
-import { Center, Flex, Box, BackgroundImage } from '@mantine/core';
+import { Center, Flex, Box, BackgroundImage, Card } from '@mantine/core';
 import { PropsWithChildren } from 'react';
 import { Logo } from '@/Components';
 import LoginIllustration from '~/assets/svgs/login-illustration.svg';
@@ -11,7 +11,9 @@ function AuthLayout({ children }: PropsWithChildren) {
           <Logo text={'Laratine Admin'} href={'/'} style={{ color: 'indigo' }} />
         </Box>
         <Center w={'100%'} h={'100%'}>
-          {children}
+          <Card p={12} bg={'#F8F9FAAA'} radius={6}>
+            {children}
+          </Card>
         </Center>
       </Flex>
     </BackgroundImage>

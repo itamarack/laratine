@@ -33,7 +33,7 @@ function VerifyEmail({ status }: { status?: string }) {
       <Center>
         <Stack>
           <Surface component={Paper} className={classes.card}>
-            <Text ta="center">
+            <Text ta="center" style={{ color: 'indigo' }}>
               Thanks for signing up! Before getting started, could you verify your email address by
               clicking on the link we just emailed to you? If you didn't receive the email, we will
               gladly send you another.

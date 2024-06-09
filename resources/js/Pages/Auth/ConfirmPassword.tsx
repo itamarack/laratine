@@ -27,7 +27,7 @@ function ConfirmPassword() {
 
       <Center>
         <Stack>
-          <Text ta="center">
+          <Text ta="center" style={{ color: 'indigo' }}>
             This is a secure area of the application. <br /> Please confirm your password before
             continuing.
           </Text>

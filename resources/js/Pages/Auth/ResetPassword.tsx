@@ -49,8 +49,10 @@ function ResetPassword({ token, email }: { token: string; email: string }) {
 
       <Center>
         <Stack>
-          <Title ta="center">Password Reset!</Title>
-          <Text ta="center">Reset your account to continue</Text>
+          <Stack style={{ color: 'indigo' }}>
+            <Title ta="center">Password Reset!</Title>
+            <Text ta="center">Reset your account to continue</Text>
+          </Stack>
 
           <Surface component={Paper} className={classes.card}>
             <form onSubmit={form.onSubmit(values => onSubmit(values))}>

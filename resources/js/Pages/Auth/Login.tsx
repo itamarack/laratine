@@ -17,7 +17,12 @@ import { AuthLayout } from '@/Layouts';
 import { Surface } from '@/Components';
 import classes from './Auth.module.css';
 
-function Login({ status, canResetPassword }: { status?: string; canResetPassword: boolean }) {
+type LoginType = {
+  status?: string;
+  canResetPassword: boolean;
+};
+
+function Login({ status, canResetPassword }: LoginType) {
   const { errors } = usePage().props;
 
   const form = useForm({
@@ -41,11 +46,14 @@ function Login({ status, canResetPassword }: { status?: string; canResetPassword
   return (
     <AuthLayout>
       <Head title="Log in" />
+      {status && <Text ta="center">{status}</Text>}
 
       <Center>
         <Stack>
-          <Title ta="center">Welcome back :)</Title>
-          <Text ta="center">Sign in to your account to continue</Text>
+          <Stack style={{ color: 'indigo' }}>
+            <Title ta="center">Welcome back :)</Title>
+            <Text ta="center">Sign in to your account to continue</Text>
+          </Stack>
 
           <Surface component={Paper} className={classes.card}>
             <form onSubmit={form.onSubmit(values => onSubmit(values))}>
