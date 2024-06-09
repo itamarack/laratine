@@ -42,8 +42,6 @@ function Login({ status, canResetPassword }: { status?: string; canResetPassword
     <AuthLayout>
       <Head title="Log in" />
 
-      {status && <div className="mb-4 text-sm font-medium text-green-600">{status}</div>}
-
       <Center>
         <Stack>
           <Title ta="center">Welcome back :)</Title>

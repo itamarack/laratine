@@ -1,0 +1,12 @@
+<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" viewBox="0 0 800 800">
+  <g transform="matrix(1,0,0,1,0,0)">
+    <rect width="100" height="100" x="634" y="634" stroke-width="0.5" stroke="#ff3838" fill="none" opacity="0.01" transform="rotate(-360, 400, 400)"></rect>
+    <rect width="128.57142857142858" height="128.57142857142858" x="579.1428571428571" y="579.1428571428571" stroke-width="2.7142857142857144" stroke="#f04d6d" fill="none" opacity="0.15142857142857144" transform="rotate(-308.57142857142856, 400, 400)"></rect>
+    <rect width="157.14285714285714" height="157.14285714285714" x="524.2857142857143" y="524.2857142857143" stroke-width="4.928571428571429" stroke="#df5e90" fill="none" opacity="0.29285714285714287" transform="rotate(-257.1428571428571, 400, 400)"></rect>
+    <rect width="185.71428571428572" height="185.71428571428572" x="469.42857142857144" y="469.42857142857144" stroke-width="7.142857142857143" stroke="#cd6cac" fill="none" opacity="0.4342857142857143" transform="rotate(-205.71428571428572, 400, 400)"></rect>
+    <rect width="214.28571428571428" height="214.28571428571428" x="414.57142857142867" y="414.57142857142867" stroke-width="9.357142857142858" stroke="#b978c4" fill="none" opacity="0.5757142857142857" transform="rotate(-154.28571428571428, 400, 400)"></rect>
+    <rect width="242.85714285714286" height="242.85714285714286" x="359.7142857142857" y="359.7142857142857" stroke-width="11.571428571428573" stroke="#a483da" fill="none" opacity="0.7171428571428572" transform="rotate(-102.85714285714283, 400, 400)"></rect>
+    <rect width="271.42857142857144" height="271.42857142857144" x="304.85714285714283" y="304.85714285714283" stroke-width="13.785714285714286" stroke="#8a8ded" fill="none" opacity="0.8585714285714285" transform="rotate(-51.428571428571445, 400, 400)"></rect>
+    <rect width="300" height="300" x="250" y="250" stroke-width="16" stroke="#6b97ff" fill="none" opacity="1" transform="rotate(0, 400, 400)"></rect>
+  </g>
+</svg>
