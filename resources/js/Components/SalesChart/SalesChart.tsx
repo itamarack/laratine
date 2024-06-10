@@ -1,5 +1,6 @@
 'use client';
 
+import React, { Suspense } from 'react';
 import {
   ActionIcon,
   Group,
@@ -13,8 +14,9 @@ import { DataTable } from 'mantine-datatable';
 import { IconDotsVertical } from '@tabler/icons-react';
 import { ErrorAlert, Surface } from '@/Components';
 import { useFetchData } from '@/hooks';
+import SalesData from '@/mocks/Sales.json';
 
-const Chart = import('react-apexcharts');
+const Chart = React.lazy(() => import('react-apexcharts'));
 
 type SalesChartProps = PaperProps;
 
@@ -22,11 +24,6 @@ const SalesChart = ({ ...others }: SalesChartProps) => {
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();
   const series = [44, 55, 41, 17, 15];
-  const {
-    data: salesData,
-    error: salesError,
-    loading: salesLoading,
-  } = useFetchData('/mocks/Sales.json');
 
   const options: any = {
     chart: { type: 'donut', fontFamily: 'Open Sans, sans-serif' },
@@ -91,17 +88,19 @@ const SalesChart = ({ ...others }: SalesChartProps) => {
           <IconDotsVertical size={16} />
         </ActionIcon>
       </Group>
-      {/*@ts-ignore*/}
-      <Chart options={options} series={series} type="donut" height={160} width={'100%'} />
-      {salesError ? (
-        <ErrorAlert title="Error loading sales data" message={salesError.toString()} />
+      <Suspense fallback={<div>Loading...</div>}>
+        {/*@ts-ignore*/}
+        <Chart options={options} series={series} type="donut" height={160} width={'100%'} />
+      </Suspense>
+      {false ? (
+        <ErrorAlert title="Error loading sales data" message={''} />
       ) : (
         <DataTable
           highlightOnHover
           columns={[{ accessor: 'source' }, { accessor: 'revenue' }, { accessor: 'value' }]}
-          records={salesData.slice(0, 4)}
+          records={SalesData.slice(0, 4)}
           height={200}
-          fetching={salesLoading}
+          fetching={false}
         />
       )}
     </Surface>

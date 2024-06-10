@@ -1,5 +1,5 @@
-import Logo from './Logo/Logo';
-import ToggleTheme from './ToggleTheme/ToggleTheme';
+import Logo from '@/Components/Logo/Logo';
+import ToggleTheme from '@/Components/ToggleTheme/ToggleTheme';
 import LanguagePicker from '@/Components/LanguagePicker/LanguagePicker';
 import FilterDateMenu from '@/Components/FilterDateMenu/FilterDateMenu';
 import StatsGrid from '@/Components/StatsGrid/StatsGrid';

@@ -15,7 +15,7 @@ import {
   Title,
   useMantineTheme,
 } from '@mantine/core';
-import { IconPlus, IconRefresh } from '@tabler/icons-react';
+import { IconMoonStars, IconPlus, IconRefresh, IconSunHigh } from '@tabler/icons-react';
 import { FilterDateMenu, Surface } from '@/Components';
 import { useColorScheme } from '@mantine/hooks';
 
@@ -50,17 +50,32 @@ const PageHeader = (props: PageHeaderProps) => {
 
   return (
     <>
-      <Surface component={Paper} style={{ backgroundColor: 'transparent' }} {...others}>
+      <Surface shadow={'sm'} p={16} radius={'md'} component={Paper} {...others}>
         {withActions ? (
           <Flex
             justify="space-between"
             direction={{ base: 'column', sm: 'row' }}
             gap={{ base: 'sm', sm: 4 }}
           >
-            <Stack gap={4}>
-              <Title order={3}>{title}</Title>
-              <Text>Welcome back, Kelvin!</Text>
-            </Stack>
+            <Flex gap={16}>
+              {new Date().getHours() >= 0 ? (
+                <IconMoonStars size={40} color={theme.colors.blue[9]} />
+              ) : new Date().getHours() >= 6 || new Date().getHours() < 12 ? (
+                <IconSunHigh size={40} color={theme.colors.yellow[5]} />
+              ) : (
+                <IconMoonStars size={40} color={theme.colors.blue[9]} />
+              )}
+              <Stack gap={4}>
+                <Title order={3}>
+                  {new Date().getHours() >= 0
+                    ? 'Good Morning!'
+                    : new Date().getHours() >= 12 || new Date().getHours() <= 18
+                      ? 'Good Afternoon!'
+                      : 'Good Evening!'}
+                </Title>
+                <Text>How are you today, Kelvin!</Text>
+              </Stack>
+            </Flex>
             <Flex align="center" gap="sm">
               <ActionIcon variant="subtle">
                 <IconRefresh size={16} />

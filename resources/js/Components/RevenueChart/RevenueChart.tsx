@@ -9,10 +9,11 @@ import {
   useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core';
+import React, { Suspense } from 'react';
 import { IconDotsVertical } from '@tabler/icons-react';
 import { Surface } from '@/Components';
 
-const Chart = import('react-apexcharts');
+const Chart = React.lazy(() => import('react-apexcharts'));
 
 type RevenueChartProps = PaperProps;
 
@@ -90,8 +91,10 @@ const RevenueChart = ({ ...others }: RevenueChartProps) => {
           <IconDotsVertical size={16} />
         </ActionIcon>
       </Group>
-      {/*@ts-ignore*/}
-      <Chart options={options} series={series} type="area" height={350} width={'100%'} />
+      <Suspense fallback={<div>Loading...</div>}>
+        {/*@ts-ignore*/}
+        <Chart options={options} series={series} type="area" height={350} width={'100%'} />
+      </Suspense>
     </Surface>
   );
 };
