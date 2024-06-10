@@ -82,11 +82,11 @@ export const PATH_AUTH = {
 };
 
 export const PATH_START = {
-  root: 'https://mantine-analytics-dashboard-docs.netlify.app/getting-started',
+  root: 'https://laratine.diggitto.com/getting-started',
 };
 
 export const PATH_DOCS = {
-  root: 'https://mantine-analytics-dashboard-docs.netlify.app/',
+  root: 'https://laratine.diggitto.com/',
 };
 
 export const PATH_CHANGELOG = {
@@ -94,8 +94,8 @@ export const PATH_CHANGELOG = {
 };
 
 export const PATH_GITHUB = {
-  org: 'https://github.com/design-sparx',
-  repo: 'https://github.com/design-sparx/mantine-analytics-dashboard',
+  org: 'https://github.com/itamarack',
+  repo: 'https://github.com/itamarack/laratine',
 };
 
 export const PATH_AUTH_PROVIDERS = {
