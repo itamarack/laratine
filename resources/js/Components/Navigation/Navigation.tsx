@@ -54,7 +54,7 @@ const Navigation = ({ user, onClose }: NavigationProps) => {
       </ScrollArea>
 
       <Flex className={classes.footer}>
-        <UserProfileButton user={user} />
+        <UserProfileButton user={user} hasEmail />
       </Flex>
     </nav>
   );

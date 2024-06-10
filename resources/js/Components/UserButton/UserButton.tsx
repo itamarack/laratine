@@ -1,5 +1,14 @@
 import { ReactNode } from 'react';
-import { Box, Avatar, Group, Text, UnstyledButton, UnstyledButtonProps } from '@mantine/core';
+import {
+  Box,
+  Avatar,
+  Group,
+  Text,
+  UnstyledButton,
+  UnstyledButtonProps,
+  Flex,
+  Stack,
+} from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
 import classes from './UserButton.module.css';
 import { User } from '@/types';
@@ -9,9 +18,16 @@ type UserProfileButtonProps = {
   user?: User;
   icon?: ReactNode;
   asAction?: boolean;
+  hasEmail?: boolean;
 } & UnstyledButtonProps;
 
-const UserProfileButton = ({ user, icon, asAction, ...others }: UserProfileButtonProps) => {
+const UserProfileButton = ({
+  user,
+  icon,
+  hasEmail,
+  asAction,
+  ...others
+}: UserProfileButtonProps) => {
   return (
     <UnstyledButton
       href={route('profile.edit')}
@@ -19,17 +35,18 @@ const UserProfileButton = ({ user, icon, asAction, ...others }: UserProfileButto
       className={classes.user}
       {...others}
     >
-      <Group>
-        <Avatar src={user?.image} radius="2xl" />
-        <Box style={{ flex: 1 }}>
-          <Text size="sm" fw={500}>
-            {user?.firstname} {user?.lastname}
-          </Text>
-          <Text size="xs">{user?.email}</Text>
-        </Box>
+      <Flex align={'center'} gap={8}>
+        <Avatar variant={'filled'} radius={'xl'} size={hasEmail ? 'md' : 'sm'} src={user?.image} />
+        <Stack gap={0}>
+          <Group gap={4}>
+            <Text size={'sm'}>{user?.firstname}</Text>
+            <Text size={'sm'}>{user?.lastname}</Text>
+          </Group>
+          {hasEmail && <Text size={'xs'}>{user?.email}</Text>}
+        </Stack>
 
         {icon && asAction && <IconChevronRight size="0.9rem" stroke={1.5} />}
-      </Group>
+      </Flex>
     </UnstyledButton>
   );
 };

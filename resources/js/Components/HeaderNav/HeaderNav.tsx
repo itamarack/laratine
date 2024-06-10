@@ -7,7 +7,6 @@ import {
   Flex,
   Group,
   Indicator,
-  MantineTheme,
   Menu,
   rem,
   Stack,
@@ -26,10 +25,9 @@ import {
   IconSearch,
   IconSunHigh,
 } from '@tabler/icons-react';
-import { upperFirst, useMediaQuery } from '@mantine/hooks';
-import { showNotification } from '@mantine/notifications';
+import { useMediaQuery } from '@mantine/hooks';
 import { router } from '@inertiajs/react';
-import { LanguagePicker } from '@/Components';
+import { LanguagePicker, UserProfileButton } from '@/Components';
 import NOTIFICATIONS from '@/mocks/Notifications.json';
 import MESSAGES from '@/mocks/Messages.json';
 import { User } from '@/types';
@@ -42,7 +40,7 @@ type HeaderNavProps = {
   onOpen?: () => void;
 };
 
-const HeaderNav = (props: HeaderNavProps) => {
+const HeaderNav = ({ user, isOpen, onOpen }: HeaderNavProps) => {
   const theme = useMantineTheme();
   const { setColorScheme, colorScheme } = useMantineColorScheme();
   const laptop_match = useMediaQuery('(max-width: 992px)');
@@ -108,50 +106,11 @@ const HeaderNav = (props: HeaderNavProps) => {
     </Menu.Item>
   ));
 
-  const handleColorSwitch = (mode: 'light' | 'dark' | 'auto') => {
-    setColorScheme(mode);
-    showNotification({
-      title: `${upperFirst(mode)} is on`,
-      message: `You just switched to ${
-        colorScheme === 'dark' ? 'light' : 'dark'
-      } mode. Hope you like it`,
-      styles: (theme: MantineTheme) => ({
-        root: {
-          backgroundColor: colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.gray[2],
-          borderColor: colorScheme === 'dark' ? theme.colors.gray[7] : theme.colors.gray[2],
-
-          '&::before': {
-            backgroundColor: colorScheme === 'dark' ? theme.colors.gray[2] : theme.colors.gray[7],
-          },
-        },
-
-        title: {
-          color: colorScheme === 'dark' ? theme.colors.gray[2] : theme.colors.gray[7],
-        },
-        description: {
-          color: colorScheme === 'dark' ? theme.colors.gray[2] : theme.colors.gray[7],
-        },
-        closeButton: {
-          color: colorScheme === 'dark' ? theme.colors.gray[2] : theme.colors.gray[7],
-          '&:hover': {
-            backgroundColor: theme.colors.red[5],
-            color: theme.white,
-          },
-        },
-      }),
-    });
-  };
-
   return (
     <Group justify="space-between">
       <Group gap={0}>
         <Tooltip label="Toggle side navigation">
-          <Burger
-            opened={props.isOpen}
-            onClick={props.onOpen}
-            size="sm"
-            color={theme.primaryColor}
-          />
+          <Burger opened={isOpen} onClick={onOpen} size="sm" color={theme.primaryColor} />
         </Tooltip>
         {!mobile_match && (
           <TextInput
@@ -209,11 +168,6 @@ const HeaderNav = (props: HeaderNavProps) => {
             </Menu.Item>
           </Menu.Dropdown>
         </Menu>
-        <Tooltip label="Logout">
-          <ActionIcon onClick={onLogOut}>
-            <IconPower size={ICON_SIZE} />
-          </ActionIcon>
-        </Tooltip>
         <Menu shadow="lg" width={200}>
           <Menu.Target>
             <Tooltip label="Switch color modes">
@@ -243,6 +197,35 @@ const HeaderNav = (props: HeaderNavProps) => {
               onClick={() => setColorScheme('dark')}
             >
               Dark
+            </Menu.Item>
+          </Menu.Dropdown>
+        </Menu>
+        <Menu shadow="lg" width={200}>
+          <Menu.Target>
+            <Tooltip label="Switch color modes">
+              <ActionIcon radius={'xl'} color={theme.primaryColor}>
+                <Avatar
+                  src={user?.image}
+                  variant="filled"
+                  size="md"
+                  radius={'xl'}
+                  color={theme.primaryColor}
+                />
+              </ActionIcon>
+            </Tooltip>
+          </Menu.Target>
+          <Menu.Dropdown>
+            <Menu.Label tt="uppercase" ta="center" fw={600}>
+              User Account
+            </Menu.Label>
+            <Menu.Item>
+              <UserProfileButton user={user} />
+            </Menu.Item>
+            <Menu.Item
+              leftSection={<IconPower size={ICON_SIZE} />}
+              onClick={() => router.post(route('logout'))}
+            >
+              Logout
             </Menu.Item>
           </Menu.Dropdown>
         </Menu>

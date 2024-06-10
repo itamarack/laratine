@@ -1,5 +1,5 @@
 .user {
-  padding: var(--mantine-spacing-md);
+  /* padding: var(--mantine-spacing-md); */
   border-radius: var(--mantine-radius-default);
 
   @mixin hover {
