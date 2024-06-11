@@ -58,16 +58,16 @@ const PageHeader = (props: PageHeaderProps) => {
             gap={{ base: 'sm', sm: 4 }}
           >
             <Flex gap={16}>
-              {new Date().getHours() >= 0 ? (
+              {new Date().getHours() >= 0 && new Date().getHours() <= 6 ? (
                 <IconMoonStars size={40} color={theme.colors.blue[9]} />
-              ) : new Date().getHours() >= 6 || new Date().getHours() < 12 ? (
+              ) : new Date().getHours() >= 7 && new Date().getHours() <= 18 ? (
                 <IconSunHigh size={40} color={theme.colors.yellow[5]} />
               ) : (
                 <IconMoonStars size={40} color={theme.colors.blue[9]} />
               )}
               <Stack gap={4}>
                 <Title order={3}>
-                  {new Date().getHours() >= 0
+                  {new Date().getHours() >= 0 && new Date().getHours() < 12
                     ? 'Good Morning!'
                     : new Date().getHours() >= 12 || new Date().getHours() <= 18
                       ? 'Good Afternoon!'
