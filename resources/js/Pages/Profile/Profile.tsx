@@ -18,11 +18,18 @@ import {
   rem,
   Popover,
   Progress,
+  Flex,
 } from '@mantine/core';
 import { FormEventHandler, useEffect, useRef, useState } from 'react';
 import { Head, useForm } from '@inertiajs/react';
 import { notifications } from '@mantine/notifications';
-import { IconCheck, IconCloudUpload, IconDeviceFloppy, IconX } from '@tabler/icons-react';
+import {
+  IconCheck,
+  IconCloudUpload,
+  IconDeviceFloppy,
+  IconTrash,
+  IconX,
+} from '@tabler/icons-react';
 import { PageHeader, Surface, TextEditor } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
 import { PageProps } from '@/types';
@@ -37,7 +44,6 @@ const items = [
 ));
 
 const ICON_SIZE = 16;
-
 const PAPER_PROPS: PaperProps = {
   p: 'md',
   shadow: 'md',
@@ -50,34 +56,27 @@ function Profile({
   mustVerifyEmail,
   status,
 }: PageProps<{ mustVerifyEmail: boolean; status?: string }>) {
-  const [file, setFile] = useState<File | null>(null);
-  const [avatar, setAvatar] = useState<string | undefined>(auth.user.image);
+  const [avatar, setAvatar] = useState<string | undefined>(auth.user.avatar);
   const [popoverOpened, setPopoverOpened] = useState(false);
   const passwordInput = useRef<HTMLInputElement>(null);
   const currentPasswordInput = useRef<HTMLInputElement>(null);
-
-  // useEffect(() => {
-  //   if (file) {
-  //     const objectURL = URL.createObjectURL(file);
-  //     setAvatar(() => objectURL);
-  // userInfo.setData('avatar', file);
-  //     return () => URL.revokeObjectURL(objectURL);
-  //   }
-  // }, [file]);
 
   const onFileUpload = (file: any) => {
     userInfo.setData('avatar', file);
     const objectURL = URL.createObjectURL(file);
     setAvatar(() => objectURL);
 
-    console.log(userInfo.data);
-
     return () => URL.revokeObjectURL(objectURL);
+  };
+
+  const onDeleteAvatar = () => {
+    setAvatar(() => undefined);
+    userInfo.setData('avatar', null);
   };
 
   const userInfo = useForm({
     _method: 'patch',
-    avatar: null,
+    avatar: auth.user.avatar ?? null,
     firstname: auth.user.firstname ?? '',
     lastname: auth.user.lastname ?? '',
     email: auth.user.email ?? '',
@@ -105,7 +104,6 @@ function Profile({
   const strength = getStrength(userSecurity.data.password);
   const color = strength === 100 ? 'teal' : strength > 50 ? 'yellow' : 'red';
 
-  console.log(auth.user);
   const onSubmitAccount: FormEventHandler = event => {
     event.preventDefault();
 
@@ -174,25 +172,28 @@ function Profile({
                   <Stack justify="space-between" gap={16} h="100%">
                     <Grid gutter={{ base: 5, xs: 'md', md: 'md', lg: 'lg' }}>
                       <Grid.Col span={{ base: 12, md: 4 }}>
-                        <Stack align="center">
-                          <Avatar
-                            size={'100%'}
-                            mah={240}
-                            variant="filled"
-                            radius="sm"
-                            src={avatar}
-                          />
-                          <FileButton onChange={onFileUpload} accept="image/png,image/jpeg">
-                            {props => (
-                              <Button
-                                {...props}
-                                variant="subtle"
-                                leftSection={<IconCloudUpload size={ICON_SIZE} />}
-                              >
-                                Upload image
+                        <Stack justify="center" align="center">
+                          <Avatar size={'100%'} variant="filled" radius="sm" src={avatar} />
+                          <Grid gutter={12} justify="center">
+                            <Grid.Col span={8}>
+                              <FileButton onChange={onFileUpload} accept="image/png,image/jpeg">
+                                {props => (
+                                  <Button
+                                    {...props}
+                                    variant="subtle"
+                                    leftSection={<IconCloudUpload size={ICON_SIZE} />}
+                                  >
+                                    Upload image
+                                  </Button>
+                                )}
+                              </FileButton>
+                            </Grid.Col>
+                            <Grid.Col span={4}>
+                              <Button onClick={onDeleteAvatar} variant="subtle" color="red">
+                                <IconTrash size={ICON_SIZE} />
                               </Button>
-                            )}
-                          </FileButton>
+                            </Grid.Col>
+                          </Grid>
                           <Text ta="center" size="xs" c="dimmed">
                             For best results, use an image at least 128px by 128px in .jpg format
                           </Text>
