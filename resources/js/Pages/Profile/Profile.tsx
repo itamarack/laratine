@@ -57,6 +57,8 @@ function Profile({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: string
   const passwordInput = useRef<HTMLInputElement>(null);
   const currentPasswordInput = useRef<HTMLInputElement>(null);
 
+  console.log(auth);
+
   const onFileUpload = (file: any) => {
     userInfo.setData('avatar', file);
     const objectURL = URL.createObjectURL(file);

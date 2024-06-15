@@ -40,4 +40,15 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Get the full URL of the user's avatar.
+     *
+     * @param string $value
+     * @return string
+     */
+    public function getAvatarAttribute($value)
+    {
+        return asset('storage/' . $value);
+    }
 }
