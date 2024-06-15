@@ -58,7 +58,7 @@ const FooterNav = () => {
         </Group>
       )}
       <Text c="dimmed" fz="sm" component="a" href={PATH_GITHUB.org} target="_blank">
-        &copy;&nbsp;{new Date().getFullYear()}&nbsp;iTamarack
+        &copy;&nbsp;{new Date().getFullYear()}&nbsp;Laratine
       </Text>
     </Group>
   );

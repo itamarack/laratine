@@ -3,9 +3,6 @@ import {
   IconBrandAuth0,
   IconBriefcase,
   IconCalendar,
-  IconChartArcs3,
-  IconChartBar,
-  IconChartInfographic,
   IconExclamationCircle,
   IconFileInvoice,
   IconLayersSubtract,
@@ -20,10 +17,27 @@ import {
   IconUserCode,
   IconUserPlus,
   IconUserShield,
+  IconMessage,
+  IconDashboard,
+  IconSettings
 } from '@tabler/icons-react';
-import { PATH_ABOUT, PATH_APPS, PATH_AUTH, PATH_DASHBOARD, PATH_DOCS, PATH_PAGES } from '@/routes';
+import { PATH_ABOUT, PATH_APPS, PATH_AUTH, PATH_DOCS, PATH_PAGES } from '@/routes';
 
 const navigationItems = [
+  {
+    title: 'Dashboard',
+    links: [
+      { label: 'Dashboard', icon: IconDashboard, link: '/dashboard' },
+      { label: 'Messages', icon: IconMessage, link: '/messages' },
+    ]
+  },
+  {
+    title: 'My Account',
+    links: [
+      { label: 'Profile', icon: IconUserCircle, link: '/profile' },
+      { label: 'Settings', icon: IconSettings, link: '/settings' },
+    ]
+  },
   {
     title: 'Apps',
     links: [

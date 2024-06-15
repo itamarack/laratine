@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { router, usePage, Link } from '@inertiajs/react';
 import { Box, Collapse, Group, Text, UnstyledButton } from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
 import * as _ from 'lodash';
@@ -18,6 +19,8 @@ interface LinksGroupProps {
 
 export function LinksGroup(props: LinksGroupProps) {
   const { icon: Icon, label, initiallyOpened, link, links, closeSidebar } = props;
+  const { url } = usePage();
+
   const hasLinks = Array.isArray(links);
   const [opened, setOpened] = useState(initiallyOpened || false);
   const [currentPath, setCurrentPath] = useState<string | undefined>();
@@ -25,29 +28,28 @@ export function LinksGroup(props: LinksGroupProps) {
 
   const items = (hasLinks ? links : []).map(link => (
     <Text
-      component="button"
+      component={Link}
+      href={link.link}
       className={classes.link}
-      onClick={() => {
-        closeSidebar();
-      }}
       key={link.label}
-      data-active={undefined}
+      data-active={link.link.toLowerCase() === url || undefined}
     >
       {link.label}
     </Text>
   ));
 
   useEffect(() => {
-    const paths = '';
+    const paths = url.split('/');
     setOpened(paths.includes(label.toLowerCase()));
-    setCurrentPath(undefined);
-  }, [label]);
+    setCurrentPath(_.last(paths)?.toLowerCase() || undefined);
+  }, [url, label]);
 
   return (
     <>
       <UnstyledButton
         onClick={() => {
           setOpened(o => !o);
+          link && router.get(link || '#');
           closeSidebar();
         }}
         className={classes.control}

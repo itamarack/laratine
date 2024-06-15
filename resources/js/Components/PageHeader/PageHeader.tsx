@@ -70,7 +70,7 @@ const PageHeader = (props: PageHeaderProps) => {
                 <Title order={3}>
                   {getHours >= 0 && getHours < 12
                     ? 'Good Morning!'
-                    : getHours >= 12 || getHours <= 18
+                    : getHours >= 12 && getHours <= 18
                       ? 'Good Afternoon!'
                       : 'Good Evening!'}
                 </Title>

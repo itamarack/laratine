@@ -10,15 +10,29 @@ import Superscript from '@tiptap/extension-superscript';
 import SubScript from '@tiptap/extension-subscript';
 import { Stack, StackProps, Text } from '@mantine/core';
 import { CSSProperties } from 'react';
+import '@mantine/tiptap/styles.css';
 
 type TextEditorProps = {
   label: string;
   content: string;
+  editable?: boolean;
   width?: CSSProperties['width'];
+  onChange?: (content: string) => void;
+  onFocus?: (content: string) => void;
+  onBlur?: (content: string) => void;
 } & Omit<RichTextEditorProps, 'children' | 'editor'> &
   StackProps;
 
-const TextEditor = ({ content, label, width, ...others }: TextEditorProps) => {
+const TextEditor = ({
+  content,
+  label,
+  editable,
+  onChange,
+  onFocus,
+  onBlur,
+  width,
+  ...others
+}: TextEditorProps) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -30,6 +44,12 @@ const TextEditor = ({ content, label, width, ...others }: TextEditorProps) => {
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
     ],
     content,
+    editable,
+    onUpdate: ({ editor }) => {
+      if (onChange) onChange(editor.getHTML());
+      if (onFocus) onFocus(editor.getHTML());
+      if (onBlur) onBlur(editor.getHTML());
+    },
   });
 
   return (

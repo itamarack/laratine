@@ -170,7 +170,7 @@ const HeaderNav = ({ user, isOpen, onOpen }: HeaderNavProps) => {
         </Menu>
         <Menu shadow="lg" width={200}>
           <Menu.Target>
-            <Tooltip label="Switch color modes">
+            <Tooltip label="Components">
               <ActionIcon variant="light">
                 {colorScheme === 'auto' ? (
                   <IconCircleHalf2 size={ICON_SIZE} />

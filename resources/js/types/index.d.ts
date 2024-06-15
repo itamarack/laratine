@@ -6,6 +6,11 @@ export interface User {
   lastname?: string;
   email?: string;
   image?: string;
+  address?: string;
+  state?: string;
+  city?: string;
+  postcode?: string;
+  biography?: string;
   email_verified_at?: string;
 }
 
