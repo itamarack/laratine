@@ -34,7 +34,7 @@ class HandleInertiaRequests extends Middleware
       ...parent::share($request),
       'auth' => [
         'user' => [
-          ...$request->user()->toArray(),
+          ...($request->user()->toArray()),
           'avatar' => url("storage/{$request->user()->avatar}")
         ],
       ],

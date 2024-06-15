@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 import {
-  Box,
   Avatar,
   Group,
   Text,
@@ -36,7 +35,7 @@ const UserProfileButton = ({
       {...others}
     >
       <Flex align={'center'} gap={8}>
-        <Avatar variant={'filled'} radius={'xl'} size={hasEmail ? 'md' : 'sm'} src={user?.image} />
+        <Avatar variant={'filled'} radius={'xl'} size={hasEmail ? 'md' : 'sm'} src={user?.avatar} />
         <Stack gap={0}>
           <Group gap={4}>
             <Text size={'sm'}>{user?.firstname}</Text>

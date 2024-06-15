@@ -47,10 +47,6 @@ const HeaderNav = ({ user, isOpen, onOpen }: HeaderNavProps) => {
   const tablet_match = useMediaQuery('(max-width: 768px)');
   const mobile_match = useMediaQuery('(max-width: 425px)');
 
-  const onLogOut = () => {
-    router.post(route('logout'));
-  };
-
   const messages = MESSAGES.map(m => (
     <Menu.Item
       key={m.id}
@@ -62,7 +58,7 @@ const HeaderNav = ({ user, isOpen, onOpen }: HeaderNavProps) => {
     >
       <Flex gap="sm" align="center">
         <Avatar
-          src={null}
+          src={user?.avatar}
           alt={`${m.first_name} ${m.last_name}`}
           variant="filled"
           size="sm"
@@ -205,7 +201,7 @@ const HeaderNav = ({ user, isOpen, onOpen }: HeaderNavProps) => {
             <Tooltip label="User Account">
               <ActionIcon radius={'xl'} color={theme.primaryColor}>
                 <Avatar
-                  src={user?.image}
+                  src={user?.avatar}
                   variant="filled"
                   size="md"
                   radius={'xl'}

@@ -20,7 +20,7 @@ import {
   Progress,
   Flex,
 } from '@mantine/core';
-import { FormEventHandler, useEffect, useRef, useState } from 'react';
+import { FormEventHandler, useRef, useState } from 'react';
 import { Head, useForm } from '@inertiajs/react';
 import { notifications } from '@mantine/notifications';
 import {
@@ -51,11 +51,7 @@ const PAPER_PROPS: PaperProps = {
   style: { height: '100%' },
 };
 
-function Profile({
-  auth,
-  mustVerifyEmail,
-  status,
-}: PageProps<{ mustVerifyEmail: boolean; status?: string }>) {
+function Profile({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: string }>) {
   const [avatar, setAvatar] = useState<string | undefined>(auth.user.avatar);
   const [popoverOpened, setPopoverOpened] = useState(false);
   const passwordInput = useRef<HTMLInputElement>(null);
@@ -76,7 +72,7 @@ function Profile({
 
   const userInfo = useForm({
     _method: 'patch',
-    avatar: auth.user.avatar ?? null,
+    avatar: null,
     firstname: auth.user.firstname ?? '',
     lastname: auth.user.lastname ?? '',
     email: auth.user.email ?? '',
@@ -115,7 +111,8 @@ function Profile({
           message: 'Profile has been updated successfully.',
         });
       },
-      onError: () => {
+      onError: error => {
+        console.log(error);
         notifications.show({
           title: 'Failed!',
           message: 'Something went wrong, Try again.',
@@ -175,7 +172,7 @@ function Profile({
                         <Stack justify="center" align="center">
                           <Avatar size={'100%'} variant="filled" radius="sm" src={avatar} />
                           <Grid gutter={12} justify="center">
-                            <Grid.Col span={8}>
+                            <Grid.Col span={avatar ? 8 : 12}>
                               <FileButton onChange={onFileUpload} accept="image/png,image/jpeg">
                                 {props => (
                                   <Button
@@ -188,11 +185,13 @@ function Profile({
                                 )}
                               </FileButton>
                             </Grid.Col>
-                            <Grid.Col span={4}>
-                              <Button onClick={onDeleteAvatar} variant="subtle" color="red">
-                                <IconTrash size={ICON_SIZE} />
-                              </Button>
-                            </Grid.Col>
+                            {avatar && (
+                              <Grid.Col span={4}>
+                                <Button onClick={onDeleteAvatar} variant="subtle" color="red">
+                                  <IconTrash size={ICON_SIZE} />
+                                </Button>
+                              </Grid.Col>
+                            )}
                           </Grid>
                           <Text ta="center" size="xs" c="dimmed">
                             For best results, use an image at least 128px by 128px in .jpg format
@@ -266,15 +265,13 @@ function Profile({
                               onChange={e => userInfo.setData('postcode', e.target.value)}
                             />
                           </SimpleGrid>
+                          <TextEditor
+                            label="Biography"
+                            content={userInfo.data.biography}
+                            editable={!userInfo.processing}
+                            onChange={(content: any) => userInfo.setData('biography', content)}
+                          />
                         </Stack>
-                      </Grid.Col>
-                      <Grid.Col>
-                        <TextEditor
-                          label="Biography"
-                          content={userInfo.data.biography}
-                          editable={!userInfo.processing}
-                          onChange={(content: any) => userInfo.setData('biography', content)}
-                        />
                       </Grid.Col>
                     </Grid>
                     <Button
@@ -298,6 +295,7 @@ function Profile({
                         Account Security
                       </Text>
                       <Stack>
+                        <Text size={'sm'}>Change password</Text>
                         <PasswordInput
                           withAsterisk
                           label="Current Password"
@@ -386,7 +384,9 @@ function PasswordRequirement({ meets, label }: { meets: boolean; label: string }
       ) : (
         <IconX style={{ width: rem(14), height: rem(14) }} />
       )}{' '}
-      <Box ml={10}>{label}</Box>
+      <Text component="span" ml={10}>
+        {label}
+      </Text>
     </Text>
   );
 }

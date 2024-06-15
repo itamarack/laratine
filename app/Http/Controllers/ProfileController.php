@@ -18,14 +18,14 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
-        return Inertia::render('Profile/Profile', [
-            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
-            'status' => session('status'),
-        ]);
+      return Inertia::render('Profile/Profile', [
+        'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+        'status' => session('status'),
+      ]);
     }
 
     /**
-     * Update the user's profile information.  ProfileUpdateRequest
+     * Update the user's profile information.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
@@ -35,7 +35,7 @@ class ProfileController extends Controller
         $request->user()->email_verified_at = null;
       }
 
-      if ($request->file('avatar')->isValid()) {
+      if (filled($request->file('avatar'))) {
         $avatar = $request->file('avatar');
         $avatarPath = $avatar->store('uploads', 'public');
         $request->user()->avatar = $avatarPath;
@@ -51,19 +51,19 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        $request->validate([
-            'password' => ['required', 'current_password'],
-        ]);
+      $request->validate([
+        'password' => ['required', 'current_password'],
+      ]);
 
-        $user = $request->user();
+      $user = $request->user();
 
-        Auth::logout();
+      Auth::logout();
 
-        $user->delete();
+      $user->delete();
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+      $request->session()->invalidate();
+      $request->session()->regenerateToken();
 
-        return Redirect::to('/');
+      return Redirect::to('/');
     }
 }
