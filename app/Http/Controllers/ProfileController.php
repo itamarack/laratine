@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -35,7 +36,7 @@ class ProfileController extends Controller
         $request->user()->email_verified_at = null;
       }
 
-      if (filled($request->file('avatar'))) {
+      if ($request->hasFile('avatar')) {
         $avatar = $request->file('avatar');
         $avatarPath = $avatar->store('uploads', 'public');
         $request->user()->avatar = $avatarPath;

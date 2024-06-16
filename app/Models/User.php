@@ -44,11 +44,14 @@ class User extends Authenticatable
     /**
      * Get the full URL of the user's avatar.
      *
-     * @param string $value
+     * @param string $avatar_url
      * @return string
      */
-    public function getAvatarAttribute($value)
+    public function getAvatarAttribute($avatar_url)
     {
-        return asset('storage/' . $value);
+      if (isset($avatar_url))
+        return asset('storage/' . $avatar_url);
+
+      return null;
     }
 }

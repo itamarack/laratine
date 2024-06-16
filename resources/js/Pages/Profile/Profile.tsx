@@ -57,8 +57,6 @@ function Profile({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: string
   const passwordInput = useRef<HTMLInputElement>(null);
   const currentPasswordInput = useRef<HTMLInputElement>(null);
 
-  console.log(auth);
-
   const onFileUpload = (file: any) => {
     userInfo.setData('avatar', file);
     const objectURL = URL.createObjectURL(file);
@@ -74,7 +72,7 @@ function Profile({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: string
 
   const userInfo = useForm({
     _method: 'patch',
-    avatar: null,
+    avatar: avatar ?? null,
     firstname: auth.user.firstname ?? '',
     lastname: auth.user.lastname ?? '',
     email: auth.user.email ?? '',
@@ -114,7 +112,6 @@ function Profile({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: string
         });
       },
       onError: error => {
-        console.log(error);
         notifications.show({
           title: 'Failed!',
           message: 'Something went wrong, Try again.',
