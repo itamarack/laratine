@@ -57,12 +57,16 @@ function Profile({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: string
   const passwordInput = useRef<HTMLInputElement>(null);
   const currentPasswordInput = useRef<HTMLInputElement>(null);
 
-  const onFileUpload = (file: any) => {
-    userInfo.setData('avatar', file);
-    const objectURL = URL.createObjectURL(file);
-    setAvatar(() => objectURL);
+  const onFileUpload = (file: any): void => {
+    const reader = new FileReader();
 
-    return () => URL.revokeObjectURL(objectURL);
+    reader.onload = () => {
+      const base64URL = reader.result as string;
+      userInfo.setData('avatar', base64URL);
+      setAvatar(() => base64URL);
+    };
+
+    reader.readAsDataURL(file);
   };
 
   const onDeleteAvatar = () => {
@@ -71,7 +75,6 @@ function Profile({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: string
   };
 
   const userInfo = useForm({
-    _method: 'patch',
     avatar: avatar ?? null,
     firstname: auth.user.firstname ?? '',
     lastname: auth.user.lastname ?? '',
@@ -103,7 +106,7 @@ function Profile({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: string
   const onSubmitAccount: FormEventHandler = event => {
     event.preventDefault();
 
-    userInfo.post(route('profile.update'), {
+    userInfo.patch(route('profile.update'), {
       preserveScroll: true,
       onSuccess: () => {
         notifications.show({
@@ -112,6 +115,7 @@ function Profile({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: string
         });
       },
       onError: error => {
+        console.log(error);
         notifications.show({
           title: 'Failed!',
           message: 'Something went wrong, Try again.',
@@ -170,6 +174,11 @@ function Profile({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: string
                       <Grid.Col span={{ base: 12, md: 4 }}>
                         <Stack justify="center" align="center">
                           <Avatar size={'100%'} variant="filled" radius="sm" src={avatar} />
+                          {userInfo.errors.avatar && (
+                            <Text size="xs" c="red" ta="center">
+                              {userInfo.errors.avatar}
+                            </Text>
+                          )}
                           <Grid gutter={12} justify="center">
                             <Grid.Col span={avatar ? 8 : 12}>
                               <FileButton onChange={onFileUpload} accept="image/png,image/jpeg">
