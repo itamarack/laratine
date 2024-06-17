@@ -3,56 +3,38 @@
 import {
   ActionIcon,
   Breadcrumbs,
-  BreadcrumbsProps,
   Button,
   Divider,
   Flex,
   Paper,
   PaperProps,
-  rem,
   Stack,
   Text,
   Title,
   useMantineTheme,
 } from '@mantine/core';
+import { ReactNode } from 'react';
 import { IconMoonStars, IconPlus, IconRefresh, IconSunHigh } from '@tabler/icons-react';
 import { FilterDateMenu, Surface } from '@/Components';
-import { useColorScheme } from '@mantine/hooks';
+import { User } from '@/types';
 
 type PageHeaderProps = {
   title: string;
-  withActions?: boolean;
+  user: User;
+  hasGreetings?: boolean;
+  withActions?: ReactNode;
   breadcrumbItems?: any;
-  invoiceAction?: boolean;
 } & PaperProps;
 
 const PageHeader = (props: PageHeaderProps) => {
-  const { withActions, breadcrumbItems, title, invoiceAction, ...others } = props;
+  const { hasGreetings, withActions, breadcrumbItems, title, ...others } = props;
   const theme = useMantineTheme();
-  const colorScheme = useColorScheme();
   const getHours = new Date().getHours();
-
-  const BREADCRUMBS_PROPS: Omit<BreadcrumbsProps, 'children'> = {
-    style: {
-      a: {
-        padding: rem(8),
-        borderRadius: theme.radius.sm,
-        fontWeight: 500,
-        color: colorScheme === 'dark' ? theme.white : theme.black,
-
-        '&:hover': {
-          transition: 'all ease 150ms',
-          backgroundColor: colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[2],
-          textDecoration: 'none',
-        },
-      },
-    },
-  };
 
   return (
     <>
       <Surface shadow={'sm'} p={16} radius={'md'} component={Paper} {...others}>
-        {withActions ? (
+        {hasGreetings ? (
           <Flex
             justify="space-between"
             direction={{ base: 'column', sm: 'row' }}
@@ -74,7 +56,7 @@ const PageHeader = (props: PageHeaderProps) => {
                       ? 'Good Afternoon!'
                       : 'Good Evening!'}
                 </Title>
-                <Text>How are you today, Kelvin!</Text>
+                <Text>How are you today, {props.user.firstname}</Text>
               </Stack>
             </Flex>
             <Flex align="center" gap="sm">
@@ -84,7 +66,7 @@ const PageHeader = (props: PageHeaderProps) => {
               <FilterDateMenu />
             </Flex>
           </Flex>
-        ) : invoiceAction ? (
+        ) : withActions ? (
           <Flex
             align="center"
             justify="space-between"
@@ -93,14 +75,14 @@ const PageHeader = (props: PageHeaderProps) => {
           >
             <Stack>
               <Title order={3}>{title}</Title>
-              <Breadcrumbs {...BREADCRUMBS_PROPS}>{breadcrumbItems}</Breadcrumbs>
+              <Breadcrumbs separator="→">{breadcrumbItems}</Breadcrumbs>
             </Stack>
-            <Button leftSection={<IconPlus size={18} />}>New Invoice</Button>
+            {withActions}
           </Flex>
         ) : (
           <Stack gap="sm">
             <Title order={3}>{title}</Title>
-            <Breadcrumbs {...BREADCRUMBS_PROPS}>{breadcrumbItems}</Breadcrumbs>
+            <Breadcrumbs separator="→">{breadcrumbItems}</Breadcrumbs>
           </Stack>
         )}
       </Surface>

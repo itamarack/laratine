@@ -1,0 +1,26 @@
+[
+  {
+    "id": "8e17249a-c8eb-495b-b22a-874c1a86fc74",
+    "firstname": "Selina",
+    "lastname": "Strange",
+    "email": "kscroggs0@amazonaws.com",
+    "created_at": "29/01/2024",
+    "updated_at": "29/01/2024"
+  },
+  {
+    "id": "ebb1f433-10ef-4107-9b18-648e4b73d997",
+    "firstname": "Arv",
+    "lastname": "Konke",
+    "email": "smatthisson1@harvard.edu",
+    "created_at": "29/01/2024",
+    "updated_at": "29/01/2024"
+  },
+  {
+    "id": "e061359a-de46-472b-ad83-d7f7389a6091",
+    "firstname": "Aurore",
+    "lastname": "Springate",
+    "email": "cfarrears2@wikispaces.com",
+    "created_at": "29/01/2024",
+    "updated_at": "29/01/2024"
+  }
+]

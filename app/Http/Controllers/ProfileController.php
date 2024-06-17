@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,9 +17,9 @@ class ProfileController extends Controller
   /**
    * Display the user's profile form.
    */
-  public function edit(Request $request): Response
+  public function profileIndex(Request $request): Response
   {
-    return Inertia::render('Profile/Profile', [
+    return Inertia::render('Account/Profile/Profile', [
       'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
       'status' => session('status'),
     ]);
@@ -27,7 +28,7 @@ class ProfileController extends Controller
   /**
    * Update the user's profile information.
    */
-  public function update(ProfileUpdateRequest $request): RedirectResponse
+  public function profileUpdate(ProfileUpdateRequest $request): RedirectResponse
   {
     $request->user()->fill($request->validated());
 
@@ -37,13 +38,13 @@ class ProfileController extends Controller
 
     $request->user()->save();
 
-    return Redirect::route('profile.edit');
+    return Redirect::route('profile.index');
   }
 
   /**
    * Delete the user's account.
    */
-  public function destroy(Request $request): RedirectResponse
+  public function profileDestroy(Request $request): RedirectResponse
   {
     $request->validate([
       'password' => ['required', 'current_password'],
@@ -59,5 +60,19 @@ class ProfileController extends Controller
     $request->session()->regenerateToken();
 
     return Redirect::to('/');
+  }
+
+  public function usersIndex (Request $request): Response
+  {
+    $users = User::all()->toArray();
+
+    return Inertia::render('Account/Users/ListUsers', [
+      'users' => $users
+    ]);
+  }
+
+  public function userCreate (Request $request): Response
+  {
+    return Inertia::render('Account/Users/CreateUser', []);
   }
 }

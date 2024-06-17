@@ -21,6 +21,8 @@ import {
 import sortBy from 'lodash/sortBy';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconCloudDownload, IconEye, IconSearch } from '@tabler/icons-react';
+import '@mantine/core/styles.layer.css';
+import 'mantine-datatable/styles.layer.css';
 import { ErrorAlert } from '@/Components';
 import { Invoices, InvoiceStatus } from '@/types';
 

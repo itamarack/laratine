@@ -18,7 +18,6 @@ import {
   rem,
   Popover,
   Progress,
-  Flex,
 } from '@mantine/core';
 import { FormEventHandler, useRef, useState } from 'react';
 import { Head, useForm } from '@inertiajs/react';
@@ -157,11 +156,11 @@ function Profile({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: string
 
   return (
     <AuthenticatedLayout user={auth.user}>
-      <Head title="Profile | Settings" />
+      <Head title="Profile | Account" />
 
       <Container fluid>
         <Stack gap="lg">
-          <PageHeader title="Profile" breadcrumbItems={items} />
+          <PageHeader user={auth.user} title="Profile" breadcrumbItems={items} />
           <Grid>
             <Grid.Col span={{ base: 12, md: 8 }}>
               <Surface component={Paper} {...PAPER_PROPS}>

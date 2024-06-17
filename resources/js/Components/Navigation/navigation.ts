@@ -19,7 +19,8 @@ import {
   IconUserShield,
   IconMessage,
   IconDashboard,
-  IconSettings
+  IconSettings,
+  IconUsersGroup
 } from '@tabler/icons-react';
 import { PATH_ABOUT, PATH_APPS, PATH_AUTH, PATH_DOCS, PATH_PAGES } from '@/routes';
 
@@ -32,9 +33,10 @@ const navigationItems = [
     ]
   },
   {
-    title: 'My Account',
+    title: 'Account',
     links: [
       { label: 'Profile', icon: IconUserCircle, link: '/profile' },
+      { label: 'Users', icon: IconUsersGroup, link: '/users' },
       { label: 'Settings', icon: IconSettings, link: '/settings' },
     ]
   },

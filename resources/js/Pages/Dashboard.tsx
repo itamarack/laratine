@@ -29,7 +29,7 @@ export default function Dashboard({ auth }: PageProps) {
 
       <Container fluid>
         <Stack gap="lg">
-          <PageHeader title="Welcome!" withActions={true} />
+          <PageHeader user={auth.user} title="Welcome!" hasGreetings={true} />
           <StatsGrid
             data={StatsGridData.data}
             loading={false}

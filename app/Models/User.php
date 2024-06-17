@@ -40,4 +40,16 @@ class User extends Authenticatable
       'password' => 'hashed',
     ];
   }
+
+  /**
+   * Get the attributes that should be appended.
+   *
+   * @return array<string, string>
+   */
+  protected $appends = ['fullname'];
+
+  public function getFullnameAttribute()
+  {
+    return ucwords("{$this->firstname} {$this->lastname}");
+  }
 }

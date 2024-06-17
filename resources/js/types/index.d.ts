@@ -1,7 +1,8 @@
 import { Config } from 'ziggy-js';
 
 export interface User {
-  id?: number;
+  id?: number | string;
+  fullname?: string;
   firstname?: string;
   lastname?: string;
   email?: string;
@@ -13,6 +14,10 @@ export interface User {
   postcode?: string;
   biography?: string;
   email_verified_at?: string;
+  created_at?: string;
+  updated_at?: string;
+  password?: string;
+  password_confirmation?: string;
 }
 
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
