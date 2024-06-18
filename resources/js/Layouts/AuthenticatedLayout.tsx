@@ -1,13 +1,32 @@
 'use client';
 
-import { AppShell, Container, Group, UnstyledButton, rem, useMantineTheme } from '@mantine/core';
+import {
+  AppShell,
+  Container,
+  UnstyledButton,
+  ActionIcon,
+  Avatar,
+  Burger,
+  Group,
+  Menu,
+  rem,
+  TextInput,
+  Tooltip,
+  useMantineColorScheme,
+  useMantineTheme,
+} from '@mantine/core';
+import {
+  IconCircleHalf2,
+  IconMoonStars,
+  IconPower,
+  IconSearch,
+  IconSunHigh,
+} from '@tabler/icons-react';
+import { router, Link } from '@inertiajs/react';
 import { PropsWithChildren, ReactNode } from 'react';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
-import AppMain from '@/Components/AppMain';
-import Navigation from '@/Components/Navigation';
-import HeaderNav from '@/Components/HeaderNav';
+import { LanguagePicker, UserProfileButton, AppMain, Navigation } from '@/Components';
 import { User } from '@/types';
-import { Link } from '@inertiajs/react';
 
 interface AuthenticatedProps {
   user: User;
@@ -20,6 +39,7 @@ function AuthenticatedLayout(props: PropsWithChildren<AuthenticatedProps>) {
   const laptop_match = useMediaQuery('(min-width: 769px)');
   const tablet_match = useMediaQuery('(max-width: 768px)');
   const mobile_match = useMediaQuery('(max-width: 425px)');
+  const { setColorScheme, colorScheme } = useMantineColorScheme();
   const [isOpen, { toggle: onOpen }] = useDisclosure(laptop_match);
 
   return (
@@ -42,7 +62,90 @@ function AuthenticatedLayout(props: PropsWithChildren<AuthenticatedProps>) {
         }}
       >
         <Container fluid py="sm" px="lg">
-          <HeaderNav user={props.user} isOpen={isOpen} onOpen={onOpen} />
+          <Group justify="space-between">
+            <Group gap={0}>
+              <Tooltip label="Toggle side navigation">
+                <Burger opened={isOpen} onClick={onOpen} size="sm" color={theme.primaryColor} />
+              </Tooltip>
+              {!mobile_match && (
+                <TextInput
+                  placeholder="search"
+                  rightSection={<IconSearch size={20} />}
+                  ml="md"
+                  style={{ width: tablet_match ? 'auto' : rem(400) }}
+                />
+              )}
+            </Group>
+            <Group>
+              {mobile_match && (
+                <ActionIcon>
+                  <IconSearch size={20} />
+                </ActionIcon>
+              )}
+              <LanguagePicker type="collapsed" />
+              <Menu shadow="lg" width={200}>
+                <Menu.Target>
+                  <Tooltip label="Switch color modes">
+                    <ActionIcon variant="light">
+                      {colorScheme === 'auto' ? (
+                        <IconCircleHalf2 size={20} />
+                      ) : colorScheme === 'dark' ? (
+                        <IconMoonStars size={20} />
+                      ) : (
+                        <IconSunHigh size={20} />
+                      )}
+                    </ActionIcon>
+                  </Tooltip>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  <Menu.Label tt="uppercase" ta="center" fw={600}>
+                    Select color modes
+                  </Menu.Label>
+                  <Menu.Item
+                    leftSection={<IconSunHigh size={16} />}
+                    onClick={() => setColorScheme('light')}
+                  >
+                    Light
+                  </Menu.Item>
+                  <Menu.Item
+                    leftSection={<IconMoonStars size={16} />}
+                    onClick={() => setColorScheme('dark')}
+                  >
+                    Dark
+                  </Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+              <Menu shadow="lg" width={200}>
+                <Menu.Target>
+                  <Tooltip label="User Account">
+                    <ActionIcon radius={'xl'} color={theme.primaryColor}>
+                      <Avatar
+                        src={props.user.avatar}
+                        variant="filled"
+                        size="md"
+                        radius={'xl'}
+                        color={theme.primaryColor}
+                      />
+                    </ActionIcon>
+                  </Tooltip>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  <Menu.Label tt="uppercase" ta="center" fw={600}>
+                    User Account
+                  </Menu.Label>
+                  <Menu.Item>
+                    <UserProfileButton user={props.user} />
+                  </Menu.Item>
+                  <Menu.Item
+                    leftSection={<IconPower size={20} />}
+                    onClick={() => router.post(route('logout'))}
+                  >
+                    Logout
+                  </Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+            </Group>
+          </Group>
         </Container>
       </AppShell.Header>
       <AppShell.Navbar>
