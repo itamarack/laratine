@@ -11,11 +11,9 @@ import {
   Stack,
   Text,
 } from '@mantine/core';
-import { Head, Link, router } from '@inertiajs/react';
-import { PATH_DASHBOARD } from '@/routes';
+import { Head, Link } from '@inertiajs/react';
 import { PageHeader } from '@/Components';
 import Datatable from './Datatable';
-import UsersData from '@/mocks/users.json';
 import { IconDotsVertical, IconPlus } from '@tabler/icons-react';
 import { AuthenticatedLayout } from '@/Layouts';
 import { PageProps, User } from '@/types';
@@ -25,10 +23,10 @@ type UsersProps = {
 } & PageProps;
 
 const items = [
-  { title: 'Dashboard', href: PATH_DASHBOARD.default },
+  { title: 'Dashboard', href: '/dashboard' },
   { title: 'Users', href: '#' },
 ].map((item, index) => (
-  <Anchor href={item.href} key={index}>
+  <Anchor component={Link} href={item.href} key={index}>
     {item.title}
   </Anchor>
 ));
@@ -41,6 +39,7 @@ const PAPER_PROPS: PaperProps = {
 
 function ListUsers({ auth, users }: UsersProps) {
   console.log(users);
+
   return (
     <AuthenticatedLayout user={auth.user}>
       <Head title="Users | Account" />
@@ -66,7 +65,7 @@ function ListUsers({ auth, users }: UsersProps) {
                 <IconDotsVertical size={18} />
               </ActionIcon>
             </Group>
-            <Datatable data={UsersData} loading={false} />
+            <Datatable data={users} loading={false} />
           </Paper>
         </Stack>
       </Container>

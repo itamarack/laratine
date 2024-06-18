@@ -14,6 +14,7 @@ import {
   UnstyledButton,
   useMantineTheme,
 } from '@mantine/core';
+import { format } from 'date-fns';
 import sortBy from 'lodash/sortBy';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconTrash, IconEdit, IconSearch } from '@tabler/icons-react';
@@ -21,6 +22,7 @@ import '@mantine/core/styles.layer.css';
 import 'mantine-datatable/styles.layer.css';
 import { ErrorAlert } from '@/Components';
 import { User } from '@/types';
+import { Link, router } from '@inertiajs/react';
 
 type DatatableProps = {
   data: User[];
@@ -28,7 +30,7 @@ type DatatableProps = {
   loading?: boolean;
 };
 
-const Datatable = ({ data, error, loading }: DatatableProps) => {
+export default function Datatable({ data, error, loading }: DatatableProps) {
   const theme = useMantineTheme();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
@@ -96,19 +98,29 @@ const Datatable = ({ data, error, loading }: DatatableProps) => {
     {
       accessor: 'created_at',
       sortable: true,
-      render: ({ created_at }: User) => <Text fz="sm">{created_at}</Text>,
+      render: ({ created_at }: User) => (
+        <Text fz="sm">{format(new Date(created_at), 'MMM dd, yyyy')}</Text>
+      ),
     },
     {
       accessor: 'updated_at',
       sortable: true,
-      render: ({ updated_at }: User) => <Text fz="sm">{updated_at}</Text>,
+      render: ({ updated_at }: User) => (
+        <Text fz="sm">{format(new Date(updated_at), 'MMM dd, yyyy')}</Text>
+      ),
     },
     {
       accessor: '',
       title: 'Actions',
-      render: (item: any) => (
+      render: (user: any) => (
         <Group gap="sm">
-          <Button variant="filled" size="xs" leftSection={<IconEdit size={16} />}>
+          <Button
+            component={Link}
+            href={`/users/${user.id}/edit`}
+            variant="filled"
+            size="xs"
+            leftSection={<IconEdit size={16} />}
+          >
             Edit
           </Button>
           <Button variant="filled" size="xs" color="red" leftSection={<IconTrash size={16} />}>
@@ -176,6 +188,4 @@ const Datatable = ({ data, error, loading }: DatatableProps) => {
       fetching={loading}
     />
   );
-};
-
-export default Datatable;
+}

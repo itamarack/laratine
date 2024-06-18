@@ -14,8 +14,8 @@ export interface User {
   postcode?: string;
   biography?: string;
   email_verified_at?: string;
-  created_at?: string;
-  updated_at?: string;
+  created_at: string;
+  updated_at: string;
   password?: string;
   password_confirmation?: string;
 }

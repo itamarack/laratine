@@ -25,6 +25,9 @@ Route::middleware('auth')->group(function () {
 
   Route::get('/users', [ProfileController::class, 'usersIndex'])->name('users.index');
   Route::get('/users/create', [ProfileController::class, 'userCreate'])->name('user.create');
+  Route::post('/users/create', [ProfileController::class, 'userStore'])->name('user.store');
+  Route::get('/users/{user}/edit/', [ProfileController::class, 'userShow'])->name('user.show');
+  Route::patch('/users/{user}/edit/', [ProfileController::class, 'userUpdate'])->name('user.update');
 });
 
 require __DIR__.'/auth.php';

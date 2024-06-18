@@ -19,7 +19,7 @@ import {
   Progress,
 } from '@mantine/core';
 import { FormEventHandler, useRef, useState } from 'react';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { notifications } from '@mantine/notifications';
 import {
   IconCheck,
@@ -37,7 +37,7 @@ const items = [
   { title: 'Users', href: '/users' },
   { title: 'Create', href: '#' },
 ].map((item, index) => (
-  <Anchor href={item.href} key={index}>
+  <Anchor component={Link} href={item.href} key={index}>
     {item.title}
   </Anchor>
 ));
@@ -50,11 +50,10 @@ const PAPER_PROPS: PaperProps = {
   style: { height: '100%' },
 };
 
-function CreateUser({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: string }>) {
+export default function Create({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: string }>) {
   const [avatar, setAvatar] = useState<string>('');
   const [popoverOpened, setPopoverOpened] = useState(false);
   const passwordInput = useRef<HTMLInputElement>(null);
-  const currentPasswordInput = useRef<HTMLInputElement>(null);
 
   const onFileUpload = (file: any): void => {
     const reader = new FileReader();
@@ -87,27 +86,24 @@ function CreateUser({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: str
     password_confirmation: '',
   });
 
-  const userSecurity = useForm({
-    password: '',
-    current_password: '',
-    password_confirmation: '',
-  });
-
   const checks = requirements.map((requirement, index) => (
     <PasswordRequirement
       key={index}
       label={requirement.label}
-      meets={requirement.re.test(userSecurity.data.password)}
+      meets={requirement.re.test(userInfo.data.password)}
     />
   ));
 
-  const strength = getStrength(userSecurity.data.password);
+  const strength = getStrength(userInfo.data.password);
   const color = strength === 100 ? 'teal' : strength > 50 ? 'yellow' : 'red';
 
   const onSubmitAccount: FormEventHandler = event => {
     event.preventDefault();
 
-    userInfo.patch(route('profile.update'), {
+    console.log(userInfo.data);
+    // return;
+
+    userInfo.post(route('user.store'), {
       preserveScroll: true,
       onSuccess: () => {
         notifications.show({
@@ -117,37 +113,6 @@ function CreateUser({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: str
       },
       onError: error => {
         console.log(error);
-        notifications.show({
-          title: 'Failed!',
-          message: 'Something went wrong, Try again.',
-        });
-      },
-    });
-  };
-
-  const onSubmitSecurity: FormEventHandler = event => {
-    event.preventDefault();
-
-    userSecurity.put(route('password.update'), {
-      preserveScroll: true,
-      onSuccess: () => {
-        userSecurity.reset();
-        notifications.show({
-          title: 'Account updated!',
-          message: 'Profile has been updated successfully.',
-        });
-      },
-      onError: errors => {
-        if (errors.password) {
-          userSecurity.reset('password', 'password_confirmation');
-          passwordInput.current?.focus();
-        }
-
-        if (errors.current_password) {
-          userSecurity.reset('current_password');
-          currentPasswordInput.current?.focus();
-        }
-
         notifications.show({
           title: 'Failed!',
           message: 'Something went wrong, Try again.',
@@ -246,6 +211,7 @@ function CreateUser({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: str
                         />
                       </SimpleGrid>
                       <TextInput
+                        withAsterisk
                         type="address"
                         label="Address"
                         placeholder="Address"
@@ -256,6 +222,7 @@ function CreateUser({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: str
                       />
                       <SimpleGrid cols={{ base: 1, md: 3 }}>
                         <TextInput
+                          withAsterisk
                           label="City"
                           placeholder="City"
                           value={userInfo.data.city}
@@ -264,6 +231,7 @@ function CreateUser({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: str
                           onChange={e => userInfo.setData('city', e.target.value)}
                         />
                         <TextInput
+                          withAsterisk
                           label="State"
                           placeholder="State"
                           value={userInfo.data.state}
@@ -272,6 +240,7 @@ function CreateUser({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: str
                           onChange={e => userInfo.setData('state', e.target.value)}
                         />
                         <TextInput
+                          withAsterisk
                           label="Postcode"
                           placeholder="Postcode"
                           value={userInfo.data.postcode}
@@ -380,5 +349,3 @@ function getStrength(password: string) {
 
   return Math.max(100 - (100 / (requirements.length + 1)) * multiplier, 10);
 }
-
-export default CreateUser;

@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Http\Requests\Users\UsersCreateRequest;
+use App\Http\Requests\Users\UsersUpdateRequest;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -66,13 +70,52 @@ class ProfileController extends Controller
   {
     $users = User::all()->toArray();
 
-    return Inertia::render('Account/Users/ListUsers', [
+    return Inertia::render('Account/Users/List', [
       'users' => $users
     ]);
   }
 
   public function userCreate (Request $request): Response
   {
-    return Inertia::render('Account/Users/CreateUser', []);
+    return Inertia::render('Account/Users/Create', []);
+  }
+
+  public function userStore (UsersCreateRequest $request): Response
+  {
+    $request->user()->fill($request->validated());
+
+    $user = User::create([
+      'firstname' => $request->firstname,
+      'lastname' => $request->lastname,
+      'email' => $request->email,
+      'avatar' => $request->avatar,
+      'address' => $request->address,
+      'city' => $request->city,
+      'state' => $request->state,
+      'postcode' => $request->postcode,
+      'biography' => $request->biography,
+      'password' => Hash::make($request->password),
+    ]);
+
+    event(new Registered($user));
+
+    return Inertia::render('Account/Users/List', []);
+  }
+
+  public function userShow(User $user): Response
+  {
+    return Inertia::render('Account/Users/Edit', ['user' => $user]);
+  }
+
+  public function userUpdate(UsersUpdateRequest $request, User $user)
+  {
+    $validated = $request->validated();
+
+    if (blank($validated['password'])) unset($validated['password']);
+    else $validated['password'] = Hash::make($validated['password']);
+
+    $user->update($validated);
+
+    return Redirect::route('user.update', ['user' => $user]);
   }
 }
