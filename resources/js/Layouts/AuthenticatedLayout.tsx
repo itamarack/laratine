@@ -1,13 +1,13 @@
 'use client';
 
-import { AppShell, Container, rem, useMantineTheme } from '@mantine/core';
+import { AppShell, Container, Group, UnstyledButton, rem, useMantineTheme } from '@mantine/core';
 import { PropsWithChildren, ReactNode } from 'react';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import AppMain from '@/Components/AppMain';
 import Navigation from '@/Components/Navigation';
 import HeaderNav from '@/Components/HeaderNav';
-import FooterNav from '@/Components/FooterNav';
 import { User } from '@/types';
+import { Link } from '@inertiajs/react';
 
 interface AuthenticatedProps {
   user: User;
@@ -53,7 +53,11 @@ function AuthenticatedLayout(props: PropsWithChildren<AuthenticatedProps>) {
       </AppShell.Main>
       <AppShell.Footer p="md">
         <Container fluid px="lg">
-          <FooterNav />
+          <Group justify="space-between">
+            <UnstyledButton c="dimmed" fz="sm" component={Link} href={'/'} target="_blank">
+              &copy;&nbsp;{new Date().getFullYear()}&nbsp;Laratine
+            </UnstyledButton>
+          </Group>
         </Container>
       </AppShell.Footer>
     </AppShell>
