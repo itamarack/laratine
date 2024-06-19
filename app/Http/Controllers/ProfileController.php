@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class ProfileController extends Controller
 {
@@ -69,11 +70,15 @@ class ProfileController extends Controller
 
   public function usersIndex (Request $request): Response
   {
-    $users = User::whereNot('id', $request->user()->id);
-    $paginate = $users->paginate($request->query('perPage'));
-    $payload = $paginate->withQueryString();
+    $allowedSorts = ['firstname', 'created_at', 'updated_at'];
 
-    return Inertia::render('Account/Users/List', ['payload' => $payload]);
+    $users = QueryBuilder::for(User::class)
+      ->allowedSorts($allowedSorts)
+      ->whereNot('id', $request->user()->id)
+      ->paginate($request->query('per_page'))
+      ->appends($request->query());
+
+    return Inertia::render('Account/Users/List', ['users' => $users]);
   }
 
   public function userCreate (Request $request): Response
