@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useEffect, useMemo, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { DataTable, DataTableProps, DataTableSortStatus } from 'mantine-datatable';
 import {
   Avatar,
@@ -8,6 +8,8 @@ import {
   Button,
   Flex,
   Group,
+  Modal,
+  SimpleGrid,
   Stack,
   Text,
   TextInput,
@@ -15,61 +17,58 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { format } from 'date-fns';
-import sortBy from 'lodash/sortBy';
-import { useDebouncedValue } from '@mantine/hooks';
+import { sortBy, first } from 'lodash';
+import { useDisclosure } from '@mantine/hooks';
 import { IconTrash, IconEdit, IconSearch } from '@tabler/icons-react';
+import { Link, useForm, router } from '@inertiajs/react';
+import { notifications } from '@mantine/notifications';
 import '@mantine/core/styles.layer.css';
 import 'mantine-datatable/styles.layer.css';
 import { ErrorAlert } from '@/Components';
 import { User } from '@/types';
-import { Link, router } from '@inertiajs/react';
 
 type DatatableProps = {
-  data: User[];
   error?: ReactNode;
-  loading?: boolean;
+  fetching?: boolean;
+  payload: any;
+  onQuery: (query: any) => void;
 };
 
-export default function Datatable({ data, error, loading }: DatatableProps) {
+export default function Datatable({ payload, error, fetching, onQuery }: DatatableProps) {
+  console.log(payload);
+
   const theme = useMantineTheme();
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
   const [selectedRecords, setSelectedRecords] = useState<User[]>([]);
-  const [records, setRecords] = useState<User[]>(data.slice(0, pageSize));
+  const [user, setUser] = useState<User>();
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus<User>>({
     columnAccessor: 'user',
     direction: 'asc',
   });
   const [query, setQuery] = useState('');
-  const [debouncedQuery] = useDebouncedValue(query, 200);
-  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
-  const statuses = useMemo(() => {
-    const statuses = new Set(data.map(e => e.email_verified_at));
-    return [...statuses];
-  }, [data]);
+  const [isOpenDelete, { open: onOpenDelete, close: onCloseDelete }] = useDisclosure(false);
 
   const columns: DataTableProps<User>['columns'] = [
     {
       accessor: 'user',
       title: 'User',
-      render: ({ firstname = '', lastname = '', email, avatar }: User) => {
+      render: (user: User) => {
         return (
           <Flex component={UnstyledButton} gap="xs" align="center">
             <Avatar
               variant="filled"
               radius="xl"
               size="md"
-              src={avatar}
-              alt={`${firstname} ${lastname}`}
+              src={user.avatar}
+              alt={`${user.firstname} ${user.lastname}`}
               color={theme.primaryColor}
             >
-              {firstname[0]} {lastname[0]}
+              {first(user.firstname)} {first(user.lastname)}
             </Avatar>
             <Stack gap={0}>
               <Text fz="sm" fw={600}>
-                {firstname} {lastname}
+                {user.firstname} {user.lastname}
               </Text>
-              <Text fz="xs">{email}</Text>
+              <Text fz="xs">{user.email}</Text>
             </Stack>
           </Flex>
         );
@@ -89,24 +88,29 @@ export default function Datatable({ data, error, loading }: DatatableProps) {
     },
     {
       accessor: 'Status',
-      render: ({ email_verified_at }: User) => (
-        <Badge color={email_verified_at ? 'green.8' : 'red'} variant="filled" size="sm" radius="sm">
-          {email_verified_at ? 'Verified' : 'Unverified'}
+      render: (user: User) => (
+        <Badge
+          color={user.email_verified_at ? 'green.8' : 'red'}
+          variant="filled"
+          size="sm"
+          radius="sm"
+        >
+          {user.email_verified_at ? 'Verified' : 'Unverified'}
         </Badge>
       ),
     },
     {
       accessor: 'created_at',
       sortable: true,
-      render: ({ created_at }: User) => (
-        <Text fz="sm">{format(new Date(created_at), 'MMM dd, yyyy')}</Text>
+      render: (user: User) => (
+        <Text fz="sm">{format(new Date(user.created_at), 'MMM dd, yyyy')}</Text>
       ),
     },
     {
       accessor: 'updated_at',
       sortable: true,
-      render: ({ updated_at }: User) => (
-        <Text fz="sm">{format(new Date(updated_at), 'MMM dd, yyyy')}</Text>
+      render: (user: User) => (
+        <Text fz="sm">{format(new Date(user.updated_at), 'MMM dd, yyyy')}</Text>
       ),
     },
     {
@@ -123,7 +127,16 @@ export default function Datatable({ data, error, loading }: DatatableProps) {
           >
             Edit
           </Button>
-          <Button variant="filled" size="xs" color="red" leftSection={<IconTrash size={16} />}>
+          <Button
+            onClick={() => {
+              setUser(() => user);
+              onOpenDelete();
+            }}
+            variant="filled"
+            size="xs"
+            color="red"
+            leftSection={<IconTrash size={16} />}
+          >
             Delete
           </Button>
         </Group>
@@ -131,61 +144,66 @@ export default function Datatable({ data, error, loading }: DatatableProps) {
     },
   ];
 
-  useEffect(() => {
-    setPage(1);
-  }, [pageSize]);
+  const userInfo = useForm({});
 
-  useEffect(() => {
-    const from = (page - 1) * pageSize;
-    const to = from + pageSize;
-    const d = sortBy(data, sortStatus.columnAccessor) as User[];
-    const dd = sortStatus.direction === 'desc' ? d.reverse() : d;
-    let filtered = dd.slice(from, to) as User[];
-
-    if (debouncedQuery || selectedStatuses.length) {
-      filtered = data
-        .filter(({ firstname, lastname, email_verified_at }) => {
-          if (
-            (debouncedQuery !== '' &&
-              !firstname?.toLowerCase().includes(debouncedQuery.trim().toLowerCase())) ||
-            !lastname?.toLowerCase().includes(debouncedQuery.trim().toLowerCase())
-          ) {
-            return false;
-          }
-
-          if (selectedStatuses.length && !selectedStatuses.some(s => s === email_verified_at)) {
-            return false;
-          }
-
-          return true;
-        })
-        .slice(from, to);
+  const onDeleteAccount = () => {
+    if (!user) {
+      return notifications.show({
+        title: 'Failed!',
+        message: 'Something went wrong, Try again!',
+      });
     }
 
-    setRecords(filtered);
-  }, [sortStatus, data, page, pageSize, debouncedQuery, selectedStatuses]);
+    userInfo.delete(route('user.destroy', user.id), {
+      onSuccess: () => {
+        onCloseDelete();
+        notifications.show({
+          title: 'Success!',
+          message: 'User permanently deleted successfully',
+        });
+      },
+      onError: error => {
+        notifications.show({ title: 'Failed!', message: error.message });
+      },
+    });
+  };
 
   return error ? (
     <ErrorAlert title="Error loading users" message={error.toString()} />
   ) : (
-    <DataTable
-      minHeight={200}
-      verticalSpacing="xs"
-      striped
-      highlightOnHover
-      columns={columns}
-      records={records}
-      selectedRecords={selectedRecords}
-      onSelectedRecordsChange={setSelectedRecords}
-      totalRecords={debouncedQuery || selectedStatuses.length > 0 ? records.length : data.length}
-      recordsPerPage={pageSize}
-      page={page}
-      onPageChange={p => setPage(p)}
-      recordsPerPageOptions={[5, 10, 20]}
-      onRecordsPerPageChange={setPageSize}
-      sortStatus={sortStatus}
-      onSortStatusChange={setSortStatus}
-      fetching={loading}
-    />
+    <>
+      <Modal opened={isOpenDelete} onClose={onCloseDelete} title="Delete Account" centered>
+        <Stack>
+          <Text fw={600}>Are You sure you want to delete this user?</Text>
+          <SimpleGrid cols={{ base: 1, sm: 2 }}>
+            <Button loading={userInfo.processing} onClick={onDeleteAccount} variant="filled">
+              Delete
+            </Button>
+            <Button disabled={userInfo.processing} onClick={onCloseDelete} variant="outline">
+              Cancel
+            </Button>
+          </SimpleGrid>
+        </Stack>
+      </Modal>
+      <DataTable
+        minHeight={200}
+        verticalSpacing="xs"
+        striped
+        highlightOnHover
+        columns={columns}
+        records={payload.data}
+        selectedRecords={selectedRecords}
+        onSelectedRecordsChange={setSelectedRecords}
+        totalRecords={payload.total}
+        recordsPerPage={payload.per_page}
+        page={payload.current_page}
+        onPageChange={e => {}}
+        recordsPerPageOptions={[1, 5, 10, 20, 50]}
+        onRecordsPerPageChange={(perPage: number) => onQuery({ perPage })}
+        sortStatus={sortStatus}
+        onSortStatusChange={setSortStatus}
+        fetching={fetching}
+      />
+    </>
   );
 }

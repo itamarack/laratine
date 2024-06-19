@@ -11,11 +11,12 @@ import {
   Stack,
   Text,
 } from '@mantine/core';
-import { Head, Link } from '@inertiajs/react';
-import { PageHeader } from '@/Components';
-import Datatable from './Datatable';
+import { useState } from 'react';
 import { IconDotsVertical, IconPlus } from '@tabler/icons-react';
+import { Head, Link, router } from '@inertiajs/react';
+import { PageHeader } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
+import Datatable from './Datatable';
 import { PageProps, User } from '@/types';
 
 type UsersProps = {
@@ -37,8 +38,13 @@ const PAPER_PROPS: PaperProps = {
   radius: 'md',
 };
 
-function ListUsers({ auth, users }: UsersProps) {
-  console.log(users);
+export default function List({ auth, payload }: UsersProps) {
+  const [fetching, setFetching] = useState<boolean>(false);
+
+  const onQuery = (query: { string: string }) => {
+    setFetching(() => true);
+    router.get(route('users.index'), query);
+  };
 
   return (
     <AuthenticatedLayout user={auth.user}>
@@ -65,12 +71,10 @@ function ListUsers({ auth, users }: UsersProps) {
                 <IconDotsVertical size={18} />
               </ActionIcon>
             </Group>
-            <Datatable data={users} loading={false} />
+            <Datatable onQuery={onQuery} payload={payload} fetching={fetching} />
           </Paper>
         </Stack>
       </Container>
     </AuthenticatedLayout>
   );
 }
-
-export default ListUsers;

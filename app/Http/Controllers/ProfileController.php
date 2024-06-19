@@ -12,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -68,11 +69,11 @@ class ProfileController extends Controller
 
   public function usersIndex (Request $request): Response
   {
-    $users = User::all()->toArray();
+    $users = User::whereNot('id', $request->user()->id);
+    $paginate = $users->paginate($request->query('perPage'));
+    $payload = $paginate->withQueryString();
 
-    return Inertia::render('Account/Users/List', [
-      'users' => $users
-    ]);
+    return Inertia::render('Account/Users/List', ['payload' => $payload]);
   }
 
   public function userCreate (Request $request): Response
@@ -107,7 +108,7 @@ class ProfileController extends Controller
     return Inertia::render('Account/Users/Edit', ['user' => $user]);
   }
 
-  public function userUpdate(UsersUpdateRequest $request, User $user)
+  public function userUpdate(UsersUpdateRequest $request, User $user): RedirectResponse
   {
     $validated = $request->validated();
 
@@ -116,6 +117,22 @@ class ProfileController extends Controller
 
     $user->update($validated);
 
-    return Redirect::route('user.update', ['user' => $user]);
+    return redirect()->route('user.update', ['user' => $user]);
+  }
+
+  public function userDestroy(Request $request, User $user)
+  {
+    if ($request->user()->is($user)) {
+      return back()->withErrors(['message' => 'Action not permitted!']);
+    }
+
+    try {
+      $user->delete();
+      return redirect()->route('users.index');
+
+    } catch (\Exception $e) {
+      Log::error('Error deleting user: ', ['exception' => $e]);
+      return back()->withErrors(['message' => 'An error occurred while trying to delete the user.']);
+    }
   }
 }

@@ -17,6 +17,7 @@ import {
   rem,
   Popover,
   Progress,
+  Modal,
 } from '@mantine/core';
 import { FormEventHandler, useRef, useState } from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
@@ -28,6 +29,7 @@ import {
   IconTrash,
   IconX,
 } from '@tabler/icons-react';
+import { useDisclosure } from '@mantine/hooks';
 import { PageHeader, Surface, TextEditor } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
 import { PageProps, User } from '@/types';
@@ -42,7 +44,6 @@ const items = [
   </Anchor>
 ));
 
-const ICON_SIZE = 16;
 const PAPER_PROPS: PaperProps = {
   p: 'md',
   shadow: 'md',
@@ -58,6 +59,7 @@ export default function Edit({ auth, user }: UsersProps) {
   const [avatar, setAvatar] = useState<string | undefined>(user.avatar);
   const [popoverOpened, setPopoverOpened] = useState(false);
   const passwordInput = useRef<HTMLInputElement>(null);
+  const [isOpenDelete, { open: onOpenDelete, close: onCloseDelete }] = useDisclosure(false);
 
   const onFileUpload = (file: any): void => {
     const reader = new FileReader();
@@ -121,13 +123,51 @@ export default function Edit({ auth, user }: UsersProps) {
     });
   };
 
+  const onDeleteAccount = () => {
+    userInfo.delete(route('user.destroy', user.id), {
+      onSuccess: () => {
+        onCloseDelete();
+        notifications.show({
+          title: 'Success!',
+          message: 'User permanently deleted successfully',
+        });
+      },
+      onError: error => {
+        notifications.show({ title: 'Failed!', message: error.message });
+      },
+    });
+  };
+
   return (
     <AuthenticatedLayout user={auth.user}>
       <Head title="Edit | Account" />
 
+      <Modal opened={isOpenDelete} onClose={onCloseDelete} title="Delete Account" centered>
+        <Stack>
+          <Text fw={600}>Are You sure you want to delete this user?</Text>
+          <SimpleGrid cols={{ base: 1, sm: 2 }}>
+            <Button loading={userInfo.processing} onClick={onDeleteAccount} variant="filled">
+              Delete
+            </Button>
+            <Button disabled={userInfo.processing} onClick={onCloseDelete} variant="outline">
+              Cancel
+            </Button>
+          </SimpleGrid>
+        </Stack>
+      </Modal>
+
       <Container fluid>
         <Stack gap="lg">
-          <PageHeader user={auth.user} title="Edit User" breadcrumbItems={items} />
+          <PageHeader
+            user={auth.user}
+            title="Edit User"
+            breadcrumbItems={items}
+            withActions={
+              <Button color="red" onClick={onOpenDelete}>
+                Delete User
+              </Button>
+            }
+          />
           <Surface component={Paper} {...PAPER_PROPS}>
             <Text size="lg" fw={600} mb="md">
               Account information
@@ -277,7 +317,7 @@ export default function Edit({ auth, user }: UsersProps) {
                               <Button
                                 {...props}
                                 variant="subtle"
-                                leftSection={<IconCloudUpload size={ICON_SIZE} />}
+                                leftSection={<IconCloudUpload size={16} />}
                               >
                                 Upload image
                               </Button>
@@ -287,7 +327,7 @@ export default function Edit({ auth, user }: UsersProps) {
                         {avatar && (
                           <Grid.Col span={4}>
                             <Button onClick={onDeleteAvatar} variant="subtle" color="red">
-                              <IconTrash size={ICON_SIZE} />
+                              <IconTrash size={16} />
                             </Button>
                           </Grid.Col>
                         )}
@@ -303,7 +343,7 @@ export default function Edit({ auth, user }: UsersProps) {
                   mt={16}
                   style={{ width: 'fit-content' }}
                   loading={userInfo.processing}
-                  leftSection={<IconDeviceFloppy size={ICON_SIZE} />}
+                  leftSection={<IconDeviceFloppy size={16} />}
                 >
                   Save Changes
                 </Button>
