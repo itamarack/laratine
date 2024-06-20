@@ -100,9 +100,6 @@ export default function Create({ auth }: PageProps<{ mustVerifyEmail: boolean; s
   const onSubmitAccount: FormEventHandler = event => {
     event.preventDefault();
 
-    console.log(userInfo.data);
-    // return;
-
     userInfo.post(route('user.store'), {
       preserveScroll: true,
       onSuccess: () => {
@@ -111,8 +108,7 @@ export default function Create({ auth }: PageProps<{ mustVerifyEmail: boolean; s
           message: 'Profile has been updated successfully.',
         });
       },
-      onError: error => {
-        console.log(error);
+      onError: () => {
         notifications.show({
           title: 'Failed!',
           message: 'Something went wrong, Try again.',

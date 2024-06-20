@@ -19,11 +19,9 @@ import {
   UnstyledButton,
   useMantineTheme,
 } from '@mantine/core';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
-import _getFirst from 'lodash/first';
-import _throttle from 'lodash/throttle';
-import _debounce from 'lodash/debounce';
+import _first from 'lodash/first';
 import { Head, Link, router } from '@inertiajs/react';
 import { useThrottledCallback, useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
@@ -54,13 +52,10 @@ const PAPER_PROPS: PaperProps = {
 
 export default function List({ auth, users }: UsersProps) {
   const theme = useMantineTheme();
-  const [user, setUser] = useState<User>();
-  const [query, setQuery] = useState('');
-
+  const [userActive, setUserActive] = useState<User>();
   const [fetching, setFetching] = useState<boolean>(false);
   const [isOpen, { open: onOpen, close: onClose }] = useDisclosure(false);
   const [search, setSearch] = useState<string>('');
-  const throttledSetSearch = useThrottledCallback(value => setSearch(value), 1000);
   const [selectedRecords, setSelectedRecords] = useState<User[]>([]);
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus<User>>({
     columnAccessor: 'user',
@@ -97,14 +92,14 @@ export default function List({ auth, users }: UsersProps) {
   }, 3000);
 
   const onDeleteAccount = () => {
-    if (!user) {
+    if (!userActive) {
       return notifications.show({
         title: 'Failed!',
         message: 'Something went wrong, Try again!',
       });
     }
 
-    router.delete(route('user.destroy', user.id), {
+    router.delete(route('user.destroy', userActive.id), {
       onSuccess: () => {
         onClose();
         notifications.show({
@@ -133,7 +128,7 @@ export default function List({ auth, users }: UsersProps) {
               alt={`${user.firstname} ${user.lastname}`}
               color={theme.primaryColor}
             >
-              {_getFirst(user.firstname)} {_getFirst(user.lastname)}
+              {_first(user.firstname)} {_first(user.lastname)}
             </Avatar>
             <Stack gap={0}>
               <Text fz="sm" fw={600}>
@@ -158,7 +153,6 @@ export default function List({ auth, users }: UsersProps) {
           }}
         />
       ),
-      filtering: query !== '',
     },
     {
       accessor: 'Status',
@@ -203,7 +197,7 @@ export default function List({ auth, users }: UsersProps) {
           </Button>
           <Button
             onClick={() => {
-              setUser(() => user);
+              setUserActive(() => user);
               onOpen();
             }}
             variant="filled"
