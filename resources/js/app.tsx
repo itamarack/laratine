@@ -35,7 +35,4 @@ createInertiaApp({
       </MantineProvider>,
     );
   },
-  progress: {
-    color: '#4B5563',
-  },
 });

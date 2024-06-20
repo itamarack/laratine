@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -19,16 +20,16 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-  Route::get('/profile', [ProfileController::class, 'profileIndex'])->name('profile.index');
-  Route::patch('/profile', [ProfileController::class, 'profileUpdate'])->name('profile.update');
-  Route::delete('/profile', [ProfileController::class, 'profileDestroy'])->name('profile.destroy');
+  Route::get('/profile', [UserController::class, 'profileIndex'])->name('profile.index');
+  Route::patch('/profile', [UserController::class, 'profileUpdate'])->name('profile.update');
+  Route::delete('/profile', [UserController::class, 'profileDestroy'])->name('profile.destroy');
 
-  Route::get('/users', [ProfileController::class, 'usersIndex'])->name('users.index');
-  Route::get('/users/create', [ProfileController::class, 'userCreate'])->name('user.create');
-  Route::post('/users/create', [ProfileController::class, 'userStore'])->name('user.store');
-  Route::get('/users/{user}/edit/', [ProfileController::class, 'userShow'])->name('user.show');
-  Route::patch('/users/{user}/edit/', [ProfileController::class, 'userUpdate'])->name('user.update');
-  Route::delete('/users/{user}/delete', [ProfileController::class, 'userDestroy'])->name('user.destroy');
+  Route::get('/users', [UserController::class, 'userIndex'])->name('user.index');
+  Route::get('/users/create', [UserController::class, 'userCreate'])->name('user.create');
+  Route::post('/users/create', [UserController::class, 'userStore'])->name('user.store');
+  Route::get('/users/{user}/edit/', [UserController::class, 'userShow'])->name('user.show');
+  Route::patch('/users/{user}/edit/', [UserController::class, 'userUpdate'])->name('user.update');
+  Route::delete('/users/{user}/delete', [UserController::class, 'userDestroy'])->name('user.destroy');
 });
 
 require __DIR__.'/auth.php';

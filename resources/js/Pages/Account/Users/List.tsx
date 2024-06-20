@@ -19,17 +19,19 @@ import {
   UnstyledButton,
   useMantineTheme,
 } from '@mantine/core';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import _getFirst from 'lodash/first';
+import _throttle from 'lodash/throttle';
+import _debounce from 'lodash/debounce';
+import { Head, Link, router } from '@inertiajs/react';
+import { useThrottledCallback, useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
+import { DataTable, DataTableProps, DataTableSortStatus } from 'mantine-datatable';
 import { IconDotsVertical, IconEdit, IconPlus, IconSearch, IconTrash } from '@tabler/icons-react';
-import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { PageHeader } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
 import { PageProps, User } from '@/types';
-import { useDisclosure } from '@mantine/hooks';
-import { notifications } from '@mantine/notifications';
-import { DataTable, DataTableProps, DataTableSortStatus } from 'mantine-datatable';
 
 type UsersProps = {
   users: any;
@@ -57,11 +59,15 @@ export default function List({ auth, users }: UsersProps) {
 
   const [fetching, setFetching] = useState<boolean>(false);
   const [isOpen, { open: onOpen, close: onClose }] = useDisclosure(false);
+  const [search, setSearch] = useState<string>('');
+  const throttledSetSearch = useThrottledCallback(value => setSearch(value), 1000);
   const [selectedRecords, setSelectedRecords] = useState<User[]>([]);
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus<User>>({
     columnAccessor: 'user',
     direction: 'asc',
   });
+
+  const RECORD_PAGINATOR = [5, 10, 20, 50];
 
   router.on('start', () => setFetching(() => true));
   router.on('finish', () => setFetching(() => false));
@@ -73,7 +79,7 @@ export default function List({ auth, users }: UsersProps) {
     if (queryKey === 'per_page') queryParams.set('page', '1');
 
     const payload = Object.fromEntries(queryParams);
-    router.get(route('users.index'), payload, { preserveState: true });
+    router.get(route('user.index'), payload, { preserveState: true });
   };
 
   const onSortStatusChange = ({ columnAccessor, direction }: DataTableSortStatus<User>) => {
@@ -81,7 +87,14 @@ export default function List({ auth, users }: UsersProps) {
     setSortStatus(() => ({ columnAccessor, direction }));
   };
 
-  const userInfo = useForm({});
+  useEffect(() => {
+    const queryParams = new URLSearchParams(window.location.search);
+    setSearch(queryParams.get('search') ?? '');
+  }, []);
+
+  const throttledSearch = useThrottledCallback(search => {
+    onQueryTable('search', search);
+  }, 3000);
 
   const onDeleteAccount = () => {
     if (!user) {
@@ -91,7 +104,7 @@ export default function List({ auth, users }: UsersProps) {
       });
     }
 
-    userInfo.delete(route('user.destroy', user.id), {
+    router.delete(route('user.destroy', user.id), {
       onSuccess: () => {
         onClose();
         notifications.show({
@@ -138,8 +151,11 @@ export default function List({ auth, users }: UsersProps) {
           description="Show all users in the system"
           placeholder="Search users..."
           leftSection={<IconSearch size={16} />}
-          value={query}
-          onChange={e => setQuery(e.currentTarget.value)}
+          value={search}
+          onChange={e => {
+            setSearch(e.currentTarget.value);
+            throttledSearch(e.currentTarget.value);
+          }}
         />
       ),
       filtering: query !== '',
@@ -210,10 +226,10 @@ export default function List({ auth, users }: UsersProps) {
         <Stack>
           <Text fw={600}>Are You sure you want to delete this user?</Text>
           <SimpleGrid cols={{ base: 1, sm: 2 }}>
-            <Button loading={userInfo.processing} onClick={onDeleteAccount} variant="filled">
+            <Button loading={fetching} onClick={onDeleteAccount} variant="filled">
               Delete
             </Button>
-            <Button disabled={userInfo.processing} onClick={onClose} variant="outline">
+            <Button disabled={fetching} onClick={onClose} variant="outline">
               Cancel
             </Button>
           </SimpleGrid>
@@ -254,7 +270,7 @@ export default function List({ auth, users }: UsersProps) {
               recordsPerPage={users.per_page}
               page={users.current_page}
               onPageChange={p => onQueryTable('page', p.toString())}
-              recordsPerPageOptions={[1, 5, 10, 20, 50]}
+              recordsPerPageOptions={RECORD_PAGINATOR}
               onRecordsPerPageChange={p => onQueryTable('per_page', p.toString())}
               sortStatus={sortStatus}
               onSortStatusChange={onSortStatusChange}

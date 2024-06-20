@@ -185,7 +185,7 @@ export default function Create({ auth }: PageProps<{ mustVerifyEmail: boolean; s
                           label="Confirm Password"
                           placeholder="Confirm password"
                           disabled={userInfo.processing}
-                          error={userInfo.errors.password_confirmation}
+                          error={userInfo.errors.password}
                           value={userInfo.data.password_confirmation}
                           onChange={e => userInfo.setData('password_confirmation', e.target.value)}
                         />

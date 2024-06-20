@@ -12,6 +12,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "spatie/laravel-query-builder": "^6.0",
+        "teamtnt/laravel-scout-tntsearch-driver": "^14.0",
         "tightenco/ziggy": "^2.0"
     },
     "require-dev": {

@@ -4,7 +4,7 @@
     "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
     "This file is @generated automatically"
   ],
-  "content-hash": "8718943a2376de5bb57097cdc5f46536",
+  "content-hash": "4caae36d3972c83bbfac17ae9df9f72d",
   "packages": [
     {
       "name": "brick/math",
@@ -1514,6 +1514,84 @@
       "time": "2024-04-10T19:39:58+00:00"
     },
     {
+      "name": "laravel/scout",
+      "version": "v10.10.0",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/laravel/scout.git",
+        "reference": "68767821bb5fd18b823ab136f334cfd865b16433"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/laravel/scout/zipball/68767821bb5fd18b823ab136f334cfd865b16433",
+        "reference": "68767821bb5fd18b823ab136f334cfd865b16433",
+        "shasum": ""
+      },
+      "require": {
+        "illuminate/bus": "^9.0|^10.0|^11.0",
+        "illuminate/contracts": "^9.0|^10.0|^11.0",
+        "illuminate/database": "^9.0|^10.0|^11.0",
+        "illuminate/http": "^9.0|^10.0|^11.0",
+        "illuminate/pagination": "^9.0|^10.0|^11.0",
+        "illuminate/queue": "^9.0|^10.0|^11.0",
+        "illuminate/support": "^9.0|^10.0|^11.0",
+        "php": "^8.0",
+        "symfony/console": "^6.0|^7.0"
+      },
+      "require-dev": {
+        "algolia/algoliasearch-client-php": "^3.2",
+        "meilisearch/meilisearch-php": "^1.0",
+        "mockery/mockery": "^1.0",
+        "orchestra/testbench": "^7.31|^8.11|^9.0",
+        "php-http/guzzle7-adapter": "^1.0",
+        "phpstan/phpstan": "^1.10",
+        "phpunit/phpunit": "^9.3|^10.4",
+        "typesense/typesense-php": "^4.9.3"
+      },
+      "suggest": {
+        "algolia/algoliasearch-client-php": "Required to use the Algolia engine (^3.2).",
+        "meilisearch/meilisearch-php": "Required to use the Meilisearch engine (^1.0).",
+        "typesense/typesense-php": "Required to use the Typesense engine (^4.9)."
+      },
+      "type": "library",
+      "extra": {
+        "branch-alias": {
+          "dev-master": "10.x-dev"
+        },
+        "laravel": {
+          "providers": [
+            "Laravel\\Scout\\ScoutServiceProvider"
+          ]
+        }
+      },
+      "autoload": {
+        "psr-4": {
+          "Laravel\\Scout\\": "src/"
+        }
+      },
+      "notification-url": "https://packagist.org/downloads/",
+      "license": [
+        "MIT"
+      ],
+      "authors": [
+        {
+          "name": "Taylor Otwell",
+          "email": "taylor@laravel.com"
+        }
+      ],
+      "description": "Laravel Scout provides a driver based solution to searching your Eloquent models.",
+      "keywords": [
+        "algolia",
+        "laravel",
+        "search"
+      ],
+      "support": {
+        "issues": "https://github.com/laravel/scout/issues",
+        "source": "https://github.com/laravel/scout"
+      },
+      "time": "2024-06-18T16:54:44+00:00"
+    },
+    {
       "name": "laravel/serializable-closure",
       "version": "v1.3.3",
       "source": {
@@ -2590,6 +2668,67 @@
         }
       ],
       "time": "2023-11-12T21:59:55+00:00"
+    },
+    {
+      "name": "predis/predis",
+      "version": "v2.2.2",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/predis/predis.git",
+        "reference": "b1d3255ed9ad4d7254f9f9bba386c99f4bb983d1"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/predis/predis/zipball/b1d3255ed9ad4d7254f9f9bba386c99f4bb983d1",
+        "reference": "b1d3255ed9ad4d7254f9f9bba386c99f4bb983d1",
+        "shasum": ""
+      },
+      "require": {
+        "php": "^7.2 || ^8.0"
+      },
+      "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.3",
+        "phpstan/phpstan": "^1.9",
+        "phpunit/phpunit": "^8.0 || ~9.4.4"
+      },
+      "suggest": {
+        "ext-relay": "Faster connection with in-memory caching (>=0.6.2)"
+      },
+      "type": "library",
+      "autoload": {
+        "psr-4": {
+          "Predis\\": "src/"
+        }
+      },
+      "notification-url": "https://packagist.org/downloads/",
+      "license": [
+        "MIT"
+      ],
+      "authors": [
+        {
+          "name": "Till Krüss",
+          "homepage": "https://till.im",
+          "role": "Maintainer"
+        }
+      ],
+      "description": "A flexible and feature-complete Redis client for PHP.",
+      "homepage": "http://github.com/predis/predis",
+      "keywords": [
+        "nosql",
+        "predis",
+        "redis"
+      ],
+      "support": {
+        "issues": "https://github.com/predis/predis/issues",
+        "source": "https://github.com/predis/predis/tree/v2.2.2"
+      },
+      "funding": [
+        {
+          "url": "https://github.com/sponsors/tillkruss",
+          "type": "github"
+        }
+      ],
+      "time": "2023-09-13T16:42:03+00:00"
     },
     {
       "name": "psr/clock",
@@ -5741,6 +5880,161 @@
         }
       ],
       "time": "2024-05-31T14:57:53+00:00"
+    },
+    {
+      "name": "teamtnt/laravel-scout-tntsearch-driver",
+      "version": "v14.0.0",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/teamtnt/laravel-scout-tntsearch-driver.git",
+        "reference": "56af782badb5986bb57ef3046d669b0815fd8978"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/teamtnt/laravel-scout-tntsearch-driver/zipball/56af782badb5986bb57ef3046d669b0815fd8978",
+        "reference": "56af782badb5986bb57ef3046d669b0815fd8978",
+        "shasum": ""
+      },
+      "require": {
+        "illuminate/bus": "~5.4|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
+        "illuminate/contracts": "~5.4|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
+        "illuminate/pagination": "~5.4|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
+        "illuminate/queue": "~5.4|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
+        "illuminate/support": "~5.4|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0",
+        "laravel/scout": "7.*|^8.0|^8.3|^9.0|^10",
+        "php": ">=7.1|^8",
+        "teamtnt/tntsearch": "2.7.0|^2.8|^3.0|^4.0"
+      },
+      "require-dev": {
+        "mockery/mockery": "^1.0",
+        "phpunit/phpunit": "^7.0|^8.0|^9.0|^10.5"
+      },
+      "suggest": {
+        "teamtnt/tntsearch": "Required to use the TNTSearch engine."
+      },
+      "type": "library",
+      "extra": {
+        "branch-alias": {
+          "dev-master": "1.0-dev"
+        },
+        "laravel": {
+          "providers": [
+            "TeamTNT\\Scout\\TNTSearchScoutServiceProvider"
+          ]
+        }
+      },
+      "autoload": {
+        "psr-4": {
+          "TeamTNT\\Scout\\": "src/"
+        }
+      },
+      "notification-url": "https://packagist.org/downloads/",
+      "license": [
+        "MIT"
+      ],
+      "authors": [
+        {
+          "name": "TNT Studio",
+          "email": "info@tntstudio.hr"
+        }
+      ],
+      "description": "Driver for Laravel Scout search package based on https://github.com/teamtnt/tntsearch",
+      "keywords": [
+        "laravel",
+        "scout",
+        "search",
+        "tntsearch"
+      ],
+      "support": {
+        "issues": "https://github.com/teamtnt/laravel-scout-tntsearch-driver/issues",
+        "source": "https://github.com/teamtnt/laravel-scout-tntsearch-driver/tree/v14.0.0"
+      },
+      "funding": [
+        {
+          "url": "https://github.com/teamtnt",
+          "type": "github"
+        }
+      ],
+      "time": "2024-03-16T22:37:45+00:00"
+    },
+    {
+      "name": "teamtnt/tntsearch",
+      "version": "v4.2.1",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/teamtnt/tntsearch.git",
+        "reference": "d3fc3e7ccc1760dc4b8604807be01140fa7f69c5"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/teamtnt/tntsearch/zipball/d3fc3e7ccc1760dc4b8604807be01140fa7f69c5",
+        "reference": "d3fc3e7ccc1760dc4b8604807be01140fa7f69c5",
+        "shasum": ""
+      },
+      "require": {
+        "ext-mbstring": "*",
+        "ext-pdo_sqlite": "*",
+        "ext-sqlite3": "*",
+        "php": "~7.1|^8",
+        "predis/predis": "^2.2"
+      },
+      "require-dev": {
+        "phpunit/phpunit": "7.*|8.*|9.*",
+        "symfony/var-dumper": "^4|^5.2"
+      },
+      "type": "library",
+      "autoload": {
+        "files": [
+          "helper/helpers.php"
+        ],
+        "psr-4": {
+          "TeamTNT\\TNTSearch\\": "src"
+        }
+      },
+      "notification-url": "https://packagist.org/downloads/",
+      "license": [
+        "MIT"
+      ],
+      "authors": [
+        {
+          "name": "Nenad Tičarić",
+          "email": "nticaric@gmail.com",
+          "homepage": "http://www.tntstudio.us",
+          "role": "Developer"
+        }
+      ],
+      "description": "A fully featured full text search engine written in PHP",
+      "homepage": "https://github.com/teamtnt/tntsearch",
+      "keywords": [
+        "Fuzzy search",
+        "bm25",
+        "fulltext",
+        "geosearch",
+        "search",
+        "stemming",
+        "teamtnt",
+        "text classification",
+        "tntsearch"
+      ],
+      "support": {
+        "issues": "https://github.com/teamtnt/tntsearch/issues",
+        "source": "https://github.com/teamtnt/tntsearch/tree/v4.2.1"
+      },
+      "funding": [
+        {
+          "url": "https://ko-fi.com/nticaric",
+          "type": "ko_fi"
+        },
+        {
+          "url": "https://opencollective.com/tntsearch",
+          "type": "open_collective"
+        },
+        {
+          "url": "https://www.patreon.com/nticaric",
+          "type": "patreon"
+        }
+      ],
+      "time": "2023-07-19T10:35:23+00:00"
     },
     {
       "name": "tightenco/ziggy",
