@@ -63,19 +63,58 @@ class User extends Authenticatable
    */
   protected $appends = ['fullname'];
 
+  /**
+   * Get the user's full name.
+   *
+   * @return string
+   */
   public function getFullnameAttribute(): string
   {
     return ucwords("{$this->firstname} {$this->lastname}");
   }
 
-  public function setPasswordAttribute($password)
+  /**
+   * Set the user's password.
+   *
+   * @param string $password
+   * @return void
+   */
+  public function setPasswordAttribute($password): void
   {
     if (filled($password))
       $this->attributes['password'] = Hash::make($password);
   }
 
+  /**
+   * Prepare the user instance for indexing in search.
+   *
+   * @return array
+   */
   public function toSearchableArray()
   {
     return $this->toArray();
+  }
+
+  /**
+   * Get the avatar attribute.
+   *
+   * This accessor function returns the asset URL for the avatar.
+   *
+   * @param  string|null  $avatar
+   * @return string
+   */
+  public function getAvatarAttribute($avatar)
+  {
+    return $avatar ? asset("storage/{$avatar}") : null;
+  }
+
+  /**
+   * Method to get the raw avatar attribute.
+   *
+   * @return string|null
+   */
+  public function getRawAvatarAttr()
+  {
+    return $this->attributes['avatar'] ?? '';
   }
 }

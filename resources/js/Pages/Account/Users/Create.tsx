@@ -55,23 +55,6 @@ export default function Create({ auth }: PageProps<{ mustVerifyEmail: boolean; s
   const [popoverOpened, setPopoverOpened] = useState(false);
   const passwordInput = useRef<HTMLInputElement>(null);
 
-  const onFileUpload = (file: any): void => {
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      const base64URL = reader.result as string;
-      userInfo.setData('avatar', base64URL);
-      setAvatar(() => base64URL);
-    };
-
-    reader.readAsDataURL(file);
-  };
-
-  const onDeleteAvatar = () => {
-    setAvatar(() => '');
-    userInfo.setData('avatar', '');
-  };
-
   const userInfo = useForm({
     avatar: '',
     firstname: '',
@@ -85,6 +68,18 @@ export default function Create({ auth }: PageProps<{ mustVerifyEmail: boolean; s
     password: '',
     password_confirmation: '',
   });
+
+  const onFileUpload = (file: File | null) => {
+    const objectURL = URL.createObjectURL(file as File);
+    setAvatar(() => objectURL);
+    userInfo.setData('avatar', file as any);
+    return () => URL.revokeObjectURL(objectURL);
+  };
+
+  const onDeleteAvatar = () => {
+    setAvatar(() => '');
+    userInfo.setData('avatar', '');
+  };
 
   const checks = requirements.map((requirement, index) => (
     <PasswordRequirement

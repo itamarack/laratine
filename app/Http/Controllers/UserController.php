@@ -11,16 +11,27 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\QueryBuilder\QueryBuilder;
+use Illuminate\Support\Facades\Storage;
+use App\Services\FileUploadService;
 
 class UserController extends Controller
 {
+  protected $uploadService;
+
+  public function __construct(FileUploadService $uploadService)
+  {
+    $this->uploadService = $uploadService;
+  }
+
   /**
    * Display the user's profile form.
+   *
+   * @param Request $request
+   * @return Response
    */
   public function profileIndex(Request $request): Response
   {
@@ -32,14 +43,21 @@ class UserController extends Controller
 
   /**
    * Update the user's profile information.
+   *
+   * @param ProfileUpdateRequest $request
+   * @return RedirectResponse
    */
   public function profileUpdate(ProfileUpdateRequest $request): RedirectResponse
   {
+    $prevAvatar = $request->user()->getRawAvatarAttr();
     $request->user()->fill($request->validated());
 
     if ($request->user()->isDirty('email')) {
       $request->user()->email_verified_at = null;
     }
+
+    $avatarPath = $this->uploadService->uploadAvatar($request, $prevAvatar);
+    $request->user()->avatar = $avatarPath;
 
     $request->user()->save();
 
@@ -48,6 +66,9 @@ class UserController extends Controller
 
   /**
    * Delete the user's account.
+   *
+   * @param Request $request
+   * @return RedirectResponse
    */
   public function profileDestroy(Request $request): RedirectResponse
   {
@@ -55,11 +76,8 @@ class UserController extends Controller
       'password' => ['required', 'current_password'],
     ]);
 
-    $user = $request->user();
-
     Auth::logout();
-
-    $user->delete();
+    $request->user()->delete();
 
     $request->session()->invalidate();
     $request->session()->regenerateToken();
@@ -67,62 +85,102 @@ class UserController extends Controller
     return Redirect::to('/');
   }
 
+  /**
+   * Display a list of users.
+   *
+   * @param Request $request
+   * @return Response
+   */
   public function userIndex (Request $request): Response
   {
     $allowedSorts = ['firstname', 'created_at', 'updated_at'];
     $search = User::search($request->query('search'));
+    $perPage = $request->query('per_page', 15);
 
     $users = QueryBuilder::for(User::class)
       ->allowedSorts($allowedSorts)
       ->whereNot('id', $request->user()->id)
       ->when($request->filled('search'), fn($query) => $search->constrain($query))
-      ->paginate($request->query('per_page'))
-      ->appends($request->query());
+      ->paginate($perPage)->appends($request->query());
 
     return Inertia::render('Account/Users/List', ['users' => $users]);
   }
 
+  /**
+   * Display the user creation form.
+   *
+   * @param Request $request
+   * @return Response
+   */
   public function userCreate (Request $request): Response
   {
     return Inertia::render('Account/Users/Create', []);
   }
 
-  public function userStore (UsersCreateRequest $request): RedirectResponse
+  /**
+   * Store a new user in the database.
+   *
+   * @param UsersCreateRequest $request
+   * @return RedirectResponse
+   */
+  public function userStore (UsersCreateRequest $request, User $user): RedirectResponse
   {
-    $request->validated();
-    $user = User::create($request->all());
+    $user->fill($request->validated());
+
+    $avatarPath = $this->uploadService->uploadAvatar($request, null);
+    $user->avatar = $avatarPath;
+
+    $user->save();
 
     event(new Registered($user));
 
     return redirect()->route('user.index');
   }
 
+  /**
+   * Display a specific user's information for editing.
+   *
+   * @param User $user
+   * @return Response
+   */
   public function userShow(User $user): Response
   {
     return Inertia::render('Account/Users/Edit', ['user' => $user]);
   }
 
+  /**
+   * Update a specific user's information.
+   *
+   * @param UsersUpdateRequest $request
+   * @param User $user
+   * @return RedirectResponse
+   */
   public function userUpdate(UsersUpdateRequest $request, User $user): RedirectResponse
   {
-    $validated = $request->validated();
-    $user->update($validated);
+    $prevAvatar = $request->user()->getRawAvatarAttr();
+    $user->fill($request->validated());
+
+    $avatarPath = $this->uploadService->uploadAvatar($request, $prevAvatar);
+    $user->avatar = $avatarPath;
+
+    $user->update();
 
     return redirect()->route('user.update', ['user' => $user]);
   }
 
-  public function userDestroy(Request $request, User $user)
+  /**
+   * Delete a specific user from the database.
+   *
+   * @param Request $request
+   * @param User $user
+   * @return RedirectResponse
+   */
+  public function userDestroy(User $user): RedirectResponse
   {
-    if ($request->user()->is($user)) {
-      return back()->withErrors(['message' => 'Action not permitted!']);
-    }
+    $prevAvatar = $user->getRawAvatarAttr();
+    Storage::disk('public')->delete($prevAvatar ?? '');
+    $user->delete();
 
-    try {
-      $user->delete();
-      return redirect()->route('user.index');
-
-    } catch (\Exception $e) {
-      Log::error('Error deleting user: ', ['exception' => $e]);
-      return back()->withErrors(['message' => 'An error occurred while trying to delete the user.']);
-    }
+    return redirect()->route('user.index');
   }
 }

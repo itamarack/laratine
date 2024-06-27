@@ -56,24 +56,8 @@ function Profile({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: string
   const passwordInput = useRef<HTMLInputElement>(null);
   const currentPasswordInput = useRef<HTMLInputElement>(null);
 
-  const onFileUpload = (file: any): void => {
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      const base64URL = reader.result as string;
-      userInfo.setData('avatar', base64URL);
-      setAvatar(() => base64URL);
-    };
-
-    reader.readAsDataURL(file);
-  };
-
-  const onDeleteAvatar = () => {
-    setAvatar(() => undefined);
-    userInfo.setData('avatar', null);
-  };
-
   const userInfo = useForm({
+    _method: 'patch',
     avatar: avatar ?? null,
     firstname: auth.user.firstname ?? '',
     lastname: auth.user.lastname ?? '',
@@ -91,6 +75,18 @@ function Profile({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: string
     password_confirmation: '',
   });
 
+  const onFileUpload = (file: File | null) => {
+    const objectURL = URL.createObjectURL(file as File);
+    setAvatar(() => objectURL);
+    userInfo.setData('avatar', file as any);
+    return () => URL.revokeObjectURL(objectURL);
+  };
+
+  const onDeleteAvatar = () => {
+    setAvatar(() => undefined);
+    userInfo.setData('avatar', '');
+  };
+
   const checks = requirements.map((requirement, index) => (
     <PasswordRequirement
       key={index}
@@ -105,7 +101,7 @@ function Profile({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: string
   const onSubmitAccount: FormEventHandler = event => {
     event.preventDefault();
 
-    userInfo.patch(route('profile.update'), {
+    userInfo.post(route('profile.update'), {
       preserveScroll: true,
       onSuccess: () => {
         notifications.show({

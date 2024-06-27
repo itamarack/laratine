@@ -61,24 +61,8 @@ export default function Edit({ auth, user }: UsersProps) {
   const passwordInput = useRef<HTMLInputElement>(null);
   const [isOpenDelete, { open: onOpenDelete, close: onCloseDelete }] = useDisclosure(false);
 
-  const onFileUpload = (file: any): void => {
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      const base64URL = reader.result as string;
-      userInfo.setData('avatar', base64URL);
-      setAvatar(() => base64URL);
-    };
-
-    reader.readAsDataURL(file);
-  };
-
-  const onDeleteAvatar = () => {
-    setAvatar(() => '');
-    userInfo.setData('avatar', '');
-  };
-
   const userInfo = useForm({
+    _method: 'patch',
     avatar: user.avatar ?? '',
     firstname: user.firstname ?? '',
     lastname: user.lastname ?? '',
@@ -91,6 +75,18 @@ export default function Edit({ auth, user }: UsersProps) {
     password: '',
     password_confirmation: '',
   });
+
+  const onFileUpload = (file: File | null) => {
+    const objectURL = URL.createObjectURL(file as File);
+    setAvatar(() => objectURL);
+    userInfo.setData('avatar', file as any);
+    return () => URL.revokeObjectURL(objectURL);
+  };
+
+  const onDeleteAvatar = () => {
+    setAvatar(() => '');
+    userInfo.setData('avatar', '');
+  };
 
   const checks = requirements.map((requirement, index) => (
     <PasswordRequirement
@@ -106,7 +102,7 @@ export default function Edit({ auth, user }: UsersProps) {
   const onSubmitAccount: FormEventHandler = event => {
     event.preventDefault();
 
-    userInfo.patch(route('user.update', user.id), {
+    userInfo.post(route('user.update', user.id), {
       preserveScroll: true,
       onSuccess: () => {
         notifications.show({
