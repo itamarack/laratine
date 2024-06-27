@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { router, Link, usePage } from '@inertiajs/react';
+import { router, Link } from '@inertiajs/react';
 import { Box, Collapse, Group, Text, UnstyledButton } from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
 import classes from './Links.module.css';
