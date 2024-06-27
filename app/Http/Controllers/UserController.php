@@ -49,16 +49,13 @@ class UserController extends Controller
    */
   public function profileUpdate(ProfileUpdateRequest $request): RedirectResponse
   {
-    $prevAvatar = $request->user()->getRawAvatarAttr();
     $request->user()->fill($request->validated());
 
     if ($request->user()->isDirty('email')) {
       $request->user()->email_verified_at = null;
     }
 
-    $avatarPath = $this->uploadService->uploadAvatar($request, $prevAvatar);
-    $request->user()->avatar = $avatarPath;
-
+    $this->uploadService->uploadAvatar($request, $request->user());
     $request->user()->save();
 
     return Redirect::route('profile.index');
@@ -126,10 +123,7 @@ class UserController extends Controller
   public function userStore (UsersCreateRequest $request, User $user): RedirectResponse
   {
     $user->fill($request->validated());
-
-    $avatarPath = $this->uploadService->uploadAvatar($request, null);
-    $user->avatar = $avatarPath;
-
+    $this->uploadService->uploadAvatar($request, $user);
     $user->save();
 
     event(new Registered($user));
@@ -157,12 +151,8 @@ class UserController extends Controller
    */
   public function userUpdate(UsersUpdateRequest $request, User $user): RedirectResponse
   {
-    $prevAvatar = $request->user()->getRawAvatarAttr();
     $user->fill($request->validated());
-
-    $avatarPath = $this->uploadService->uploadAvatar($request, $prevAvatar);
-    $user->avatar = $avatarPath;
-
+    $this->uploadService->uploadAvatar($request, $user);
     $user->update();
 
     return redirect()->route('user.update', ['user' => $user]);
@@ -177,10 +167,7 @@ class UserController extends Controller
    */
   public function userDestroy(User $user): RedirectResponse
   {
-    $prevAvatar = $user->getRawAvatarAttr();
-    Storage::disk('public')->delete($prevAvatar ?? '');
     $user->delete();
-
     return redirect()->route('user.index');
   }
 }

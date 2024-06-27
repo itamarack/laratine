@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -13,18 +14,12 @@ class FileUploadService
    * @param Request $request
    * @return string $avatar_path
    */
-  public function uploadAvatar(Request $request, ?string $prevAvatar): ?string
+  public function uploadAvatar(Request $request, User $user): void
   {
     if ($request->hasFile('avatar')) {
-      Storage::disk('public')->delete($prevAvatar ?? '');
-      return $request->file('avatar')->store('avatars', 'public');
+      $user->addMediaFromRequest('avatar')->toMediaCollection('avatars');
+    } else if (empty($request->query('avatar'))) {
+      optional($user->getFirstMedia('avatars'))->delete();
     }
-
-    if (empty($request->query('avatar'))) {
-      Storage::disk('public')->delete($prevAvatar ?? '');
-      return null;
-    }
-
-    return $prevAvatar;
   }
 }

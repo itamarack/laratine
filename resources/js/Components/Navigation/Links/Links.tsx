@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { router, Link } from '@inertiajs/react';
+import { router, Link, usePage } from '@inertiajs/react';
 import { Box, Collapse, Group, Text, UnstyledButton } from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
 import classes from './Links.module.css';
+import { useMatchPath } from '@/hooks';
 
 interface LinksGroupProps {
   icon?: any;
@@ -18,6 +19,7 @@ interface LinksGroupProps {
 
 export function LinksGroup({ icon: Icon, label, initiallyOpened, link, links }: LinksGroupProps) {
   const [isOpen, onOpen] = useState(initiallyOpened || false);
+  const matchPath = useMatchPath(link);
 
   const items = links?.map(link => (
     <Text
@@ -25,7 +27,7 @@ export function LinksGroup({ icon: Icon, label, initiallyOpened, link, links }: 
       href={link.link}
       className={classes.link}
       key={link.label}
-      data-active={link.link === window.location.pathname || undefined}
+      data-active={matchPath || undefined}
     >
       {link.label}
     </Text>
@@ -39,7 +41,7 @@ export function LinksGroup({ icon: Icon, label, initiallyOpened, link, links }: 
           link && router.get(link || '#');
         }}
         className={classes.control}
-        data-active={window.location.pathname === link || undefined}
+        data-active={matchPath || undefined}
       >
         <Group justify="space-between" gap={0}>
           <Box style={{ display: 'flex', alignItems: 'center' }}>

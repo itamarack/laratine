@@ -50,7 +50,7 @@ const PAPER_PROPS: PaperProps = {
   style: { height: '100%' },
 };
 
-export default function Create({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: string }>) {
+export default function Create({ auth }: PageProps) {
   const [avatar, setAvatar] = useState<string>('');
   const [popoverOpened, setPopoverOpened] = useState(false);
   const passwordInput = useRef<HTMLInputElement>(null);

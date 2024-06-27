@@ -11,6 +11,7 @@
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
+        "spatie/laravel-medialibrary": "^11.7",
         "spatie/laravel-query-builder": "^6.0",
         "teamtnt/laravel-scout-tntsearch-driver": "^14.0",
         "tightenco/ziggy": "^2.0"

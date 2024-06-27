@@ -8,10 +8,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Scout\Searchable;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasMedia
 {
-  use HasFactory, Notifiable, Searchable;
+  use HasFactory, Notifiable, Searchable, InteractsWithMedia;
 
   public $asYouType = true;
 
@@ -25,7 +27,7 @@ class User extends Authenticatable
     'lastname',
     'email',
     'password',
-    'avatar',
+    // 'avatar',
     'address',
     'city',
     'state',
@@ -92,7 +94,19 @@ class User extends Authenticatable
    */
   public function toSearchableArray()
   {
-    return $this->toArray();
+    return [
+      'id' => $this->id,
+      'firstname' => $this->firstname,
+      'lastname' => $this->lastname,
+      'email' => $this->email
+    ];
+  }
+
+  public function registerMediaCollections(): void
+  {
+    $this->addMediaCollection('avatars')
+      ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/jpg'])
+      ->singleFile();
   }
 
   /**
@@ -103,18 +117,8 @@ class User extends Authenticatable
    * @param  string|null  $avatar
    * @return string
    */
-  public function getAvatarAttribute($avatar)
+  public function getAvatarAttribute(): string
   {
-    return $avatar ? asset("storage/{$avatar}") : null;
-  }
-
-  /**
-   * Method to get the raw avatar attribute.
-   *
-   * @return string|null
-   */
-  public function getRawAvatarAttr()
-  {
-    return $this->attributes['avatar'] ?? '';
+    return $this->getFirstMediaUrl('avatars');
   }
 }
