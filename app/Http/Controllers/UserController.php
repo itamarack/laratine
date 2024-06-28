@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\QueryBuilder\QueryBuilder;
-use Illuminate\Support\Facades\Storage;
 use App\Services\FileUploadService;
 
 class UserController extends Controller

@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class FileUploadService
 {
@@ -12,7 +11,7 @@ class FileUploadService
    * Handle avatar upload and deletion.
    *
    * @param Request $request
-   * @return string $avatar_path
+   * @return void
    */
   public function uploadAvatar(Request $request, User $user): void
   {

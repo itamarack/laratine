@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
@@ -20,16 +21,25 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-  Route::get('/profile', [UserController::class, 'profileIndex'])->name('profile.index');
-  Route::patch('/profile', [UserController::class, 'profileUpdate'])->name('profile.update');
-  Route::delete('/profile', [UserController::class, 'profileDestroy'])->name('profile.destroy');
+  Route::prefix('profile')->group(function () {
+    Route::get('/', [UserController::class, 'profileIndex'])->name('profile.index');
+    Route::patch('/', [UserController::class, 'profileUpdate'])->name('profile.update');
+    Route::delete('/', [UserController::class, 'profileDestroy'])->name('profile.destroy');
+  });
 
-  Route::get('/users', [UserController::class, 'userIndex'])->name('user.index');
-  Route::get('/users/create', [UserController::class, 'userCreate'])->name('user.create');
-  Route::post('/users/create', [UserController::class, 'userStore'])->name('user.store');
-  Route::get('/users/{user}/edit/', [UserController::class, 'userShow'])->name('user.show');
-  Route::patch('/users/{user}/edit/', [UserController::class, 'userUpdate'])->name('user.update');
-  Route::delete('/users/{user}/delete', [UserController::class, 'userDestroy'])->name('user.destroy');
+  Route::prefix('users')->group(function () {
+    Route::get('/', [UserController::class, 'userIndex'])->name('user.index');
+    Route::get('/create', [UserController::class, 'userCreate'])->name('user.create');
+    Route::post('/create', [UserController::class, 'userStore'])->name('user.store');
+    Route::get('/{user}/edit/', [UserController::class, 'userShow'])->name('user.show');
+    Route::patch('/{user}/edit/', [UserController::class, 'userUpdate'])->name('user.update');
+    Route::delete('/{user}/delete', [UserController::class, 'userDestroy'])->name('user.destroy');
+  });
+
+  Route::prefix('posts')->group(function () {
+    Route::get('/', [PostController::class, 'postIndex'])->name('post.index');
+    Route::get('/create', [PostController::class, 'postCreate'])->name('post.create');
+  });
 });
 
 require __DIR__.'/auth.php';

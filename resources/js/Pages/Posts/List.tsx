@@ -29,15 +29,16 @@ import { DataTable, DataTableProps, DataTableSortStatus } from 'mantine-datatabl
 import { IconDotsVertical, IconEdit, IconPlus, IconSearch, IconTrash } from '@tabler/icons-react';
 import { PageHeader } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
-import { PageProps, User } from '@/types';
+import { PageProps, Post } from '@/types';
+import { postRoute } from '@/routes';
 
-type UsersProps = {
-  users: any;
+type PostsProps = {
+  posts: any;
 } & PageProps;
 
 const items = [
   { title: 'Dashboard', href: '/dashboard' },
-  { title: 'Users', href: '#' },
+  { title: 'Posts', href: '#' },
 ].map((item, index) => (
   <Anchor component={Link} href={item.href} key={index}>
     {item.title}
@@ -50,14 +51,14 @@ const PAPER_PROPS: PaperProps = {
   radius: 'md',
 };
 
-export default function List({ auth, users }: UsersProps) {
+export default function List({ auth, posts }: PostsProps) {
   const theme = useMantineTheme();
-  const [selected, setSelected] = useState<User>();
+  const [selected, setSelected] = useState<Post>();
   const [fetching, setFetching] = useState<boolean>(false);
   const [isOpen, { open: onOpen, close: onClose }] = useDisclosure(false);
   const [search, setSearch] = useState<string>('');
-  const [selectedRecords, setSelectedRecords] = useState<User[]>([]);
-  const [sortStatus, setSortStatus] = useState<DataTableSortStatus<User>>({
+  const [selectedRecords, setSelectedRecords] = useState<Post[]>([]);
+  const [sortStatus, setSortStatus] = useState<DataTableSortStatus<Post>>({
     columnAccessor: 'user',
     direction: 'asc',
   });
@@ -77,7 +78,7 @@ export default function List({ auth, users }: UsersProps) {
     router.get(route('user.index'), payload, { preserveState: true });
   };
 
-  const onSortStatusChange = ({ columnAccessor, direction }: DataTableSortStatus<User>) => {
+  const onSortStatusChange = ({ columnAccessor, direction }: DataTableSortStatus<Post>) => {
     onQueryTable('sort', direction === 'asc' ? columnAccessor : `-${columnAccessor}`);
     setSortStatus(() => ({ columnAccessor, direction }));
   };
@@ -91,7 +92,7 @@ export default function List({ auth, users }: UsersProps) {
     onQueryTable('search', search);
   }, 3000);
 
-  const onDeleteAccount = () => {
+  const onDeletePost = () => {
     if (!selected) {
       return notifications.show({
         title: 'Failed!',
@@ -113,38 +114,24 @@ export default function List({ auth, users }: UsersProps) {
     });
   };
 
-  const columns: DataTableProps<User>['columns'] = [
+  const columns: DataTableProps<Post>['columns'] = [
     {
-      accessor: 'firstname',
-      title: 'User',
-      render: (user: User) => {
+      accessor: 'title',
+      title: 'Title',
+      render: ({ title, excerpt }: Post) => {
         return (
-          <Flex component={UnstyledButton} gap="xs" align="center">
-            <Avatar
-              variant="filled"
-              radius="xl"
-              size="md"
-              src={user.avatar}
-              alt={`${user.firstname} ${user.lastname}`}
-              color={theme.primaryColor}
-            >
-              {_first(user.firstname)} {_first(user.lastname)}
-            </Avatar>
-            <Stack gap={0}>
-              <Text fz="sm" fw={600}>
-                {user.firstname} {user.lastname}
-              </Text>
-              <Text fz="xs">{user.email}</Text>
-            </Stack>
-          </Flex>
+          <Stack gap={0}>
+            <Text fw={600}>{title}</Text>
+            <Text fz="xs">{excerpt}</Text>
+          </Stack>
         );
       },
       sortable: true,
       filter: (
         <TextInput
-          label="Users"
-          description="Show all users in the system"
-          placeholder="Search users..."
+          label="Posts"
+          description="Show all posts in the system"
+          placeholder="Search posts..."
           leftSection={<IconSearch size={16} />}
           value={search}
           onChange={e => {
@@ -156,39 +143,35 @@ export default function List({ auth, users }: UsersProps) {
     },
     {
       accessor: 'Status',
-      render: (user: User) => (
-        <Badge
-          color={user.email_verified_at ? 'green.8' : 'red'}
-          variant="filled"
-          size="sm"
-          radius="sm"
-        >
-          {user.email_verified_at ? 'Verified' : 'Unverified'}
+      title: 'Status',
+      render: ({ status }: Post) => (
+        <Badge color={status ? 'green.8' : 'red'} variant="filled" size="sm" radius="sm">
+          {status}
         </Badge>
       ),
     },
     {
       accessor: 'created_at',
       sortable: true,
-      render: (user: User) => (
-        <Text fz="sm">{dayjs(new Date(user.created_at)).format('MMM D, YYYY')}</Text>
+      render: ({ created_at }: Post) => (
+        <Text fz="sm">{dayjs(new Date(created_at)).format('MMM D, YYYY')}</Text>
       ),
     },
     {
       accessor: 'updated_at',
       sortable: true,
-      render: (user: User) => (
-        <Text fz="sm">{dayjs(new Date(user.updated_at)).format('MMM D, YYYY')}</Text>
+      render: ({ updated_at }: Post) => (
+        <Text fz="sm">{dayjs(new Date(updated_at)).format('MMM D, YYYY')}</Text>
       ),
     },
     {
       accessor: '',
       title: 'Actions',
-      render: (user: any) => (
+      render: (post: Post) => (
         <Group gap="sm">
           <Button
             component={Link}
-            href={`/users/${user.id}/edit`}
+            href={`/users/${post.id}/edit`}
             variant="filled"
             size="xs"
             leftSection={<IconEdit size={16} />}
@@ -197,7 +180,7 @@ export default function List({ auth, users }: UsersProps) {
           </Button>
           <Button
             onClick={() => {
-              setSelected(() => user);
+              setSelected(() => post);
               onOpen();
             }}
             variant="filled"
@@ -214,13 +197,13 @@ export default function List({ auth, users }: UsersProps) {
 
   return (
     <AuthenticatedLayout user={auth.user}>
-      <Head title="Users | Account" />
+      <Head title="Posts | Publishing" />
 
-      <Modal opened={isOpen} onClose={onClose} title="Delete Account" centered>
+      <Modal opened={isOpen} onClose={onClose} title="Delete Post" centered>
         <Stack>
-          <Text fw={600}>Are You sure you want to delete this user?</Text>
+          <Text fw={600}>Are You sure you want to delete this post?</Text>
           <SimpleGrid cols={{ base: 1, sm: 2 }}>
-            <Button loading={fetching} onClick={onDeleteAccount} variant="filled">
+            <Button loading={fetching} onClick={onDeletePost} variant="filled">
               Delete
             </Button>
             <Button disabled={fetching} onClick={onClose} variant="outline">
@@ -234,18 +217,22 @@ export default function List({ auth, users }: UsersProps) {
         <Stack gap="lg">
           <PageHeader
             user={auth.user}
-            title="Users"
+            title="Posts"
             breadcrumbItems={items}
             withActions={
-              <Button component={Link} href={'/users/create'} leftSection={<IconPlus size={18} />}>
-                New User
+              <Button
+                component={Link}
+                href={postRoute().create}
+                leftSection={<IconPlus size={18} />}
+              >
+                New Post
               </Button>
             }
           />
           <Paper {...PAPER_PROPS}>
             <Group justify="space-between" mb="md">
               <Text fz="lg" fw={600}>
-                Users
+                Posts
               </Text>
               <ActionIcon>
                 <IconDotsVertical size={18} />
@@ -257,12 +244,12 @@ export default function List({ auth, users }: UsersProps) {
               striped
               highlightOnHover
               columns={columns}
-              records={users.data}
+              records={posts.data}
               selectedRecords={selectedRecords}
               onSelectedRecordsChange={setSelectedRecords}
-              totalRecords={users.total}
-              recordsPerPage={users.per_page}
-              page={users.current_page}
+              totalRecords={posts.total}
+              recordsPerPage={posts.per_page}
+              page={posts.current_page}
               onPageChange={p => onQueryTable('page', p.toString())}
               recordsPerPageOptions={RECORD_PAGINATOR}
               onRecordsPerPageChange={p => onQueryTable('per_page', p.toString())}

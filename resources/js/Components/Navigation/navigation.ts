@@ -3,7 +3,11 @@ import {
   IconMessage,
   IconDashboard,
   IconSettings,
-  IconUsersGroup
+  IconUsersGroup,
+  IconArticle,
+  IconCategory,
+  IconTags,
+  IconBooks
 } from '@tabler/icons-react';
 
 const navigationItems = [
@@ -12,6 +16,15 @@ const navigationItems = [
     links: [
       { label: 'Dashboard', icon: IconDashboard, link: '/dashboard' },
       { label: 'Messages', icon: IconMessage, link: '/messages' },
+    ]
+  },
+  {
+    title: 'Publishing',
+    links: [
+      { label: 'Posts', icon: IconArticle, link: '/posts' },
+      { label: 'Categories', icon: IconCategory, link: '/categories' },
+      { label: 'Tags', icon: IconTags, link: '/tags' },
+      { label: 'Pages', icon: IconBooks, link: '/pages' },
     ]
   },
   {

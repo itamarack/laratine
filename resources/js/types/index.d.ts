@@ -20,6 +20,17 @@ export interface User {
   password_confirmation?: string;
 }
 
+export interface Post {
+  id: number | string;
+  title: string;
+  excerpt: string;
+  author: string;
+  content: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
   auth: {
     user: User;

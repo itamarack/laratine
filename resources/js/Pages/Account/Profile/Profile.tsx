@@ -110,7 +110,6 @@ function Profile({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: string
         });
       },
       onError: error => {
-        console.log(error);
         notifications.show({
           title: 'Failed!',
           message: 'Something went wrong, Try again.',
