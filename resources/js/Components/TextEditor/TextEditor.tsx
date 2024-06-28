@@ -53,9 +53,9 @@ const TextEditor = ({
   });
 
   return (
-    <Stack {...others}>
+    <Stack h={'100%'}>
       <Text>{label}</Text>
-      <RichTextEditor editor={editor} style={{ width }}>
+      <RichTextEditor editor={editor} style={{ width }} {...others}>
         <RichTextEditor.Toolbar sticky stickyOffset={60}>
           <RichTextEditor.ControlsGroup>
             <RichTextEditor.Bold />

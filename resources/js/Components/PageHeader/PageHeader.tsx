@@ -70,8 +70,8 @@ const PageHeader = (props: PageHeaderProps) => {
           <Flex
             align="center"
             justify="space-between"
-            direction={{ base: 'row', sm: 'row' }}
-            gap={{ base: 'sm', sm: 4 }}
+            direction={{ base: 'column', sm: 'row' }}
+            gap={{ base: 12, sm: 4 }}
           >
             <Stack>
               <Title order={3}>{title}</Title>

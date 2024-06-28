@@ -1,5 +1,5 @@
 export const postRoute = (postId?: string) => ({
-  list: '/list',
+  list: '/posts/list',
   create: './posts/create',
   update: `./posts/${postId}/edit`
 });

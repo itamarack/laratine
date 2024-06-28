@@ -3,11 +3,9 @@
 import {
   ActionIcon,
   Anchor,
-  Avatar,
   Badge,
   Button,
   Container,
-  Flex,
   Group,
   Modal,
   Paper,
@@ -16,7 +14,6 @@ import {
   Stack,
   Text,
   TextInput,
-  UnstyledButton,
   useMantineTheme,
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
