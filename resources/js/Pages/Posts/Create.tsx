@@ -38,7 +38,7 @@ import { PageHeader, Surface, TextEditor } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
 import { PageProps, User } from '@/types';
 import { postRoute } from '@/routes';
-import { slugify, makeAuthorsList } from '@/Utils';
+import { slugify, makeAuthorList } from '@/Utils';
 
 const items = [
   { title: 'Dashboard', href: '/dashboard' },
@@ -64,7 +64,7 @@ type CreatePostProps = {
 
 export default function Create({ auth, authors }: CreatePostProps) {
   const [featuredImage, setFeaturedImage] = useState<string>('');
-  const authorsList = makeAuthorsList(authors);
+  const authorsList = makeAuthorList(authors);
 
   const form = useForm({
     title: '',

@@ -2,19 +2,22 @@
 
 import { Button, Stack, TextInput, Textarea, Select, Modal, SimpleGrid } from '@mantine/core';
 import { FormEventHandler, useEffect } from 'react';
-import { useForm } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 import { notifications } from '@mantine/notifications';
 import { useDebouncedCallback } from '@mantine/hooks';
-import { slugify } from '@/Utils';
+import { slugify, makeCategoryList } from '@/Utils';
 import { Category } from '@/types';
 
 type CategoryProps = {
+  categories?: Category[];
   category?: Category;
   isOpen: boolean;
   onClose: () => void;
+  onSearch: (e: string) => void;
 };
 
-export default function Edit({ category, isOpen, onClose }: CategoryProps) {
+export default function Edit({ categories, category, isOpen, onClose, onSearch }: CategoryProps) {
+  const categoryList = makeCategoryList({ categories, category });
   const form = useForm({
     id: '',
     title: '',
@@ -44,8 +47,8 @@ export default function Edit({ category, isOpen, onClose }: CategoryProps) {
           message: 'Category created successfully.',
         });
 
-        form.reset();
         onClose();
+        router.visit(route('category.index'));
       },
       onError: () => {
         notifications.show({
@@ -83,12 +86,13 @@ export default function Edit({ category, isOpen, onClose }: CategoryProps) {
             searchable
             label="Parent"
             placeholder="Select Parent Category"
-            data={[]}
-            value={form.data.parent_id}
+            data={categoryList}
+            value={form.data.parent_id?.toString()}
             error={form.errors.parent_id}
             disabled={form.processing}
             checkIconPosition="right"
             onChange={(a: any) => form.setData('parent_id', a)}
+            onInput={e => onSearch(e.currentTarget.value)}
           />
           <Textarea
             label="Description"
@@ -102,7 +106,14 @@ export default function Edit({ category, isOpen, onClose }: CategoryProps) {
             <Button loading={form.processing} onClick={onSubmit} variant="filled">
               Create
             </Button>
-            <Button disabled={form.processing} onClick={onClose} variant="outline">
+            <Button
+              disabled={form.processing}
+              variant="outline"
+              onClick={() => {
+                onClose();
+                router.visit(route('category.index'));
+              }}
+            >
               Cancel
             </Button>
           </SimpleGrid>

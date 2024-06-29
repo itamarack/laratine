@@ -2,17 +2,22 @@
 
 import { Button, Stack, TextInput, Textarea, Select, Modal, SimpleGrid } from '@mantine/core';
 import { FormEventHandler } from 'react';
-import { useForm } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 import { notifications } from '@mantine/notifications';
 import { useDebouncedCallback } from '@mantine/hooks';
-import { slugify } from '@/Utils';
+import { slugify, makeCategoryList } from '@/Utils';
+import { Category } from '@/types';
 
 type CategoryProps = {
+  categories?: Category[];
   isOpen: boolean;
   onClose: () => void;
+  onSearch: (e: string) => void;
 };
 
-export default function Create({ isOpen, onClose }: CategoryProps) {
+export default function Create({ isOpen, onClose, onSearch, categories }: CategoryProps) {
+  const categoryList = makeCategoryList({ categories });
+
   const form = useForm({
     title: '',
     slug: '',
@@ -36,6 +41,7 @@ export default function Create({ isOpen, onClose }: CategoryProps) {
 
         form.reset();
         onClose();
+        router.visit(route('category.index'));
       },
       onError: () => {
         notifications.show({
@@ -73,12 +79,13 @@ export default function Create({ isOpen, onClose }: CategoryProps) {
             searchable
             label="Parent"
             placeholder="Select Parent Category"
-            data={[]}
+            data={categoryList}
             value={form.data.parent_id}
             error={form.errors.parent_id}
             disabled={form.processing}
             checkIconPosition="right"
             onChange={(a: any) => form.setData('parent_id', a)}
+            onInput={e => onSearch(e.currentTarget.value)}
           />
           <Textarea
             label="Description"
@@ -92,7 +99,14 @@ export default function Create({ isOpen, onClose }: CategoryProps) {
             <Button loading={form.processing} onClick={onSubmit} variant="filled">
               Create
             </Button>
-            <Button disabled={form.processing} onClick={onClose} variant="outline">
+            <Button
+              disabled={form.processing}
+              onClick={() => {
+                onClose();
+                router.visit(route('category.index'));
+              }}
+              variant="outline"
+            >
               Cancel
             </Button>
           </SimpleGrid>

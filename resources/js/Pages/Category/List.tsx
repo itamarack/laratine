@@ -13,11 +13,11 @@ import {
   Text,
   TextInput,
 } from '@mantine/core';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import dayjs from 'dayjs';
 import _first from 'lodash/first';
-import { Head, Link, router } from '@inertiajs/react';
-import { useThrottledCallback, useDisclosure } from '@mantine/hooks';
+import { Head, Link } from '@inertiajs/react';
+import { useDisclosure } from '@mantine/hooks';
 import { DataTable, DataTableProps, DataTableSortStatus } from 'mantine-datatable';
 import { IconDotsVertical, IconEdit, IconPlus, IconSearch, IconTrash } from '@tabler/icons-react';
 import { CreateCategory, DeleteCategory, EditCategory } from '@/Pages/Category';
@@ -25,6 +25,7 @@ import { PageHeader } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
 import { Category, PageProps } from '@/types';
 import { dashboardRoute } from '@/routes';
+import { useSearchFilter } from '@/hooks';
 
 type CategoryProps = {
   categories: any;
@@ -46,46 +47,18 @@ const PAPER_PROPS: PaperProps = {
 };
 
 export default function List({ auth, categories }: CategoryProps) {
-  const [fetching, setFetching] = useState<boolean>(false);
   const [selected, setSelected] = useState<Category>();
   const [isOpenDelete, { open: onOpenDelete, close: onCloseDelete }] = useDisclosure(false);
   const [isOpenCreate, { open: onOpenCreate, close: onCloseCreate }] = useDisclosure(false);
   const [isOpenEdit, { open: onOpenEdit, close: onCloseEdit }] = useDisclosure(false);
-  const [search, setSearch] = useState<string>('');
   const [selectedRecords, setSelectedRecords] = useState<Category[]>([]);
-  const [sortStatus, setSortStatus] = useState<DataTableSortStatus<Category>>({
-    columnAccessor: 'user',
-    direction: 'asc',
-  });
+  const searchFilter = useSearchFilter('category.index');
 
-  const RECORD_PAGINATOR = [5, 10, 20, 50];
-
-  router.on('start', () => setFetching(() => true));
-  router.on('finish', () => setFetching(() => false));
-
-  const onQueryTable = (queryKey: string, queryValue: string) => {
-    const queryParams = new URLSearchParams(window.location.search);
-    queryParams.set(queryKey, queryValue.toString());
-
-    if (queryKey === 'per_page') queryParams.set('page', '1');
-
-    const payload = Object.fromEntries(queryParams);
-    router.get(route('category.index'), payload, { preserveState: true });
+  const onColumnAction = (selected: Category, action: string) => {
+    setSelected(() => selected);
+    if (action === 'DELETE_ACTION') onOpenDelete();
+    else if (action === 'EDIT_ACTION') onOpenEdit();
   };
-
-  const onSortStatusChange = ({ columnAccessor, direction }: DataTableSortStatus<Category>) => {
-    onQueryTable('sort', direction === 'asc' ? columnAccessor : `-${columnAccessor}`);
-    setSortStatus(() => ({ columnAccessor, direction }));
-  };
-
-  useEffect(() => {
-    const queryParams = new URLSearchParams(window.location.search);
-    setSearch(queryParams.get('search') ?? '');
-  }, []);
-
-  const throttledSearch = useThrottledCallback(search => {
-    onQueryTable('search', search);
-  }, 3000);
 
   const columns: DataTableProps<Category>['columns'] = [
     {
@@ -101,10 +74,9 @@ export default function List({ auth, categories }: CategoryProps) {
           description="Show all categories in the system"
           placeholder="Search categories..."
           leftSection={<IconSearch size={16} />}
-          value={search}
+          value={searchFilter.search}
           onChange={e => {
-            setSearch(e.currentTarget.value);
-            throttledSearch(e.currentTarget.value);
+            searchFilter.onSearch(e.currentTarget.value);
           }}
         />
       ),
@@ -141,22 +113,16 @@ export default function List({ auth, categories }: CategoryProps) {
             variant="filled"
             size="xs"
             leftSection={<IconEdit size={16} />}
-            onClick={() => {
-              setSelected(() => category);
-              onOpenEdit();
-            }}
+            onClick={() => onColumnAction(category, 'EDIT_ACTION')}
           >
             Edit
           </Button>
           <Button
-            onClick={() => {
-              setSelected(() => category);
-              onOpenDelete();
-            }}
             variant="filled"
             size="xs"
             color="red"
             leftSection={<IconTrash size={16} />}
+            onClick={() => onColumnAction(category, 'DELETE_ACTION')}
           >
             Delete
           </Button>
@@ -169,8 +135,19 @@ export default function List({ auth, categories }: CategoryProps) {
     <AuthenticatedLayout user={auth.user}>
       <Head title="Categories | Publishing" />
 
-      <CreateCategory isOpen={isOpenCreate} onClose={onCloseCreate} />
-      <EditCategory category={selected} isOpen={isOpenEdit} onClose={onCloseEdit} />
+      <CreateCategory
+        categories={categories.data}
+        isOpen={isOpenCreate}
+        onClose={onCloseCreate}
+        onSearch={s => searchFilter.onSearch(s.toString())}
+      />
+      <EditCategory
+        categories={categories.data}
+        category={selected}
+        isOpen={isOpenEdit}
+        onClose={onCloseEdit}
+        onSearch={s => searchFilter.onSearch(s.toString())}
+      />
       <DeleteCategory category={selected} isOpen={isOpenDelete} onClose={onCloseDelete} />
 
       <Container fluid>
@@ -202,16 +179,18 @@ export default function List({ auth, categories }: CategoryProps) {
               columns={columns}
               records={categories.data}
               selectedRecords={selectedRecords}
-              onSelectedRecordsChange={setSelectedRecords}
+              fetching={searchFilter.isFetching}
               totalRecords={categories.total}
               recordsPerPage={categories.per_page}
               page={categories.current_page}
-              onPageChange={p => onQueryTable('page', p.toString())}
-              recordsPerPageOptions={RECORD_PAGINATOR}
-              onRecordsPerPageChange={p => onQueryTable('per_page', p.toString())}
-              sortStatus={sortStatus}
-              onSortStatusChange={onSortStatusChange}
-              fetching={fetching}
+              recordsPerPageOptions={[5, 10, 20, 50]}
+              onSelectedRecordsChange={setSelectedRecords}
+              onPageChange={page => searchFilter.onPageChange(page)}
+              onRecordsPerPageChange={perPage => searchFilter.onRecordsPerPage(perPage)}
+              sortStatus={searchFilter.sortStatus as DataTableSortStatus<Category>}
+              onSortStatusChange={(sortStatus: DataTableSortStatus<Category>) =>
+                searchFilter.onSortStatus(sortStatus as DataTableSortStatus<any>)
+              }
             />
           </Paper>
         </Stack>
