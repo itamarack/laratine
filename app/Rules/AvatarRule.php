@@ -1,13 +1,11 @@
-<?php 
+<?php
 
 namespace App\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Validation\Rule;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
-class AvatarRule implements Rule
+class AvatarRule extends Rule
 {
   protected $allowedExtensions = ['jpeg', 'png', 'gif', 'jpg'];
 

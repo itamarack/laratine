@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
@@ -120,5 +121,10 @@ class User extends Authenticatable implements HasMedia
   public function getAvatarAttribute(): string
   {
     return $this->getFirstMediaUrl('avatars');
+  }
+
+  public function authors(): Collection
+  {
+    return $this->query()->get();
   }
 }

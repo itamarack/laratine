@@ -11,7 +11,6 @@ import {
 } from '@/Components';
 import { PageProps } from '@/types';
 import { AuthenticatedLayout } from '@/Layouts';
-import { PATH_TASKS } from '@/routes';
 import ProjectsData from '@/mocks/Projects.json';
 import StatsGridData from '@/mocks/StatsGrid.json';
 
@@ -55,7 +54,7 @@ export default function Dashboard({ auth }: PageProps) {
                   <Button
                     variant="subtle"
                     component={Link}
-                    href={PATH_TASKS.root}
+                    href={''}
                     rightSection={<IconChevronRight size={18} />}
                   >
                     View all

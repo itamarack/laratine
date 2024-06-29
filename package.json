@@ -107,7 +107,8 @@
     "react-countup": "^6.5.3",
     "react-router-dom": "^6.23.1",
     "react-simple-maps": "^3.0.0",
-    "react-svg": "^16.1.34"
+    "react-svg": "^16.1.34",
+    "url-slug": "^4.0.1"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"

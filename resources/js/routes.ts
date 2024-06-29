@@ -1,3 +1,5 @@
+export const dashboardRoute = () => '/dashboard';
+
 export const postRoute = (postId?: string) => ({
   list: '/posts/list',
   create: './posts/create',

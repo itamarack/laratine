@@ -7,8 +7,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Spatie\QueryBuilder\QueryBuilder;
 use App\Services\FileUploadService;
+use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Http\Requests\PostRequest;
+use App\Models\User;
 
 class PostController extends Controller
 {
@@ -38,8 +41,32 @@ class PostController extends Controller
    * @param Request $request
    * @return Response
    */
-  public function postCreate (Request $request): Response
+  public function postCreate (Request $request, User $user): Response
   {
-    return Inertia::render('Posts/Create', []);
+    $authors = $user->authors();
+
+    return Inertia::render('Posts/Create', [
+      'authors' => $authors
+    ]);
+  }
+
+  /**
+   * Store a new user in the database.
+   *
+   * @param PostRequest $request
+   * @return RedirectResponse
+   */
+  public function postStore (PostRequest $request, Post $post): RedirectResponse
+  {
+    $post->fill($request->validated());
+
+    dd($post);
+
+    // $this->uploadService->uploadAvatar($request, $user);
+    // $user->save();
+
+    // event(new Registered($user));
+
+    return redirect()->route('post.index');
   }
 }

@@ -31,6 +31,22 @@ export interface Post {
   updated_at: string;
 }
 
+export interface Category {
+  _method?: string;
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  parent_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SelectableList {
+  label: string;
+  value: string;
+}
+
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
   auth: {
     user: User;
@@ -90,3 +106,4 @@ export type Invoices = {
   client_name: string;
   client_company: string;
 };
+

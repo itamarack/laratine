@@ -16,7 +16,6 @@ import {
   Accordion,
   Select,
   Image,
-  MultiSelect,
   Flex,
   TagsInput,
 } from '@mantine/core';
@@ -34,10 +33,12 @@ import {
   IconEye,
   IconLayout,
 } from '@tabler/icons-react';
+import { useDebouncedCallback } from '@mantine/hooks';
 import { PageHeader, Surface, TextEditor } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
-import { PageProps } from '@/types';
+import { PageProps, User } from '@/types';
 import { postRoute } from '@/routes';
+import { slugify, makeAuthorsList } from '@/Utils';
 
 const items = [
   { title: 'Dashboard', href: '/dashboard' },
@@ -57,8 +58,13 @@ const PAPER_PROPS: PaperProps = {
   style: { height: '100%' },
 };
 
-export default function Create({ auth }: PageProps) {
+type CreatePostProps = {
+  authors?: User[];
+} & PageProps;
+
+export default function Create({ auth, authors }: CreatePostProps) {
   const [featuredImage, setFeaturedImage] = useState<string>('');
+  const authorsList = makeAuthorsList(authors);
 
   const form = useForm({
     title: '',
@@ -76,6 +82,10 @@ export default function Create({ auth }: PageProps) {
     layout_width: '',
   });
 
+  const onSlugify = useDebouncedCallback((slug: string) => {
+    form.setData('slug', slugify(slug));
+  }, 200);
+
   const onFileUpload = (file: File | null) => {
     const objectURL = URL.createObjectURL(file as File);
     setFeaturedImage(() => objectURL);
@@ -91,12 +101,12 @@ export default function Create({ auth }: PageProps) {
   const onSubmit: FormEventHandler = event => {
     event.preventDefault();
 
-    form.post(route('user.store'), {
+    form.post(route('post.store'), {
       preserveScroll: true,
       onSuccess: () => {
         notifications.show({
-          title: 'Account updated!',
-          message: 'Profile has been updated successfully.',
+          title: 'Success!',
+          message: 'Post created successfully.',
         });
       },
       onError: () => {
@@ -143,6 +153,7 @@ export default function Create({ auth }: PageProps) {
                       error={form.errors.title}
                       disabled={form.processing}
                       onChange={e => form.setData('title', e.target.value)}
+                      onInput={e => onSlugify(e.currentTarget.value)}
                     />
                     <TextInput
                       withAsterisk
@@ -191,16 +202,20 @@ export default function Create({ auth }: PageProps) {
                         </Accordion.Control>
                         <Accordion.Panel>
                           <Stack>
-                            <TextInput
+                            <Select
+                              searchable
                               withAsterisk
                               label="Author"
-                              placeholder="Author"
+                              placeholder="Select Author"
+                              data={authorsList}
                               value={form.data.author}
                               error={form.errors.author}
                               disabled={form.processing}
-                              onChange={e => form.setData('author', e.target.value)}
+                              checkIconPosition="right"
+                              onChange={(a: any) => form.setData('author', a)}
                             />
                             <Select
+                              searchable
                               withAsterisk
                               label="Category"
                               placeholder="Select Category"
@@ -219,7 +234,7 @@ export default function Create({ auth }: PageProps) {
                               error={form.errors.status}
                               disabled={form.processing}
                               checkIconPosition="right"
-                              data={['Publish', 'draft', 'Review', 'Unpublish']}
+                              data={['Publish', 'Draft', 'Review', 'Unpublish']}
                               onChange={(status: any) => form.setData('status', status)}
                             />
                             <Flex justify="flex-end">

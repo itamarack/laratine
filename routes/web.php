@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -39,6 +40,14 @@ Route::middleware('auth')->group(function () {
   Route::prefix('posts')->group(function () {
     Route::get('/', [PostController::class, 'postIndex'])->name('post.index');
     Route::get('/create', [PostController::class, 'postCreate'])->name('post.create');
+    Route::post('/create', [PostController::class, 'postStore'])->name('post.store');
+  });
+
+  Route::prefix('categories')->group(function () {
+    Route::get('/', [CategoryController::class, 'categoryIndex'])->name('category.index');
+    Route::post('/create', [CategoryController::class, 'categoryStore'])->name('category.store');
+    Route::patch('/{category}/edit/', [CategoryController::class, 'categoryUpdate'])->name('category.update');
+    Route::delete('/{category}/delete', [CategoryController::class, 'categoryDestroy'])->name('category.destroy');
   });
 });
 
