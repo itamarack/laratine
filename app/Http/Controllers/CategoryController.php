@@ -27,7 +27,7 @@ class CategoryController extends Controller
    */
   public function categoryIndex(Category $category): Response
   {
-    $options = [];
+    $options['allowedSorts'] = ['title', 'created_at', 'updated_at'];
 
     $categories = $this->builder->query($category, $options);
 

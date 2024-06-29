@@ -29,7 +29,7 @@ class QueryBuilderService
    */
   public function query(Model $model, ?array $options): LengthAwarePaginator
   {
-    $allowedSorts = $options['$allowedSorts'] ?? [];
+    $allowedSorts = $options['allowedSorts'] ?? [];
     $search = $model::search($this->search);
 
     return QueryBuilder::for($model::class)
