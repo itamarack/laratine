@@ -7,11 +7,13 @@ import {
   Container,
   Flex,
   Group,
+  Menu,
   Paper,
   PaperProps,
   Stack,
   Text,
   TextInput,
+  rem,
 } from '@mantine/core';
 import { useState } from 'react';
 import dayjs from 'dayjs';
@@ -19,7 +21,14 @@ import _first from 'lodash/first';
 import { Head, Link } from '@inertiajs/react';
 import { useDisclosure } from '@mantine/hooks';
 import { DataTable, DataTableProps, DataTableSortStatus } from 'mantine-datatable';
-import { IconDotsVertical, IconEdit, IconPlus, IconSearch, IconTrash } from '@tabler/icons-react';
+import {
+  IconDotsVertical,
+  IconEdit,
+  IconExternalLink,
+  IconPlus,
+  IconSearch,
+  IconTrash,
+} from '@tabler/icons-react';
 import { CreateCategory, DeleteCategory, EditCategory } from '@/Pages/Category';
 import { PageHeader } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
@@ -105,28 +114,41 @@ export default function List({ auth, categories }: CategoryProps) {
       ),
     },
     {
-      accessor: '',
+      accessor: 'id',
       title: 'Actions',
+      width: 100,
       render: (category: Category) => (
-        <Flex gap="sm">
-          <Button
-            variant="filled"
-            size="xs"
-            leftSection={<IconEdit size={16} />}
-            onClick={() => onColumnAction(category, 'EDIT_ACTION')}
-          >
-            Edit
-          </Button>
-          <Button
-            variant="filled"
-            size="xs"
-            color="red"
-            leftSection={<IconTrash size={16} />}
-            onClick={() => onColumnAction(category, 'DELETE_ACTION')}
-          >
-            Delete
-          </Button>
-        </Flex>
+        <Menu withArrow width={150} shadow="md">
+          <Menu.Target>
+            <Flex>
+              <Button variant="filled" size="xs" rightSection={<IconDotsVertical size={16} />}>
+                More
+              </Button>
+            </Flex>
+          </Menu.Target>
+          <Menu.Dropdown>
+            <Menu.Item
+              fw={600}
+              fz="sm"
+              color="blue"
+              variant="filled"
+              leftSection={<IconEdit size={16} />}
+              onClick={() => onColumnAction(category, 'EDIT_ACTION')}
+            >
+              Edit
+            </Menu.Item>
+            <Menu.Item
+              fw={600}
+              fz="sm"
+              color="red"
+              variant="filled"
+              leftSection={<IconTrash size={16} />}
+              onClick={() => onColumnAction(category, 'DELETE_ACTION')}
+            >
+              Delete
+            </Menu.Item>
+          </Menu.Dropdown>
+        </Menu>
       ),
     },
   ];
