@@ -1,19 +1,15 @@
 'use client';
 
 import {
-  ActionIcon,
   Anchor,
   Button,
   Container,
   Flex,
-  Group,
   Menu,
   Paper,
-  PaperProps,
   Stack,
   Text,
   TextInput,
-  rem,
 } from '@mantine/core';
 import { useState } from 'react';
 import dayjs from 'dayjs';
@@ -21,14 +17,7 @@ import _first from 'lodash/first';
 import { Head, Link } from '@inertiajs/react';
 import { useDisclosure } from '@mantine/hooks';
 import { DataTable, DataTableProps, DataTableSortStatus } from 'mantine-datatable';
-import {
-  IconDotsVertical,
-  IconEdit,
-  IconExternalLink,
-  IconPlus,
-  IconSearch,
-  IconTrash,
-} from '@tabler/icons-react';
+import { IconDotsVertical, IconEdit, IconPlus, IconSearch, IconTrash } from '@tabler/icons-react';
 import { CreateCategory, DeleteCategory, EditCategory } from '@/Pages/Category';
 import { PageHeader } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
@@ -37,7 +26,12 @@ import { dashboardRoute } from '@/routes';
 import { useSearchFilter } from '@/hooks';
 
 type CategoryProps = {
-  categories: any;
+  categories: {
+    data: Category[];
+    total: number;
+    per_page: number;
+    current_page: number;
+  };
 } & PageProps;
 
 const items = [
@@ -48,12 +42,6 @@ const items = [
     {item.title}
   </Anchor>
 ));
-
-const PAPER_PROPS: PaperProps = {
-  p: 'md',
-  shadow: 'md',
-  radius: 'md',
-};
 
 export default function List({ auth, categories }: CategoryProps) {
   const [selected, setSelected] = useState<Category>();
@@ -184,15 +172,7 @@ export default function List({ auth, categories }: CategoryProps) {
               </Button>
             }
           />
-          <Paper {...PAPER_PROPS}>
-            <Group justify="space-between" mb="md">
-              <Text fz="lg" fw={600}>
-                Categories
-              </Text>
-              <ActionIcon>
-                <IconDotsVertical size={18} />
-              </ActionIcon>
-            </Group>
+          <Paper p="md" shadow="md" radius="md">
             <DataTable
               minHeight={200}
               verticalSpacing="xs"
