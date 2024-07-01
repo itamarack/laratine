@@ -12,62 +12,52 @@ import {
   rem,
   Box,
 } from '@mantine/core';
-import { useForm } from '@mantine/form';
-import { useState } from 'react';
+import { FormEventHandler, useState } from 'react';
 import { IconCheck, IconX } from '@tabler/icons-react';
-import { Head, router, usePage } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { notifications } from '@mantine/notifications';
-import { RequestPayload } from '@inertiajs/core';
 import { AuthLayout } from '@/Layouts';
 import { Surface } from '@/Components';
 import classes from './Auth.module.css';
 
 function ResetPassword({ token, email }: { token: string; email: string }) {
-  const { errors } = usePage().props;
   const [popoverOpened, setPopoverOpened] = useState(false);
 
   const form = useForm({
-    mode: 'uncontrolled',
-    initialValues: {
-      token: token,
-      email: email,
-      password: '',
-      password_confirmation: '',
-    },
-
-    validate: {
-      email: value => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-      password: value => (getStrength(value) ? 'Password must meet all criteria' : null),
-      password_confirmation: (value, values) =>
-        value !== values.password ? 'Passwords did not match' : null,
-    },
+    token: token,
+    email: email,
+    password: '',
+    password_confirmation: '',
   });
 
   const checks = requirements.map((requirement, index) => (
     <PasswordRequirement
       key={index}
       label={requirement.label}
-      meets={requirement.re.test(form.getInputProps('password').value)}
+      meets={requirement.re.test(form.data.password)}
     />
   ));
 
-  const strength = getStrength(form.getInputProps('password').value);
+  const strength = getStrength(form.data.password);
   const color = strength === 100 ? 'teal' : strength > 50 ? 'yellow' : 'red';
 
-  const onSubmit = (values: RequestPayload) => {
-    router.post(route('password.store'), values);
-    form.setErrors(errors);
+  const onSubmit: FormEventHandler = event => {
+    event.preventDefault();
 
-    if (Object.keys(errors).length) {
-      Object.values(errors).forEach(error => {
+    form.post(route('password.store'), {
+      onSuccess: () => {
         notifications.show({
-          title: 'Error!',
-          message: error,
-          color: 'red',
-          icon: <IconX />,
+          title: 'Success!',
+          message: 'Account created successfully.',
         });
-      });
-    }
+      },
+      onError: () => {
+        notifications.show({
+          title: 'Failed!',
+          message: 'Something went wrong, Try again.',
+        });
+      },
+    });
   };
 
   return (
@@ -82,59 +72,64 @@ function ResetPassword({ token, email }: { token: string; email: string }) {
           </Stack>
 
           <Surface component={Paper} className={classes.card}>
-            <form onSubmit={form.onSubmit(values => onSubmit(values))}>
-              <TextInput
-                label="Email"
-                withAsterisk
-                mt="md"
-                placeholder="your@email.com"
-                key={form.key('email')}
-                {...form.getInputProps('email')}
-                classNames={{ label: classes.label }}
-              />
-              <Popover
-                opened={popoverOpened}
-                position="bottom"
-                width="target"
-                transitionProps={{ transition: 'pop' }}
-              >
-                <Popover.Target>
-                  <div
-                    onFocusCapture={() => setPopoverOpened(true)}
-                    onBlurCapture={() => setPopoverOpened(false)}
-                  >
-                    <PasswordInput
-                      mt="md"
-                      withAsterisk
-                      label="Password"
-                      key={form.key('password')}
-                      placeholder="Your password"
-                      {...form.getInputProps('password')}
-                      classNames={{ label: classes.label }}
+            <form onSubmit={onSubmit}>
+              <Stack>
+                <TextInput
+                  label="Email"
+                  withAsterisk
+                  placeholder="your@email.com"
+                  classNames={{ label: classes.label }}
+                  value={form.data.email}
+                  error={form.errors.email}
+                  disabled={form.processing}
+                  onChange={e => form.setData('email', e.target.value)}
+                />
+                <Popover
+                  opened={popoverOpened}
+                  position="bottom"
+                  width="target"
+                  transitionProps={{ transition: 'pop' }}
+                >
+                  <Popover.Target>
+                    <div
+                      onFocusCapture={() => setPopoverOpened(true)}
+                      onBlurCapture={() => setPopoverOpened(false)}
+                    >
+                      <PasswordInput
+                        withAsterisk
+                        label="Password"
+                        placeholder="Your password"
+                        classNames={{ label: classes.label }}
+                        value={form.data.password}
+                        error={form.errors.password}
+                        disabled={form.processing}
+                        onChange={e => form.setData('password', e.target.value)}
+                      />
+                    </div>
+                  </Popover.Target>
+                  <Popover.Dropdown>
+                    <Progress color={color} value={strength} size={5} mb="xs" />
+                    <PasswordRequirement
+                      label="Includes at least 6 characters"
+                      meets={form.data.password.length > 5}
                     />
-                  </div>
-                </Popover.Target>
-                <Popover.Dropdown>
-                  <Progress color={color} value={strength} size={5} mb="xs" />
-                  <PasswordRequirement
-                    label="Includes at least 6 characters"
-                    meets={form.getInputProps('password').value.length > 5}
-                  />
-                  {checks}
-                </Popover.Dropdown>
-              </Popover>
-              <PasswordInput
-                withAsterisk
-                label="Confirm Password"
-                placeholder="Confirm password"
-                mt="md"
-                key={form.key('password_confirmation')}
-                {...form.getInputProps('password_confirmation')}
-                classNames={{ label: classes.label }}
-              />
-              <Button fullWidth mt="xl" type="submit">
-                Reset Password
-              </Button>
+                    {checks}
+                  </Popover.Dropdown>
+                </Popover>
+                <PasswordInput
+                  withAsterisk
+                  label="Confirm Password"
+                  placeholder="Confirm password"
+                  classNames={{ label: classes.label }}
+                  value={form.data.password_confirmation}
+                  error={form.errors.password_confirmation}
+                  disabled={form.processing}
+                  onChange={e => form.setData('password_confirmation', e.target.value)}
+                />
+                <Button loading={form.processing} fullWidth mt="xl" type="submit">
+                  Reset Password
+                </Button>
+              </Stack>
             </form>
           </Surface>
         </Stack>

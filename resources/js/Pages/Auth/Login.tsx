@@ -10,9 +10,9 @@ import {
   Text,
   Stack,
 } from '@mantine/core';
-import { useForm } from '@mantine/form';
-import { Head, Link, router, usePage } from '@inertiajs/react';
-import { RequestPayload } from '@inertiajs/core';
+import { Head, Link, useForm } from '@inertiajs/react';
+import { notifications } from '@mantine/notifications';
+import { FormEventHandler } from 'react';
 import { AuthLayout } from '@/Layouts';
 import { Surface } from '@/Components';
 import classes from './Auth.module.css';
@@ -23,24 +23,29 @@ type LoginType = {
 };
 
 function Login({ status, canResetPassword }: LoginType) {
-  const { errors } = usePage().props;
-
   const form = useForm({
-    mode: 'uncontrolled',
-    initialValues: {
-      email: '',
-      password: '',
-      remember: false,
-    },
-
-    validate: {
-      email: value => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-    },
+    email: '',
+    password: '',
+    remember: false,
   });
 
-  const onSubmit = (values: RequestPayload) => {
-    router.post(route('login'), values);
-    form.setErrors(errors);
+  const onSubmit: FormEventHandler = event => {
+    event.preventDefault();
+
+    form.post(route('login'), {
+      onSuccess: () => {
+        notifications.show({
+          title: 'Success!',
+          message: 'Loggged In successfully.',
+        });
+      },
+      onError: () => {
+        notifications.show({
+          title: 'Failed!',
+          message: 'Something went wrong, Try again.',
+        });
+      },
+    });
   };
 
   return (
@@ -56,30 +61,36 @@ function Login({ status, canResetPassword }: LoginType) {
           </Stack>
 
           <Surface component={Paper} className={classes.card}>
-            <form onSubmit={form.onSubmit(values => onSubmit(values))}>
+            <form onSubmit={onSubmit}>
               <TextInput
                 label="Email"
                 withAsterisk
                 placeholder="your@email.com"
-                key={form.key('email')}
-                {...form.getInputProps('email')}
                 classNames={{ label: classes.label }}
+                value={form.data.email}
+                error={form.errors.email}
+                disabled={form.processing}
+                onChange={e => form.setData('email', e.target.value)}
               />
               <PasswordInput
                 withAsterisk
                 label="Password"
                 placeholder="Your password"
                 mt="md"
-                key={form.key('password')}
-                {...form.getInputProps('password')}
                 classNames={{ label: classes.label }}
+                value={form.data.password}
+                error={form.errors.password}
+                disabled={form.processing}
+                onChange={e => form.setData('password', e.target.value)}
               />
               <Group justify="space-between" mt="lg">
                 <Checkbox
                   label="Remember me"
-                  key={form.key('password')}
-                  {...form.getInputProps('remember')}
                   classNames={{ label: classes.label }}
+                  value={form.data.remember as any}
+                  error={form.errors.remember}
+                  disabled={form.processing}
+                  onChange={e => form.setData('remember', e.currentTarget.checked)}
                 />
                 {canResetPassword && (
                   <Text
@@ -92,7 +103,7 @@ function Login({ status, canResetPassword }: LoginType) {
                   </Text>
                 )}
               </Group>
-              <Button fullWidth mt="xl" type="submit">
+              <Button loading={form.processing} fullWidth mt="xl" type="submit">
                 Log In
               </Button>
             </form>

@@ -1,8 +1,6 @@
 import {
   Button,
-  Checkbox,
   Group,
-  PasswordInput,
   TextInput,
   Title,
   Center,
@@ -12,56 +10,40 @@ import {
   UnstyledButton,
   rem,
 } from '@mantine/core';
-import { useForm } from '@mantine/form';
 import { useMediaQuery } from '@mantine/hooks';
-import { IconX, IconCheck } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
 import { IconChevronLeft } from '@tabler/icons-react';
-import { Head, Link, router, usePage } from '@inertiajs/react';
-import { RequestPayload } from '@inertiajs/core';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { AuthLayout } from '@/Layouts';
 import { Surface } from '@/Components';
 import classes from './Auth.module.css';
+import { FormEventHandler } from 'react';
 
 function ResetPassword({ status }: { status: string }) {
-  const { errors, flash } = usePage().props;
   const mobile_match = useMediaQuery('(max-width: 425px)');
 
   const form = useForm({
-    mode: 'uncontrolled',
-    initialValues: {
-      email: '',
-      status: status,
-    },
-
-    validate: {
-      email: value => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-    },
+    email: '',
+    status: status,
   });
 
-  const onSubmit = (values: RequestPayload) => {
-    router.post(route('password.email'), values);
-    form.setErrors(errors);
+  const onSubmit: FormEventHandler = event => {
+    event.preventDefault();
 
-    if (status) {
-      notifications.show({
-        title: 'Verification Sent!',
-        message: status,
-        color: 'green',
-        icon: <IconCheck />,
-      });
-    }
-
-    if (Object.keys(errors).length) {
-      Object.values(errors).forEach(error => {
+    form.post(route('password.email'), {
+      onSuccess: () => {
         notifications.show({
-          title: 'Error!',
-          message: error,
-          color: 'red',
-          icon: <IconX />,
+          title: 'Success!',
+          message: 'Verification sent successfully',
         });
-      });
-    }
+      },
+      onError: () => {
+        notifications.show({
+          title: 'Failed!',
+          message: 'Something went wrong, Try again.',
+        });
+      },
+    });
   };
 
   return (
@@ -76,14 +58,16 @@ function ResetPassword({ status }: { status: string }) {
           </Stack>
 
           <Surface component={Paper} className={classes.card}>
-            <form onSubmit={form.onSubmit(values => onSubmit(values))}>
+            <form onSubmit={onSubmit}>
               <TextInput
                 label="Email"
                 withAsterisk
                 placeholder="your@email.com"
-                key={form.key('email')}
-                {...form.getInputProps('email')}
                 classNames={{ label: classes.label }}
+                value={form.data.email}
+                error={form.errors.email}
+                disabled={form.processing}
+                onChange={e => form.setData('email', e.target.value)}
               />
               <Group justify="space-between" align={'center'} mt="lg">
                 <UnstyledButton
@@ -97,7 +81,7 @@ function ResetPassword({ status }: { status: string }) {
                     <Text size="sm">Back to the login page</Text>
                   </Group>
                 </UnstyledButton>
-                <Button type="submit" fullWidth={mobile_match}>
+                <Button loading={form.processing} type="submit" fullWidth={mobile_match}>
                   Reset password
                 </Button>
               </Group>

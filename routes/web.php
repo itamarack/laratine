@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PostController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -48,6 +48,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/create', [CategoryController::class, 'categoryStore'])->name('category.store');
     Route::patch('/{category}/edit/', [CategoryController::class, 'categoryUpdate'])->name('category.update');
     Route::delete('/{category}/delete', [CategoryController::class, 'categoryDestroy'])->name('category.destroy');
+  });
+
+  Route::prefix('tags')->group(function () {
+    Route::get('/', [TagController::class, 'tagIndex'])->name('tag.index');
+    Route::post('/create', [TagController::class, 'tagStore'])->name('tag.store');
+    // Route::patch('/{category}/edit/', [CategoryController::class, 'categoryUpdate'])->name('category.update');
+    // Route::delete('/{category}/delete', [CategoryController::class, 'categoryDestroy'])->name('category.destroy');
   });
 });
 

@@ -42,6 +42,16 @@ export interface Category {
   updated_at: string;
 }
 
+export interface Tags {
+  _method?: string;
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface SelectableList {
   label: string;
   value: string;

@@ -13,52 +13,53 @@ import {
   Popover,
   Progress,
 } from '@mantine/core';
-import { useState } from 'react';
-import { useForm } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
+import { FormEventHandler, useState } from 'react';
 import { IconCheck, IconX } from '@tabler/icons-react';
-import { Head, Link, router, usePage } from '@inertiajs/react';
-import { RequestPayload } from '@inertiajs/core';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { AuthLayout } from '@/Layouts';
 import { Surface } from '@/Components';
 import classes from './Auth.module.css';
 
 function Register() {
-  const { errors } = usePage().props;
   const [popoverOpened, setPopoverOpened] = useState(false);
 
   const form = useForm({
-    initialValues: {
-      firstname: '',
-      lastname: '',
-      email: '',
-      password: '',
-      password_confirmation: '',
-    },
-
-    validate: {
-      email: value => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-      firstname: value => (value.length < 2 ? 'Name must have at least 2 letters' : null),
-      lastname: value => (value.length < 2 ? 'Name must have at least 2 letters' : null),
-      // password: value => (getStrength(value) ? 'Password must meet all criteria' : null),
-      password_confirmation: (value, values) =>
-        value !== values.password ? 'Passwords did not match' : null,
-    },
+    firstname: '',
+    lastname: '',
+    email: '',
+    password: '',
+    password_confirmation: '',
   });
 
   const checks = requirements.map((requirement, index) => (
     <PasswordRequirement
       key={index}
       label={requirement.label}
-      meets={requirement.re.test(form.getInputProps('password').value)}
+      meets={requirement.re.test(form.data.password)}
     />
   ));
 
-  const strength = getStrength(form.getInputProps('password').value);
+  const strength = getStrength(form.data.password);
   const color = strength === 100 ? 'teal' : strength > 50 ? 'yellow' : 'red';
 
-  const onSubmit = (values: RequestPayload) => {
-    router.post(route('register'), values);
-    form.setErrors(errors);
+  const onSubmit: FormEventHandler = event => {
+    event.preventDefault();
+
+    form.post(route('register'), {
+      onSuccess: () => {
+        notifications.show({
+          title: 'Success!',
+          message: 'Account created successfully.',
+        });
+      },
+      onError: () => {
+        notifications.show({
+          title: 'Failed!',
+          message: 'Something went wrong, Try again.',
+        });
+      },
+    });
   };
 
   return (
@@ -73,77 +74,87 @@ function Register() {
           </Stack>
 
           <Surface component={Paper} className={classes.card}>
-            <form onSubmit={form.onSubmit(values => onSubmit(values))}>
-              <SimpleGrid cols={{ base: 1, sm: 2 }}>
-                <TextInput
-                  label="Firstname"
-                  withAsterisk
-                  placeholder="Firstname"
-                  key={form.key('firstname')}
-                  {...form.getInputProps('firstname')}
-                  classNames={{ label: classes.label }}
-                />
-                <TextInput
-                  label="Lastname"
-                  withAsterisk
-                  placeholder="Lastname"
-                  key={form.key('lastname')}
-                  {...form.getInputProps('lastname')}
-                  classNames={{ label: classes.label }}
-                />
-              </SimpleGrid>
-              <TextInput
-                label="Email"
-                withAsterisk
-                mt="md"
-                placeholder="your@email.com"
-                key={form.key('email')}
-                {...form.getInputProps('email')}
-                classNames={{ label: classes.label }}
-              />
-              <Popover
-                opened={popoverOpened}
-                position="bottom"
-                width="target"
-                transitionProps={{ transition: 'pop' }}
-              >
-                <Popover.Target>
-                  <div
-                    onFocusCapture={() => setPopoverOpened(true)}
-                    onBlurCapture={() => setPopoverOpened(false)}
-                  >
-                    <PasswordInput
-                      mt="md"
-                      withAsterisk
-                      label="Password"
-                      key={form.key('password')}
-                      placeholder="Your password"
-                      {...form.getInputProps('password')}
-                      classNames={{ label: classes.label }}
-                    />
-                  </div>
-                </Popover.Target>
-                <Popover.Dropdown>
-                  <Progress color={color} value={strength} size={5} mb="xs" />
-                  <PasswordRequirement
-                    label="Includes at least 6 characters"
-                    meets={form.getInputProps('password').value.length > 5}
+            <form onSubmit={onSubmit}>
+              <Stack>
+                <SimpleGrid cols={{ base: 1, sm: 2 }}>
+                  <TextInput
+                    label="Firstname"
+                    withAsterisk
+                    placeholder="Firstname"
+                    classNames={{ label: classes.label }}
+                    value={form.data.firstname}
+                    error={form.errors.firstname}
+                    disabled={form.processing}
+                    onChange={e => form.setData('firstname', e.target.value)}
                   />
-                  {checks}
-                </Popover.Dropdown>
-              </Popover>
-              <PasswordInput
-                withAsterisk
-                label="Confirm Password"
-                placeholder="Confirm password"
-                mt="md"
-                key={form.key('password_confirmation')}
-                {...form.getInputProps('password_confirmation')}
-                classNames={{ label: classes.label }}
-              />
-              <Button fullWidth mt="xl" type="submit">
-                Register
-              </Button>
+                  <TextInput
+                    label="Lastname"
+                    withAsterisk
+                    placeholder="Lastname"
+                    classNames={{ label: classes.label }}
+                    value={form.data.lastname}
+                    error={form.errors.lastname}
+                    disabled={form.processing}
+                    onChange={e => form.setData('lastname', e.target.value)}
+                  />
+                </SimpleGrid>
+                <TextInput
+                  label="Email"
+                  withAsterisk
+                  placeholder="your@email.com"
+                  classNames={{ label: classes.label }}
+                  value={form.data.email}
+                  error={form.errors.email}
+                  disabled={form.processing}
+                  onChange={e => form.setData('email', e.target.value)}
+                />
+                <Popover
+                  opened={popoverOpened}
+                  position="bottom"
+                  width="target"
+                  transitionProps={{ transition: 'pop' }}
+                >
+                  <Popover.Target>
+                    <div
+                      onFocusCapture={() => setPopoverOpened(true)}
+                      onBlurCapture={() => setPopoverOpened(false)}
+                    >
+                      <PasswordInput
+                        withAsterisk
+                        label="Password"
+                        placeholder="Your password"
+                        classNames={{ label: classes.label }}
+                        value={form.data.password}
+                        error={form.errors.password}
+                        disabled={form.processing}
+                        onChange={e => form.setData('password', e.target.value)}
+                      />
+                    </div>
+                  </Popover.Target>
+                  <Popover.Dropdown>
+                    <Progress color={color} value={strength} size={5} mb="xs" />
+                    <PasswordRequirement
+                      label="Includes at least 6 characters"
+                      meets={form.data.password.length > 5}
+                    />
+                    {checks}
+                  </Popover.Dropdown>
+                </Popover>
+                <PasswordInput
+                  withAsterisk
+                  label="Confirm Password"
+                  placeholder="Confirm password"
+                  mt="md"
+                  classNames={{ label: classes.label }}
+                  value={form.data.password_confirmation}
+                  error={form.errors.password_confirmation}
+                  disabled={form.processing}
+                  onChange={e => form.setData('password_confirmation', e.target.value)}
+                />
+                <Button loading={form.processing} fullWidth mt="xl" type="submit">
+                  Register
+                </Button>
+              </Stack>
             </form>
             <Center mt="md">
               <Text
