@@ -102,9 +102,9 @@ export default function Edit({ categories, category, isOpen, onClose, onSearch }
             disabled={form.processing}
             onChange={e => form.setData('description', e.target.value)}
           />
-          <SimpleGrid cols={{ base: 1, sm: 3 }} mt={12}>
-            <Button loading={form.processing} onClick={onSubmit} variant="filled">
-              Create
+          <SimpleGrid cols={{ base: 1, sm: 3 }} mt={12} w={'100%'}>
+            <Button loading={form.processing} px={0} type="submit" variant="filled">
+              Save Changes
             </Button>
             <Button
               disabled={form.processing}

@@ -34,8 +34,6 @@ export default function Edit({ tag, isOpen, onClose }: TagsProps) {
     event.preventDefault();
     if (!tag) return;
 
-    console.log(form.data);
-
     form.patch(route('tag.update', tag.id), {
       onSuccess: () => {
         notifications.show({
@@ -86,8 +84,8 @@ export default function Edit({ tag, isOpen, onClose }: TagsProps) {
             disabled={form.processing}
             onChange={e => form.setData('description', e.target.value)}
           />
-          <SimpleGrid cols={{ base: 1, sm: 3 }} mt={12} w={'100%'}>
-            <Button loading={form.processing} type="submit" variant="filled">
+          <SimpleGrid cols={{ base: 2, sm: 3 }} mt={12}>
+            <Button loading={form.processing} px={0} type="submit" variant="filled">
               Save Changes
             </Button>
             <Button
