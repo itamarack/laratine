@@ -1,36 +1,30 @@
 'use client';
 
-import { Button, Stack, TextInput, Textarea, Select, Modal, SimpleGrid } from '@mantine/core';
+import { Button, Stack, TextInput, Textarea, Modal, SimpleGrid } from '@mantine/core';
 import { FormEventHandler, useEffect } from 'react';
 import { router, useForm } from '@inertiajs/react';
 import { notifications } from '@mantine/notifications';
 import { useDebouncedCallback } from '@mantine/hooks';
-import { slugify, makeCategoryList } from '@/Utils';
-import { Category } from '@/types';
+import { slugify } from '@/Utils';
+import { Category, Tags } from '@/types';
 
-type CategoryProps = {
-  categories?: Category[];
-  category?: Category;
+type TagsProps = {
+  tag?: Category;
   isOpen: boolean;
   onClose: () => void;
-  onSearch: (e: string) => void;
 };
 
-export default function Edit({ categories, category, isOpen, onClose, onSearch }: CategoryProps) {
-  const categoryList = makeCategoryList({ categories, category });
+export default function Edit({ tag, isOpen, onClose }: TagsProps) {
   const form = useForm({
     id: '',
     title: '',
     slug: '',
     description: '',
-    parent_id: '',
   });
 
   useEffect(() => {
-    if (category && category.id) {
-      form.setData(category as Category);
-    }
-  }, [category]);
+    if (tag) form.setData(tag as Tags);
+  }, [tag]);
 
   const onSlugify = useDebouncedCallback((slug: string) => {
     form.setData('slug', slugify(slug));
@@ -38,17 +32,19 @@ export default function Edit({ categories, category, isOpen, onClose, onSearch }
 
   const onSubmit: FormEventHandler = event => {
     event.preventDefault();
-    if (!category) return;
+    if (!tag) return;
 
-    form.patch(route('category.update', category.id), {
+    console.log(form.data);
+
+    form.patch(route('tag.update', tag.id), {
       onSuccess: () => {
         notifications.show({
           title: 'Success!',
-          message: 'Category created successfully.',
+          message: 'Tag updated successfully.',
         });
 
         onClose();
-        router.visit(route('category.index'));
+        router.visit(route('tag.index'));
       },
       onError: () => {
         notifications.show({
@@ -60,13 +56,13 @@ export default function Edit({ categories, category, isOpen, onClose, onSearch }
   };
 
   return (
-    <Modal opened={isOpen} onClose={onClose} title="Update Category" centered>
+    <Modal opened={isOpen} onClose={onClose} title="Update Tag" centered>
       <form onSubmit={onSubmit}>
         <Stack>
           <TextInput
             withAsterisk
             label="Title"
-            placeholder="Category Title"
+            placeholder="Tag Title"
             value={form.data.title}
             error={form.errors.title}
             disabled={form.processing}
@@ -77,41 +73,29 @@ export default function Edit({ categories, category, isOpen, onClose, onSearch }
             disabled
             withAsterisk
             label="Slug"
-            placeholder="Category Slug"
+            placeholder="Tag Slug"
             value={form.data.slug}
             error={form.errors.slug}
             onChange={e => form.setData('slug', e.target.value)}
           />
-          <Select
-            searchable
-            label="Parent"
-            placeholder="Select Parent Category"
-            data={categoryList}
-            value={form.data.parent_id?.toString()}
-            error={form.errors.parent_id}
-            disabled={form.processing}
-            checkIconPosition="right"
-            onChange={(a: any) => form.setData('parent_id', a)}
-            onInput={e => onSearch(e.currentTarget.value)}
-          />
           <Textarea
             label="Description"
-            placeholder="Description"
+            placeholder="Tag Description"
             value={form.data.description ?? ''}
             error={form.errors.description}
             disabled={form.processing}
             onChange={e => form.setData('description', e.target.value)}
           />
-          <SimpleGrid cols={{ base: 1, sm: 3 }} mt={12}>
-            <Button loading={form.processing} onClick={onSubmit} variant="filled">
-              Create
+          <SimpleGrid cols={{ base: 1, sm: 3 }} mt={12} w={'100%'}>
+            <Button loading={form.processing} type="submit" variant="filled">
+              Save Changes
             </Button>
             <Button
               disabled={form.processing}
               variant="outline"
               onClick={() => {
                 onClose();
-                router.visit(route('category.index'));
+                router.visit(route('tag.index'));
               }}
             >
               Cancel

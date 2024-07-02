@@ -53,8 +53,8 @@ Route::middleware('auth')->group(function () {
   Route::prefix('tags')->group(function () {
     Route::get('/', [TagController::class, 'tagIndex'])->name('tag.index');
     Route::post('/create', [TagController::class, 'tagStore'])->name('tag.store');
-    // Route::patch('/{category}/edit/', [CategoryController::class, 'categoryUpdate'])->name('category.update');
-    // Route::delete('/{category}/delete', [CategoryController::class, 'categoryDestroy'])->name('category.destroy');
+    Route::patch('/{tag}/edit/', [TagController::class, 'tagUpdate'])->name('tag.update');
+    Route::delete('/{tag}/delete', [TagController::class, 'tagDestroy'])->name('tag.destroy');
   });
 });
 

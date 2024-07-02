@@ -146,14 +146,8 @@ export default function List({ auth, tags }: CategoryProps) {
       <Head title="Tags | Publishing" />
 
       <CreateTag isOpen={isOpenCreate} onClose={onCloseCreate} />
-      <EditTag
-        categories={tags.data}
-        category={selected}
-        isOpen={isOpenEdit}
-        onClose={onCloseEdit}
-        onSearch={s => searchFilter.onSearch(s.toString())}
-      />
-      <DeleteTag category={selected} isOpen={isOpenDelete} onClose={onCloseDelete} />
+      <EditTag tag={selected} isOpen={isOpenEdit} onClose={onCloseEdit} />
+      <DeleteTag tag={selected} isOpen={isOpenDelete} onClose={onCloseDelete} />
 
       <Container fluid>
         <Stack gap="lg">

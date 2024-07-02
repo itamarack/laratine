@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Http\Requests\UserRequest;
 use App\Http\Requests\Users\UsersCreateRequest;
 use App\Http\Requests\Users\UsersUpdateRequest;
 use App\Models\User;
@@ -116,10 +117,10 @@ class UserController extends Controller
   /**
    * Store a new user in the database.
    *
-   * @param UsersCreateRequest $request
+   * @param UserRequest $request
    * @return RedirectResponse
    */
-  public function userStore (UsersCreateRequest $request, User $user): RedirectResponse
+  public function userStore (UserRequest $request, User $user): RedirectResponse
   {
     $user->fill($request->validated());
     $this->uploadService->uploadAvatar($request, $user);
@@ -144,13 +145,15 @@ class UserController extends Controller
   /**
    * Update a specific user's information.
    *
-   * @param UsersUpdateRequest $request
+   * @param UserRequest $request
    * @param User $user
    * @return RedirectResponse
    */
-  public function userUpdate(UsersUpdateRequest $request, User $user): RedirectResponse
+  public function userUpdate(UserRequest $request, User $user): RedirectResponse
   {
     $user->fill($request->validated());
+
+    dd($user);
     $this->uploadService->uploadAvatar($request, $user);
     $user->update();
 

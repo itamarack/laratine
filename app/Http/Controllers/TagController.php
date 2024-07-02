@@ -35,16 +35,44 @@ class TagController extends Controller
   }
 
   /**
-   * Store a new category in the database.
+   * Store a new tag in the database.
    *
    * @param TagRequest $request
    * @return RedirectResponse
    */
-  public function categoryStore(TagRequest $request, Tag $category): RedirectResponse
+  public function tagStore(TagRequest $request, Tag $tag): RedirectResponse
   {
-    $category->fill($request->validated());
-    $category->save();
+    $tag->fill($request->validated());
+    $tag->save();
 
-    return redirect()->route('category.index');
+    return redirect()->route('tag.index');
+  }
+
+  /**
+   * Update a specific user's information.
+   *
+   * @param TagRequest $request
+   * @param Tag $tag
+   * @return RedirectResponse
+   */
+  public function tagUpdate(TagRequest $request, Tag $tag): RedirectResponse
+  {
+    $tag->fill($request->validated());
+    $tag->update();
+
+    return redirect()->route('tag.index', ['tag' => $tag]);
+  }
+
+  /**
+   * Delete a specific user from the database.
+   *
+   * @param Request $request
+   * @param Tag $tag
+   * @return RedirectResponse
+   */
+  public function tagDestroy(Tag $tag): RedirectResponse
+  {
+    $tag->delete();
+    return redirect()->route('tag.index');
   }
 }

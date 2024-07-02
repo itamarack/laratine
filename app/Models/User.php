@@ -77,21 +77,6 @@ class User extends Authenticatable implements HasMedia
   }
 
   /**
-   * Set the user's password.
-   *
-   * @param string $password
-   * @return void
-   */
-  // public function setPasswordAttribute($password): void
-  // {
-  //   if (filled($password) && !Hash::needsRehash($password)) {
-  //     $this->attributes['password'] = Hash::make($password);
-  //   } else {
-  //     $this->attributes['password'] = $password;
-  //   }
-  // }
-
-  /**
    * Prepare the user instance for indexing in search.
    *
    * @return array
