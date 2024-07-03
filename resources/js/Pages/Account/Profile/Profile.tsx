@@ -9,7 +9,6 @@ import {
   FileButton,
   Grid,
   Paper,
-  PaperProps,
   SimpleGrid,
   Stack,
   Text,
@@ -41,14 +40,6 @@ const items = [
     {item.title}
   </Anchor>
 ));
-
-const ICON_SIZE = 16;
-const PAPER_PROPS: PaperProps = {
-  p: 'md',
-  shadow: 'md',
-  radius: 'md',
-  style: { height: '100%' },
-};
 
 function Profile({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: string }>) {
   const [avatar, setAvatar] = useState<string | undefined>(auth.user.avatar);
@@ -158,7 +149,7 @@ function Profile({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: string
           <PageHeader user={auth.user} title="Profile" breadcrumbItems={items} />
           <Grid>
             <Grid.Col span={{ base: 12, md: 8 }}>
-              <Surface component={Paper} {...PAPER_PROPS}>
+              <Surface component={Paper} p="md" shadow="md" radius="md" h="100%">
                 <Text size="lg" fw={600} mb="md">
                   Account information
                 </Text>
@@ -180,7 +171,7 @@ function Profile({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: string
                                   <Button
                                     {...props}
                                     variant="subtle"
-                                    leftSection={<IconCloudUpload size={ICON_SIZE} />}
+                                    leftSection={<IconCloudUpload size={16} />}
                                   >
                                     Upload image
                                   </Button>
@@ -190,7 +181,7 @@ function Profile({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: string
                             {avatar && (
                               <Grid.Col span={4}>
                                 <Button onClick={onDeleteAvatar} variant="subtle" color="red">
-                                  <IconTrash size={ICON_SIZE} />
+                                  <IconTrash size={16} />
                                 </Button>
                               </Grid.Col>
                             )}
@@ -276,20 +267,22 @@ function Profile({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: string
                         </Stack>
                       </Grid.Col>
                     </Grid>
-                    <Button
-                      type="submit"
-                      style={{ width: 'fit-content' }}
-                      loading={userInfo.processing}
-                      leftSection={<IconDeviceFloppy size={ICON_SIZE} />}
-                    >
-                      Save Changes
-                    </Button>
+                    <Box mt={12} w="auto">
+                      <Button
+                        type="submit"
+                        style={{ width: 'fit-content' }}
+                        loading={userInfo.processing}
+                        leftSection={<IconDeviceFloppy size={16} />}
+                      >
+                        Save Changes
+                      </Button>
+                    </Box>
                   </Stack>
                 </form>
               </Surface>
             </Grid.Col>
-            <Grid.Col span={{ base: 12, md: 4 }}>
-              <Surface component={Paper} {...PAPER_PROPS}>
+            <Grid.Col span={{ base: 12, md: 4 }} h="100%">
+              <Surface component={Paper} p="md" shadow="md" radius="md" h="100%">
                 <form onSubmit={onSubmitSecurity}>
                   <Stack h="100%" justify="space-between" gap={12}>
                     <Stack>
@@ -353,7 +346,7 @@ function Profile({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: string
                         />
                       </Stack>
                     </Stack>
-                    <Box style={{ width: 'auto' }}>
+                    <Box w="auto" mt={12}>
                       <Button
                         type="submit"
                         loading={userSecurity.processing}

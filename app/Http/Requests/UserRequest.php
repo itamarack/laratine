@@ -11,6 +11,27 @@ use App\Rules\ImageRule;
 class UserRequest extends FormRequest
 {
   /**
+   * Determine if the user is authorized to make this request.
+   */
+  public function authorize(): bool
+  {
+    return true;
+  }
+
+  /**
+   * Prepare the data for validation.
+   */
+  protected function prepareForValidation(): void
+  {
+    if ($this->isMethod('patch') || $this->isMethod('put')) {
+      $data = $this->all();
+      if (empty($data['password'])) unset($data['password']);
+      $this->replace($data);
+    }
+  }
+
+
+  /**
    * Get the validation rules that apply to the request.
    *
    * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
@@ -21,13 +42,13 @@ class UserRequest extends FormRequest
       'firstname' => ['required', 'string', 'max:255'],
       'lastname' => ['required', 'string', 'max:255'],
       'avatar' => ['nullable', new ImageRule(), 'max:2048'],
-      'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
+      'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($this->route('user')->id)],
       'address' => ['required', 'string', 'max:255'],
       'city' => ['required', 'string', 'max:255'],
       'state' => ['required', 'string', 'max:255'],
       'postcode' => ['required', 'string', 'max:255'],
       'biography' => ['string', 'nullable'],
-      'password' => ['required_:id,', 'confirmed', Rules\Password::defaults()],
+      'password' => [Rules\Password::defaults(), 'nullable', 'confirmed', Rule::RequiredIf(empty($this->route('user')->id))],
     ];
   }
 }

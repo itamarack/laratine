@@ -44,7 +44,7 @@ export default function Edit({ categories, category, isOpen, onClose, onSearch }
       onSuccess: () => {
         notifications.show({
           title: 'Success!',
-          message: 'Category created successfully.',
+          message: 'Category Updated successfully.',
         });
 
         onClose();
@@ -96,7 +96,7 @@ export default function Edit({ categories, category, isOpen, onClose, onSearch }
           />
           <Textarea
             label="Description"
-            placeholder="Description"
+            placeholder="Category Description"
             value={form.data.description ?? ''}
             error={form.errors.description}
             disabled={form.processing}

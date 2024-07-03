@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
@@ -23,9 +24,9 @@ Route::get('/dashboard', function () {
 
 Route::middleware('auth')->group(function () {
   Route::prefix('profile')->group(function () {
-    Route::get('/', [UserController::class, 'profileIndex'])->name('profile.index');
-    Route::patch('/', [UserController::class, 'profileUpdate'])->name('profile.update');
-    Route::delete('/', [UserController::class, 'profileDestroy'])->name('profile.destroy');
+    Route::get('/', [ProfileController::class, 'profileIndex'])->name('profile.index');
+    Route::patch('/', [ProfileController::class, 'profileUpdate'])->name('profile.update');
+    Route::delete('/', [ProfileController::class, 'profileDestroy'])->name('profile.destroy');
   });
 
   Route::prefix('users')->group(function () {

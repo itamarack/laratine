@@ -2,103 +2,42 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Requests\UserRequest;
-use App\Http\Requests\Users\UsersCreateRequest;
-use App\Http\Requests\Users\UsersUpdateRequest;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
-use Spatie\QueryBuilder\QueryBuilder;
 use App\Services\FileUploadService;
+use App\Services\QueryBuilderService;
 
 class UserController extends Controller
 {
   protected $uploadService;
+  protected $builderService;
 
-  public function __construct(FileUploadService $uploadService)
+  public function __construct(FileUploadService $uploadService, QueryBuilderService $builderService)
   {
     $this->uploadService = $uploadService;
-  }
-
-  /**
-   * Display the user's profile form.
-   *
-   * @param Request $request
-   * @return Response
-   */
-  public function profileIndex(Request $request): Response
-  {
-    return Inertia::render('Account/Profile/Profile', [
-      'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
-      'status' => session('status'),
-    ]);
-  }
-
-  /**
-   * Update the user's profile information.
-   *
-   * @param ProfileUpdateRequest $request
-   * @return RedirectResponse
-   */
-  public function profileUpdate(ProfileUpdateRequest $request): RedirectResponse
-  {
-    $request->user()->fill($request->validated());
-
-    if ($request->user()->isDirty('email')) {
-      $request->user()->email_verified_at = null;
-    }
-
-    $this->uploadService->uploadAvatar($request, $request->user());
-    $request->user()->save();
-
-    return Redirect::route('profile.index');
-  }
-
-  /**
-   * Delete the user's account.
-   *
-   * @param Request $request
-   * @return RedirectResponse
-   */
-  public function profileDestroy(Request $request): RedirectResponse
-  {
-    $request->validate([
-      'password' => ['required', 'current_password'],
-    ]);
-
-    Auth::logout();
-    $request->user()->delete();
-
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
-
-    return Redirect::to('/');
+    $this->builderService = $builderService;
   }
 
   /**
    * Display a list of users.
    *
    * @param Request $request
+   * @param User $user
    * @return Response
    */
-  public function userIndex (Request $request): Response
+  public function userIndex (Request $request, User $user): Response
   {
-    $allowedSorts = ['firstname', 'created_at', 'updated_at'];
-    $search = User::search($request->query('search'));
-    $perPage = $request->query('per_page', 15);
-
-    $users = QueryBuilder::for(User::class)
-      ->allowedSorts($allowedSorts)
-      ->whereNot('id', $request->user()->id)
-      ->when($request->filled('search'), fn($query) => $search->constrain($query))
-      ->paginate($perPage)->appends($request->query());
+    $users = $this->builderService->query($user, [
+      'allowedSorts' => ['firstname', 'created_at', 'updated_at'],
+      'conditions' => [
+        ['method' => 'whereNot', 'parameters' => ['id', $request->user()->id]]
+      ]
+    ]);
 
     return Inertia::render('Account/Users/List', ['users' => $users]);
   }
@@ -106,10 +45,9 @@ class UserController extends Controller
   /**
    * Display the user creation form.
    *
-   * @param Request $request
    * @return Response
    */
-  public function userCreate (Request $request): Response
+  public function userCreate (): Response
   {
     return Inertia::render('Account/Users/Create', []);
   }
@@ -152,8 +90,6 @@ class UserController extends Controller
   public function userUpdate(UserRequest $request, User $user): RedirectResponse
   {
     $user->fill($request->validated());
-
-    dd($user);
     $this->uploadService->uploadAvatar($request, $user);
     $user->update();
 
