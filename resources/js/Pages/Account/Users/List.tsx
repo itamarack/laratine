@@ -9,19 +9,17 @@ import {
   Flex,
   Menu,
   Paper,
-  PaperProps,
   Stack,
   Text,
   TextInput,
   UnstyledButton,
   useMantineTheme,
 } from '@mantine/core';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import dayjs from 'dayjs';
 import _first from 'lodash/first';
-import { Head, Link, router } from '@inertiajs/react';
-import { useThrottledCallback, useDisclosure } from '@mantine/hooks';
-import { notifications } from '@mantine/notifications';
+import { Head, Link } from '@inertiajs/react';
+import { useDisclosure } from '@mantine/hooks';
 import { DataTable, DataTableProps, DataTableSortStatus } from 'mantine-datatable';
 import { IconDotsVertical, IconEdit, IconPlus, IconSearch, IconTrash } from '@tabler/icons-react';
 import { PageHeader } from '@/Components';
