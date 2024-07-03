@@ -1,18 +1,15 @@
 'use client';
 
 import {
-  ActionIcon,
   Anchor,
   Avatar,
   Badge,
   Button,
   Container,
   Flex,
-  Group,
-  Modal,
+  Menu,
   Paper,
   PaperProps,
-  SimpleGrid,
   Stack,
   Text,
   TextInput,
@@ -30,13 +27,21 @@ import { IconDotsVertical, IconEdit, IconPlus, IconSearch, IconTrash } from '@ta
 import { PageHeader } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
 import { PageProps, User } from '@/types';
+import { useSearchFilter } from '@/hooks';
+import { dashboardRoute, userRoute } from '@/routes';
+import Delete from './Delete';
 
 type UsersProps = {
-  users: any;
+  users: {
+    data: User[];
+    total: number;
+    per_page: number;
+    current_page: number;
+  };
 } & PageProps;
 
 const items = [
-  { title: 'Dashboard', href: '/dashboard' },
+  { title: 'Dashboard', href: dashboardRoute() },
   { title: 'Users', href: '#' },
 ].map((item, index) => (
   <Anchor component={Link} href={item.href} key={index}>
@@ -44,74 +49,12 @@ const items = [
   </Anchor>
 ));
 
-const PAPER_PROPS: PaperProps = {
-  p: 'md',
-  shadow: 'md',
-  radius: 'md',
-};
-
 export default function List({ auth, users }: UsersProps) {
   const theme = useMantineTheme();
   const [selected, setSelected] = useState<User>();
-  const [fetching, setFetching] = useState<boolean>(false);
   const [isOpen, { open: onOpen, close: onClose }] = useDisclosure(false);
-  const [search, setSearch] = useState<string>('');
   const [selectedRecords, setSelectedRecords] = useState<User[]>([]);
-  const [sortStatus, setSortStatus] = useState<DataTableSortStatus<User>>({
-    columnAccessor: 'user',
-    direction: 'asc',
-  });
-
-  const RECORD_PAGINATOR = [5, 10, 20, 50];
-
-  router.on('start', () => setFetching(() => true));
-  router.on('finish', () => setFetching(() => false));
-
-  const onQueryTable = (queryKey: string, queryValue: string) => {
-    const queryParams = new URLSearchParams(window.location.search);
-    queryParams.set(queryKey, queryValue.toString());
-
-    if (queryKey === 'per_page') queryParams.set('page', '1');
-
-    const payload = Object.fromEntries(queryParams);
-    router.get(route('user.index'), payload, { preserveState: true });
-  };
-
-  const onSortStatusChange = ({ columnAccessor, direction }: DataTableSortStatus<User>) => {
-    onQueryTable('sort', direction === 'asc' ? columnAccessor : `-${columnAccessor}`);
-    setSortStatus(() => ({ columnAccessor, direction }));
-  };
-
-  useEffect(() => {
-    const queryParams = new URLSearchParams(window.location.search);
-    setSearch(queryParams.get('search') ?? '');
-  }, []);
-
-  const throttledSearch = useThrottledCallback(search => {
-    onQueryTable('search', search);
-  }, 3000);
-
-  const onDeleteAccount = () => {
-    if (!selected) {
-      return notifications.show({
-        title: 'Failed!',
-        message: 'Something went wrong, Try again!',
-      });
-    }
-
-    router.delete(route('user.destroy', selected.id), {
-      onSuccess: () => {
-        onClose();
-        notifications.show({
-          title: 'Success!',
-          message: 'User permanently deleted successfully',
-        });
-      },
-      onError: error => {
-        notifications.show({ title: 'Failed!', message: error.message });
-      },
-    });
-  };
+  const searchFilter = useSearchFilter('user.index');
 
   const columns: DataTableProps<User>['columns'] = [
     {
@@ -146,10 +89,9 @@ export default function List({ auth, users }: UsersProps) {
           description="Show all users in the system"
           placeholder="Search users..."
           leftSection={<IconSearch size={16} />}
-          value={search}
+          value={searchFilter.search}
           onChange={e => {
-            setSearch(e.currentTarget.value);
-            throttledSearch(e.currentTarget.value);
+            searchFilter.onSearch(e.currentTarget.value);
           }}
         />
       ),
@@ -182,32 +124,45 @@ export default function List({ auth, users }: UsersProps) {
       ),
     },
     {
-      accessor: '',
+      accessor: 'id',
       title: 'Actions',
-      render: (user: any) => (
-        <Group gap="sm">
-          <Button
-            component={Link}
-            href={`/users/${user.id}/edit`}
-            variant="filled"
-            size="xs"
-            leftSection={<IconEdit size={16} />}
-          >
-            Edit
-          </Button>
-          <Button
-            onClick={() => {
-              setSelected(() => user);
-              onOpen();
-            }}
-            variant="filled"
-            size="xs"
-            color="red"
-            leftSection={<IconTrash size={16} />}
-          >
-            Delete
-          </Button>
-        </Group>
+      width: 100,
+      render: (user: User) => (
+        <Menu withArrow width={150} shadow="md">
+          <Menu.Target>
+            <Flex>
+              <Button variant="filled" size="xs" rightSection={<IconDotsVertical size={16} />}>
+                More
+              </Button>
+            </Flex>
+          </Menu.Target>
+          <Menu.Dropdown>
+            <Menu.Item
+              fw={600}
+              fz="sm"
+              color="blue"
+              variant="filled"
+              component={Link}
+              leftSection={<IconEdit size={16} />}
+              href={userRoute(user.id).update}
+            >
+              Edit
+            </Menu.Item>
+            <Menu.Item
+              fw={600}
+              fz="sm"
+              color="red"
+              variant="filled"
+              leftSection={<IconTrash size={16} />}
+              onClick={() => {
+                setSelected(() => user);
+                onOpen();
+              }}
+            >
+              Delete
+            </Menu.Item>
+          </Menu.Dropdown>
+        </Menu>
       ),
     },
   ];
@@ -215,20 +170,7 @@ export default function List({ auth, users }: UsersProps) {
   return (
     <AuthenticatedLayout user={auth.user}>
       <Head title="Users | Account" />
-
-      <Modal opened={isOpen} onClose={onClose} title="Delete Account" centered>
-        <Stack>
-          <Text fw={600}>Are You sure you want to delete this user?</Text>
-          <SimpleGrid cols={{ base: 1, sm: 2 }}>
-            <Button loading={fetching} onClick={onDeleteAccount} variant="filled">
-              Delete
-            </Button>
-            <Button disabled={fetching} onClick={onClose} variant="outline">
-              Cancel
-            </Button>
-          </SimpleGrid>
-        </Stack>
-      </Modal>
+      <Delete user={selected} isOpen={isOpen} onClose={onClose} />
 
       <Container fluid>
         <Stack gap="lg">
@@ -237,20 +179,16 @@ export default function List({ auth, users }: UsersProps) {
             title="Users"
             breadcrumbItems={items}
             withActions={
-              <Button component={Link} href={'/users/create'} leftSection={<IconPlus size={18} />}>
+              <Button
+                component={Link}
+                href={userRoute().create}
+                leftSection={<IconPlus size={18} />}
+              >
                 New User
               </Button>
             }
           />
-          <Paper {...PAPER_PROPS}>
-            <Group justify="space-between" mb="md">
-              <Text fz="lg" fw={600}>
-                Users
-              </Text>
-              <ActionIcon>
-                <IconDotsVertical size={18} />
-              </ActionIcon>
-            </Group>
+          <Paper p="md" shadow="md" radius="md">
             <DataTable
               minHeight={200}
               verticalSpacing="xs"
@@ -259,16 +197,18 @@ export default function List({ auth, users }: UsersProps) {
               columns={columns}
               records={users.data}
               selectedRecords={selectedRecords}
-              onSelectedRecordsChange={setSelectedRecords}
+              fetching={searchFilter.isFetching}
               totalRecords={users.total}
               recordsPerPage={users.per_page}
               page={users.current_page}
-              onPageChange={p => onQueryTable('page', p.toString())}
-              recordsPerPageOptions={RECORD_PAGINATOR}
-              onRecordsPerPageChange={p => onQueryTable('per_page', p.toString())}
-              sortStatus={sortStatus}
-              onSortStatusChange={onSortStatusChange}
-              fetching={fetching}
+              recordsPerPageOptions={[5, 10, 20, 50]}
+              onSelectedRecordsChange={setSelectedRecords}
+              onPageChange={page => searchFilter.onPageChange(page)}
+              onRecordsPerPageChange={perPage => searchFilter.onRecordsPerPage(perPage)}
+              sortStatus={searchFilter.sortStatus as DataTableSortStatus<User>}
+              onSortStatusChange={(sortStatus: DataTableSortStatus<User>) =>
+                searchFilter.onSortStatus(sortStatus as DataTableSortStatus<any>)
+              }
             />
           </Paper>
         </Stack>

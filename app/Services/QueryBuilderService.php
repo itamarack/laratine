@@ -33,13 +33,14 @@ class QueryBuilderService
   public function query(Model $model, ?array $options): LengthAwarePaginator
   {
     $allowedSorts = $options['allowedSorts'] ?? [];
+    $conditions = $options['conditions'] ?? [];
     $searchIds = $model::search($this->search)->keys();
 
     return QueryBuilder::for($model::class)
       ->allowedSorts($allowedSorts)
       ->when($this->search, fn($query) => $query->whereIn('id', $searchIds))
-      ->tap(function (Builder $query) use ($options) {
-        collect($options['conditions'])->each(function ($condition) use ($query) {
+      ->tap(function (Builder $query) use ($conditions) {
+        collect($conditions)->each(function ($condition) use ($query) {
           if (method_exists($query, $condition['method'])) {
             $query->{$condition['method']}(...$condition['parameters']);
           } else {

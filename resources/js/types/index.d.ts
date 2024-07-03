@@ -1,7 +1,7 @@
 import { Config } from 'ziggy-js';
 
 export interface User {
-  id?: number | string;
+  id: number | string;
   fullname?: string;
   firstname?: string;
   lastname?: string;

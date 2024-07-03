@@ -49,7 +49,7 @@ export default function List({ auth, tags }: CategoryProps) {
   const [isOpenCreate, { open: onOpenCreate, close: onCloseCreate }] = useDisclosure(false);
   const [isOpenEdit, { open: onOpenEdit, close: onCloseEdit }] = useDisclosure(false);
   const [selectedRecords, setSelectedRecords] = useState<Category[]>([]);
-  const searchFilter = useSearchFilter('category.index');
+  const searchFilter = useSearchFilter('tag.index');
 
   const onColumnAction = (selected: Category, action: string) => {
     setSelected(() => selected);
