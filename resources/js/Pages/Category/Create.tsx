@@ -67,12 +67,12 @@ export default function Create({ isOpen, onClose, onSearch, categories }: Catego
             onInput={e => onSlugify(e.currentTarget.value)}
           />
           <TextInput
-            disabled
             withAsterisk
             label="Slug"
             placeholder="Category Slug"
             value={form.data.slug}
             error={form.errors.slug}
+            disabled={form.processing}
             onChange={e => form.setData('slug', e.target.value)}
           />
           <Select

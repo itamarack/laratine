@@ -21,14 +21,22 @@ export interface User {
 }
 
 export interface Post {
-  id: number | string;
+  id: string;
   title: string;
+  slug: string;
   excerpt: string;
   author: string;
   content: string;
   status: string;
+  category_id: string;
+  featured_image?: string;
+  meta_description?: string;
+  meta_tags?: Array;
+  layout_template?: string;
+  layout_width?: string;
   created_at: string;
   updated_at: string;
+
 }
 
 export interface Category {

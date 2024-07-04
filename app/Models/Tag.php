@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Laravel\Scout\Searchable;
 
 class Tag extends Model
@@ -20,6 +21,11 @@ class Tag extends Model
     'slug',
     'description',
   ];
+
+  public function posts(): BelongsToMany
+  {
+    return $this->belongsToMany(Post::class);
+  }
 
   /**
    * Prepare the user instance for indexing in search.

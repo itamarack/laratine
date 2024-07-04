@@ -3,7 +3,10 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
@@ -110,8 +113,14 @@ class User extends Authenticatable implements HasMedia
     return $this->getFirstMediaUrl('avatars');
   }
 
-  public function authors(): Collection
+  /**
+     * Scope a query to only include authors.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+  public function scopeAuthors(Builder $query): Builder
   {
-    return $this->query()->get();
+    return $query;
   }
 }

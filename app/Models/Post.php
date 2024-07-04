@@ -22,6 +22,7 @@ class Post extends Model implements HasMedia
    */
   protected $fillable = [
     'title',
+    'slug',
     'excerpt',
     'author',
     'content',
@@ -35,8 +36,32 @@ class Post extends Model implements HasMedia
     'layout_width'
   ];
 
+  protected $casts = [
+    'meta_tags' => 'array',
+    'category_id' => 'string'
+  ];
+
   public function category(): BelongsTo
   {
     return $this->belongsTo(Category::class);
   }
+
+  public function toSearchableArray()
+  {
+    return [
+      'id' => $this->id,
+      'title' => $this->title,
+      'excerpt' => $this->excerpt,
+    ];
+  }
+
+  // public function setMetaTagsAttribute($value)
+  // {
+  //   $this->attributes['meta_tags'] = serialize($value);
+  // }
+
+  // public function getMetaTagsAttribute($value)
+  // {
+  //   return unserialize($value);
+  // }
 }

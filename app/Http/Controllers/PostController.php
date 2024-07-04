@@ -4,33 +4,36 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
-use Spatie\QueryBuilder\QueryBuilder;
-use App\Services\FileUploadService;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Http\Requests\PostRequest;
+use App\Models\Category;
+use App\Models\Tag;
 use App\Models\User;
+use App\Services\FileUploadService;
+use App\Services\QueryBuilderService;
 
 class PostController extends Controller
 {
+  protected $builderService;
+  protected $uploadService;
+
+  public function __construct(FileUploadService $uploadService, QueryBuilderService $builderService)
+  {
+    $this->uploadService = $uploadService;
+    $this->builderService = $builderService;
+  }
+
   /**
    * Display the list of posts.
    *
-   * @param Request $request
+   * @param Post $post
    * @return Response
    */
-  public function postIndex(Request $request): Response
+  public function index(Post $post): Response
   {
-    $allowedSorts = [];
-    $search = Post::search($request->query('search'));
-    $perPage = $request->query('per_page', 15);
-
-    $posts = QueryBuilder::for(Post::class)
-      ->allowedSorts($allowedSorts)
-      ->when($request->filled('search'), fn($query) => $search->constrain($query))
-      ->paginate($perPage)->appends($request->query());
+    $posts = $this->builderService->query($post, []);
 
     return Inertia::render('Posts/List', ['posts' => $posts]);
   }
@@ -41,12 +44,16 @@ class PostController extends Controller
    * @param Request $request
    * @return Response
    */
-  public function postCreate (Request $request, User $user): Response
+  public function create(Request $request): Response
   {
-    $authors = $user->authors();
+    $authors = User::authors()->get();
+    $categories = Category::all();
+    $tags = Tag::all();
 
     return Inertia::render('Posts/Create', [
-      'authors' => $authors
+      'authors' => $authors,
+      'categories' => $categories,
+      'tags' => $tags
     ]);
   }
 
@@ -56,17 +63,61 @@ class PostController extends Controller
    * @param PostRequest $request
    * @return RedirectResponse
    */
-  public function postStore (PostRequest $request, Post $post): RedirectResponse
+  public function store(PostRequest $request, Post $post): RedirectResponse
   {
     $post->fill($request->validated());
+    $this->uploadService->uploadMedia($request, $post);
+    $post->save();
 
-    dd($post);
+    return redirect()->route('post.index');
+  }
 
-    // $this->uploadService->uploadAvatar($request, $user);
-    // $user->save();
+  /**
+   * Display a specific posts's information for editing.
+   *
+   * @param Post $post
+   * @return Response
+   */
+  public function show(Post $post): Response
+  {
+    $authors = User::authors()->get();
+    $categories = Category::all();
+    $tags = Tag::all();
 
-    // event(new Registered($user));
+    return Inertia::render('Posts/Edit', [
+      'post' => $post,
+      'authors' => $authors,
+      'categories' => $categories,
+      'tags' => $tags
+    ]);
+  }
 
+  /**
+   * Update a specific post's information.
+   *
+   * @param PostRequest $request
+   * @param Post $post
+   * @return RedirectResponse
+   */
+  public function update(PostRequest $request, Post $post): RedirectResponse
+  {
+    $post->fill($request->validated());
+    $this->uploadService->uploadMedia($request, $post);
+    $post->update();
+
+    return redirect()->route('post.update', ['post' => $post]);
+  }
+
+  /**
+   * Delete a specific post from the database.
+   *
+   * @param Request $request
+   * @param Post $post
+   * @return RedirectResponse
+   */
+  public function destroy(Post $post): RedirectResponse
+  {
+    $post->delete();
     return redirect()->route('post.index');
   }
 }

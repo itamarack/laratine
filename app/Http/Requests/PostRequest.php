@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Post;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use App\Rules\ImageRule;
 
 class PostRequest extends FormRequest
@@ -14,19 +16,20 @@ class PostRequest extends FormRequest
      */
     public function rules(): array
     {
+      // dd($this->route('post'));
       return [
-        'title' => ['required', 'string', 'max:255'],
-        'slug' => ['required', 'string', 'max:255'],
+        'title' => ['required', 'string', 'max:255', Rule::unique('posts')->ignore($this->post)],
+        'slug' => ['required', 'string', 'max:255', Rule::unique('posts')->ignore($this->post)],
         'excerpt' => ['required', 'string', 'max:2048'],
-        'content' => ['nullable', 'string'],
+        'content' => ['required', 'string'],
         'author' => ['required', 'string', 'max:255'],
-        'category' => ['required', 'string', 'max:255'],
+        'category_id' => ['required', 'string', 'max:255'],
         'status' => ['required', 'string', 'max:255'],
         'featured_image' => ['nullable', new ImageRule(), 'max:2048'],
         'layout_template' => ['nullable', 'string', 'max:255'],
         'layout_width' => ['nullable', 'string', 'max:255'],
-        'meta_description' => ['nullable', 'string', 'min:255'],
-        'meta_tags' => ['nullable', 'array'],
+        'meta_description' => ['nullable', 'string', 'max:255'],
+        'meta_tags' => ['nullable', 'array', 'max:255'],
       ];
     }
 }

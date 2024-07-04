@@ -7,7 +7,6 @@ import {
   FileButton,
   Grid,
   Paper,
-  PaperProps,
   Stack,
   Text,
   TextInput,
@@ -28,7 +27,6 @@ import {
   IconTrash,
   IconPhoto,
   IconPrinter,
-  IconGlobe,
   IconHomeSearch,
   IconEye,
   IconLayout,
@@ -36,12 +34,12 @@ import {
 import { useDebouncedCallback } from '@mantine/hooks';
 import { PageHeader, Surface, TextEditor } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
-import { PageProps, User } from '@/types';
-import { postRoute } from '@/routes';
-import { slugify, makeAuthorList } from '@/Utils';
+import { Category, PageProps, Tags, User } from '@/types';
+import { dashboardRoute, postRoute } from '@/routes';
+import { slugify, makeAuthorList, makeCategoryList, makeTagsList } from '@/Utils';
 
 const items = [
-  { title: 'Dashboard', href: '/dashboard' },
+  { title: 'Dashboard', href: dashboardRoute() },
   { title: 'Posts', href: postRoute().list },
   { title: 'Create', href: '#' },
 ].map((item, index) => (
@@ -50,21 +48,17 @@ const items = [
   </Anchor>
 ));
 
-const ICON_SIZE = 16;
-const PAPER_PROPS: PaperProps = {
-  p: 'md',
-  shadow: 'md',
-  radius: 'md',
-  style: { height: '100%' },
-};
-
-type CreatePostProps = {
+type PostProps = {
   authors?: User[];
+  categories?: Category[];
+  tags?: Tags[];
 } & PageProps;
 
-export default function Create({ auth, authors }: CreatePostProps) {
+export default function Create({ auth, authors, categories, tags }: PostProps) {
   const [featuredImage, setFeaturedImage] = useState<string>('');
   const authorsList = makeAuthorList(authors);
+  const categoryList = makeCategoryList({ categories });
+  const tagList = makeTagsList({ tags });
 
   const form = useForm({
     title: '',
@@ -73,7 +67,7 @@ export default function Create({ auth, authors }: CreatePostProps) {
     content: '',
     author: '',
     status: '',
-    category: '',
+    category_id: '',
     tags: '',
     featured_image: '',
     meta_description: '',
@@ -109,7 +103,8 @@ export default function Create({ auth, authors }: CreatePostProps) {
           message: 'Post created successfully.',
         });
       },
-      onError: () => {
+      onError: error => {
+        console.log(error);
         notifications.show({
           title: 'Failed!',
           message: 'Something went wrong, Try again.',
@@ -135,7 +130,7 @@ export default function Create({ auth, authors }: CreatePostProps) {
                   mt={{ base: 12, sm: 0 }}
                   w={{ base: '100%', sm: 'fit-content' }}
                   loading={form.processing}
-                  leftSection={<IconDeviceFloppy size={ICON_SIZE} />}
+                  leftSection={<IconDeviceFloppy size={16} />}
                 >
                   Create Post
                 </Button>
@@ -143,7 +138,7 @@ export default function Create({ auth, authors }: CreatePostProps) {
             />
             <Grid gutter={{ base: 'lg', lg: 'xl' }}>
               <Grid.Col span={{ base: 12, md: 8 }}>
-                <Surface component={Paper} {...PAPER_PROPS}>
+                <Surface component={Paper} p="md" shadow="md" radius="md" h="100%">
                   <Stack justify="space-between" gap={16} h="100%">
                     <TextInput
                       withAsterisk
@@ -161,7 +156,7 @@ export default function Create({ auth, authors }: CreatePostProps) {
                       placeholder="Slug"
                       value={form.data.slug}
                       error={form.errors.slug}
-                      disabled={form.processing || true}
+                      disabled={form.processing}
                       onChange={e => form.setData('slug', e.target.value)}
                     />
                     <Textarea
@@ -183,7 +178,7 @@ export default function Create({ auth, authors }: CreatePostProps) {
                 </Surface>
               </Grid.Col>
               <Grid.Col span={{ base: 12, md: 4 }} h="100%">
-                <Surface component={Paper} {...PAPER_PROPS}>
+                <Surface component={Paper} p="md" shadow="md" radius="md" h="100%">
                   <Stack justify="space-between" gap={16} h="100%">
                     <Accordion variant="contained" defaultValue="publishing">
                       <Accordion.Item value="publishing">
@@ -219,12 +214,12 @@ export default function Create({ auth, authors }: CreatePostProps) {
                               withAsterisk
                               label="Category"
                               placeholder="Select Category"
-                              value={form.data.category}
-                              error={form.errors.category}
+                              value={form.data.category_id}
+                              error={form.errors.category_id}
                               disabled={form.processing}
                               checkIconPosition="right"
-                              data={['React', 'Angular', 'Vue', 'Svelte']}
-                              onChange={(category: any) => form.setData('category', category)}
+                              data={categoryList}
+                              onChange={(category: any) => form.setData('category_id', category)}
                             />
                             <Select
                               withAsterisk
@@ -241,7 +236,7 @@ export default function Create({ auth, authors }: CreatePostProps) {
                               <Button
                                 size="xs"
                                 disabled={form.processing}
-                                leftSection={<IconEye size={ICON_SIZE} />}
+                                leftSection={<IconEye size={16} />}
                               >
                                 Preview
                               </Button>
@@ -279,7 +274,7 @@ export default function Create({ auth, authors }: CreatePostProps) {
                                     <Button
                                       {...props}
                                       variant="filled"
-                                      leftSection={<IconCloudUpload size={ICON_SIZE} />}
+                                      leftSection={<IconCloudUpload size={16} />}
                                     >
                                       Upload image
                                     </Button>
@@ -293,7 +288,7 @@ export default function Create({ auth, authors }: CreatePostProps) {
                                     variant="filled"
                                     color="red"
                                   >
-                                    <IconTrash size={ICON_SIZE} />
+                                    <IconTrash size={16} />
                                   </Button>
                                 </Grid.Col>
                               )}
@@ -376,8 +371,8 @@ export default function Create({ auth, authors }: CreatePostProps) {
                               value={form.data.meta_tags}
                               error={form.errors.meta_tags}
                               disabled={form.processing}
-                              data={['React', 'Angular', 'Vue', 'Svelte']}
-                              onChange={(meta_tags: any) => form.setData('meta_tags', meta_tags)}
+                              data={tagList}
+                              onChange={(tag: any) => form.setData('meta_tags', tag)}
                             />
                           </Stack>
                         </Accordion.Panel>

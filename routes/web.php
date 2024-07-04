@@ -38,12 +38,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/{user}/delete', [UserController::class, 'userDestroy'])->name('user.destroy');
   });
 
-  Route::prefix('posts')->group(function () {
-    Route::get('/', [PostController::class, 'postIndex'])->name('post.index');
-    Route::get('/create', [PostController::class, 'postCreate'])->name('post.create');
-    Route::post('/create', [PostController::class, 'postStore'])->name('post.store');
-  });
-
   Route::prefix('categories')->group(function () {
     Route::get('/', [CategoryController::class, 'categoryIndex'])->name('category.index');
     Route::post('/create', [CategoryController::class, 'categoryStore'])->name('category.store');
@@ -56,6 +50,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/create', [TagController::class, 'tagStore'])->name('tag.store');
     Route::patch('/{tag}/edit/', [TagController::class, 'tagUpdate'])->name('tag.update');
     Route::delete('/{tag}/delete', [TagController::class, 'tagDestroy'])->name('tag.destroy');
+  });
+
+  Route::prefix('posts')->group(function () {
+    Route::get('/', [PostController::class, 'index'])->name('post.index');
+    Route::get('/create', [PostController::class, 'create'])->name('post.create');
+    Route::post('/create', [PostController::class, 'store'])->name('post.store');
+    Route::get('/{post}/edit/', [PostController::class, 'show'])->name('post.show');
+    Route::patch('/{post}/edit/', [PostController::class, 'update'])->name('post.update');
+    Route::delete('/{post}/delete', [PostController::class, 'destroy'])->name('post.destroy');
   });
 });
 
