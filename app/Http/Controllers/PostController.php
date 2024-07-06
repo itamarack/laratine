@@ -36,7 +36,7 @@ class PostController extends Controller
   {
     $posts = $this->builderService->query($post, [
       'allowedSorts' => ['title', 'status'],
-      'eagerLoaders' => ['user']
+      'eagerLoaders' => ['user', 'category']
     ]);
 
     return Inertia::render('Posts/List', ['posts' => $posts]);

@@ -15,7 +15,7 @@ import {
 import { useState } from 'react';
 import dayjs from 'dayjs';
 import _first from 'lodash/first';
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { useDisclosure } from '@mantine/hooks';
 import { DataTable, DataTableProps, DataTableSortStatus } from 'mantine-datatable';
 import { IconDotsVertical, IconEdit, IconPlus, IconSearch, IconTrash } from '@tabler/icons-react';
@@ -25,6 +25,7 @@ import { PageProps, Post } from '@/types';
 import { useSearchFilter } from '@/hooks';
 import { dashboardRoute, postRoute } from '@/routes';
 import { DeletePost } from '@/Pages/Posts';
+import { badgeVariant } from '@/Utils';
 
 type PostsProps = {
   posts: {
@@ -49,8 +50,6 @@ export default function List({ auth, posts }: PostsProps) {
   const [isOpen, { open: onOpen, close: onClose }] = useDisclosure(false);
   const [selectedRecords, setSelectedRecords] = useState<Post[]>([]);
   const searchFilter = useSearchFilter('post.index');
-
-  console.log(posts);
 
   const columns: DataTableProps<Post>['columns'] = [
     {
@@ -79,15 +78,33 @@ export default function List({ auth, posts }: PostsProps) {
       ),
     },
     {
-      accessor: 'author',
+      accessor: 'user',
       sortable: true,
       render: ({ user }: Post) => <Text fz="sm">{user.fullname}</Text>,
     },
     {
-      accessor: 'Status',
+      accessor: 'category',
+      sortable: true,
+      render: ({ category }: Post) => <Text fz="sm">{category.title}</Text>,
+    },
+    {
+      accessor: 'tags',
+      title: 'Tags',
+      render: ({ meta_tags }: Post) => (
+        <Flex gap={4}>
+          {meta_tags.map((tag: string) => (
+            <Badge key={tag} size="xs">
+              {tag}
+            </Badge>
+          ))}
+        </Flex>
+      ),
+    },
+    {
+      accessor: 'status',
       title: 'Status',
       render: ({ status }: Post) => (
-        <Badge color={status ? 'green.8' : 'red'} variant="filled" size="sm" radius="sm">
+        <Badge color={badgeVariant({ status })} variant="filled" size="sm" radius="sm">
           {status}
         </Badge>
       ),
@@ -100,7 +117,7 @@ export default function List({ auth, posts }: PostsProps) {
       ),
     },
     {
-      accessor: 'updated_at',
+      accessor: 'last_modified',
       sortable: true,
       render: ({ updated_at }: Post) => (
         <Text fz="sm">{dayjs(new Date(updated_at)).format('MMM D, YYYY')}</Text>
