@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { User, SelectableList, Category, Tags } from "@/types";
+import { User, SelectableList, Category, Tags, Page } from "@/types";
 
 export function makeAuthorList(authors: User[] | undefined) {
   if (_.isEmpty(authors) || _.isNil(authors)) return [];
@@ -26,4 +26,13 @@ export function makeTagsList({ tags, tag }: { tags?: Tags[], tag?: Tags }) {
     value: tag.id?.toString(),
     label: tag.title
   })).filter((item) => item.value != tag?.id) as SelectableList[];
+}
+
+export function makePagesList({ pages, page }: { pages?: Page[], page?: Page }) {
+  if (_.isEmpty(pages) || _.isNil(pages)) return [];
+
+  return pages.map((page: Page) => ({
+    value: page.id?.toString(),
+    label: page.title
+  })).filter((item) => item.value != page?.id) as SelectableList[];
 }

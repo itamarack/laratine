@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TagController;
@@ -59,6 +60,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/{post}/edit/', [PostController::class, 'show'])->name('post.show');
     Route::patch('/{post}/edit/', [PostController::class, 'update'])->name('post.update');
     Route::delete('/{post}/delete', [PostController::class, 'destroy'])->name('post.destroy');
+  });
+
+  Route::prefix('pages')->group(function () {
+    Route::get('/', [PageController::class, 'index'])->name('page.index');
+    Route::get('/create', [PageController::class, 'create'])->name('page.create');
+    Route::post('/create', [PageController::class, 'store'])->name('page.store');
+    Route::get('/{page}/edit/', [PageController::class, 'show'])->name('page.show');
+    Route::patch('/{page}/edit/', [PageController::class, 'update'])->name('page.update');
+    Route::delete('/{page}/delete', [PageController::class, 'destroy'])->name('page.destroy');
   });
 });
 

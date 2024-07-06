@@ -20,6 +20,26 @@ export interface User {
   password_confirmation?: string;
 }
 
+export interface Page {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  user_id: string;
+  content: string;
+  status: string;
+  parent_id?: string;
+  featured_image?: string;
+  meta_description?: string;
+  meta_tags?: Array;
+  layout_template?: string;
+  layout_width?: string;
+  created_at: string;
+  updated_at: string;
+  user: User;
+  parent?: Page;
+}
+
 export interface Post {
   id: string;
   title: string;

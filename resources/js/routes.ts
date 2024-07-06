@@ -6,6 +6,12 @@ export const postRoute = (postId?: string) => ({
   update: `/posts/${postId}/edit`
 });
 
+export const pageRoute = (pageId?: string) => ({
+  list: '/pages/list',
+  create: '/pages/create',
+  update: `/pages/${pageId}/edit`
+});
+
 export const userRoute = (userId?: string | number) => ({
   list: '/users/list',
   create: '/users/create',
