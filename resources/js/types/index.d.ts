@@ -25,7 +25,7 @@ export interface Post {
   title: string;
   slug: string;
   excerpt: string;
-  author: string;
+  user_id: string;
   content: string;
   status: string;
   category_id: string;
@@ -36,6 +36,7 @@ export interface Post {
   layout_width?: string;
   created_at: string;
   updated_at: string;
+  user: User;
 
 }
 

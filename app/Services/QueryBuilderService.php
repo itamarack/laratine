@@ -34,21 +34,30 @@ class QueryBuilderService
   {
     $allowedSorts = $options['allowedSorts'] ?? [];
     $conditions = $options['conditions'] ?? [];
+    $eagerLoaders = $options['eagerLoaders'] ?? [];
     $searchIds = $model::search($this->search)->keys();
 
-    return QueryBuilder::for($model::class)
+    $queryBuilder = QueryBuilder::for($model::class)
       ->allowedSorts($allowedSorts)
       ->when($this->search, fn($query) => $query->whereIn('id', $searchIds))
-      ->tap(function (Builder $query) use ($conditions) {
+      ->when(filled($conditions), function (Builder $query) use ($conditions) {
         collect($conditions)->each(function ($condition) use ($query) {
           if (method_exists($query, $condition['method'])) {
             $query->{$condition['method']}(...$condition['parameters']);
           } else {
             throw new \InvalidArgumentException("Method {$condition['method']} not found.");
           }
+
         });
-      })
-      ->paginate($this->per_page)
-      ->appends($this->query);
+      });
+
+      if (filled($eagerLoaders)) {
+        collect($eagerLoaders)->each(function ($loader) use ($queryBuilder) {
+          return $queryBuilder->with($loader);
+        });
+      }
+
+      return $queryBuilder->paginate($this->per_page)
+        ->appends($this->query);
   }
 }

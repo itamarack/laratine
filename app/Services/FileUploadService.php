@@ -32,7 +32,7 @@ class FileUploadService
   public function uploadMedia(Request $request, Model $model): void
   {
     if ($request->hasFile('featured_image')) {
-      $model->addMediaFromRequest('featured_image')->toMediaCollection('media');
+      $model->addMediaFromRequest('featured_image')->toMediaCollection('featured_image');
     } else if (empty($request->query('featured_image'))) {
       optional($model->getFirstMedia('featured_image'))->delete();
     }

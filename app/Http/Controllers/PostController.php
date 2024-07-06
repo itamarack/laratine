@@ -28,12 +28,16 @@ class PostController extends Controller
   /**
    * Display the list of posts.
    *
+   * @param Request $request
    * @param Post $post
    * @return Response
    */
-  public function index(Post $post): Response
+  public function index(Request $request, Post $post): Response
   {
-    $posts = $this->builderService->query($post, []);
+    $posts = $this->builderService->query($post, [
+      'allowedSorts' => ['title', 'status'],
+      'eagerLoaders' => ['user']
+    ]);
 
     return Inertia::render('Posts/List', ['posts' => $posts]);
   }

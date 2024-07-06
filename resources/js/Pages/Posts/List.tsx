@@ -1,29 +1,22 @@
 'use client';
 
 import {
-  ActionIcon,
   Anchor,
   Badge,
   Button,
   Container,
   Flex,
-  Group,
   Menu,
-  Modal,
   Paper,
-  PaperProps,
-  SimpleGrid,
   Stack,
   Text,
   TextInput,
-  useMantineTheme,
 } from '@mantine/core';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import dayjs from 'dayjs';
 import _first from 'lodash/first';
 import { Head, Link, router } from '@inertiajs/react';
-import { useThrottledCallback, useDisclosure } from '@mantine/hooks';
-import { notifications } from '@mantine/notifications';
+import { useDisclosure } from '@mantine/hooks';
 import { DataTable, DataTableProps, DataTableSortStatus } from 'mantine-datatable';
 import { IconDotsVertical, IconEdit, IconPlus, IconSearch, IconTrash } from '@tabler/icons-react';
 import { PageHeader } from '@/Components';
@@ -57,6 +50,8 @@ export default function List({ auth, posts }: PostsProps) {
   const [selectedRecords, setSelectedRecords] = useState<Post[]>([]);
   const searchFilter = useSearchFilter('post.index');
 
+  console.log(posts);
+
   const columns: DataTableProps<Post>['columns'] = [
     {
       accessor: 'title',
@@ -82,6 +77,11 @@ export default function List({ auth, posts }: PostsProps) {
           }}
         />
       ),
+    },
+    {
+      accessor: 'author',
+      sortable: true,
+      render: ({ user }: Post) => <Text fz="sm">{user.fullname}</Text>,
     },
     {
       accessor: 'Status',

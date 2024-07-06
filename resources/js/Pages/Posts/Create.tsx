@@ -65,7 +65,7 @@ export default function Create({ auth, authors, categories, tags }: PostProps) {
     slug: '',
     excerpt: '',
     content: '',
-    author: '',
+    user_id: auth.user.id.toString(),
     status: '',
     category_id: '',
     tags: '',
@@ -203,11 +203,11 @@ export default function Create({ auth, authors, categories, tags }: PostProps) {
                               label="Author"
                               placeholder="Select Author"
                               data={authorsList}
-                              value={form.data.author}
-                              error={form.errors.author}
+                              value={form.data.user_id}
+                              error={form.errors.user_id}
                               disabled={form.processing}
                               checkIconPosition="right"
-                              onChange={(a: any) => form.setData('author', a)}
+                              onChange={(a: any) => form.setData('user_id', a)}
                             />
                             <Select
                               searchable

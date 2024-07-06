@@ -24,7 +24,7 @@ class Post extends Model implements HasMedia
     'title',
     'slug',
     'excerpt',
-    'author',
+    'user_id',
     'content',
     'status',
     'category_id',
@@ -38,15 +38,41 @@ class Post extends Model implements HasMedia
 
   protected $casts = [
     'meta_tags' => 'array',
+    'user_id' => 'string',
     'category_id' => 'string'
   ];
+
+  // protected $appends = ['author'];
 
   public function category(): BelongsTo
   {
     return $this->belongsTo(Category::class);
   }
 
-  public function toSearchableArray()
+  public function registerMediaCollections(): void
+  {
+    $this->addMediaCollection('featured_image')
+      ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/jpg'])
+      ->singleFile();
+
+    $this->addMediaCollection('media')
+      ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/jpg']);
+  }
+
+  /**
+   * Get the featuredImage attribute.
+   *
+   * This accessor function returns the asset URL for the avatar.
+   *
+   * @param  string|null  $avatar
+   * @return string
+   */
+  public function getFeaturedImageAttribute(): string
+  {
+    return $this->getFirstMediaUrl('featured_image');
+  }
+
+  public function toSearchableArray(): array
   {
     return [
       'id' => $this->id,
@@ -55,13 +81,13 @@ class Post extends Model implements HasMedia
     ];
   }
 
-  // public function setMetaTagsAttribute($value)
-  // {
-  //   $this->attributes['meta_tags'] = serialize($value);
-  // }
+  public function user(): BelongsTo
+  {
+    return $this->belongsTo(User::class);
+  }
 
-  // public function getMetaTagsAttribute($value)
+  // public function getAuthorAttribute()
   // {
-  //   return unserialize($value);
+  //   return $this->user;
   // }
 }

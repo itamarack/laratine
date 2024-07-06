@@ -17,7 +17,6 @@ return new class extends Migration
       $table->string('title')->unique();
       $table->string('slug')->unique();
       $table->string('excerpt');
-      $table->string('author');
       $table->longText('content');
       $table->string('status');
       $table->string('featured_image')->nullable();
@@ -25,11 +24,10 @@ return new class extends Migration
       $table->string('meta_description')->nullable();
       $table->string('layout_template')->nullable();
       $table->string('layout_width')->nullable();
-      $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
+      $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+      $table->foreignId('category_id')->constrained('categories')->cascadeOnDelete()->cascadeOnUpdate();
       $table->foreignId('parent_id')->nullable()->constrained('posts')->cascadeOnDelete()->cascadeOnUpdate();
-
       $table->timestamps();
-      $table->unique(['slug', 'parent_id']);
     });
   }
 

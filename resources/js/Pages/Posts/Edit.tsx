@@ -41,7 +41,7 @@ import { slugify, makeAuthorList, makeCategoryList, makeTagsList } from '@/Utils
 const items = [
   { title: 'Dashboard', href: dashboardRoute() },
   { title: 'Posts', href: postRoute().list },
-  { title: 'Create', href: '#' },
+  { title: 'Edit', href: '#' },
 ].map((item, index) => (
   <Anchor component={Link} href={item.href} key={index}>
     {item.title}
@@ -56,7 +56,7 @@ type PostProps = {
 } & PageProps;
 
 export default function Edit({ auth, post, authors, categories, tags }: PostProps) {
-  const [featuredImage, setFeaturedImage] = useState<string>('');
+  const [featuredImage, setFeaturedImage] = useState<string | undefined>(post.featured_image);
   const authorsList = makeAuthorList(authors);
   const categoryList = makeCategoryList({ categories });
   const tagList = makeTagsList({ tags });
@@ -67,7 +67,7 @@ export default function Edit({ auth, post, authors, categories, tags }: PostProp
     slug: post.slug ?? '',
     excerpt: post.excerpt ?? '',
     content: post.content ?? '',
-    author: post.author ?? '',
+    user_id: post.user_id ?? '',
     status: post.status ?? '',
     category_id: post.category_id ?? '',
     featured_image: post.featured_image ?? '',
@@ -115,14 +115,14 @@ export default function Edit({ auth, post, authors, categories, tags }: PostProp
 
   return (
     <AuthenticatedLayout user={auth.user}>
-      <Head title="Create | Posts" />
+      <Head title="Edit | Posts" />
 
       <Container fluid>
         <form onSubmit={onSubmit}>
           <Stack gap="lg">
             <PageHeader
               user={auth.user}
-              title="Create Post"
+              title="Edit Post"
               breadcrumbItems={items}
               withActions={
                 <Button
@@ -203,11 +203,11 @@ export default function Edit({ auth, post, authors, categories, tags }: PostProp
                               label="Author"
                               placeholder="Select Author"
                               data={authorsList}
-                              value={form.data.author}
-                              error={form.errors.author}
+                              value={form.data.user_id}
+                              error={form.errors.user_id}
                               disabled={form.processing}
                               checkIconPosition="right"
-                              onChange={(a: any) => form.setData('author', a)}
+                              onChange={(a: any) => form.setData('user_id', a)}
                             />
                             <Select
                               searchable
