@@ -8,6 +8,7 @@ export interface User {
   email?: string;
   image?: string;
   avatar?: string;
+  featured_image?: string;
   address?: string;
   state?: string;
   city?: string;
@@ -18,6 +19,20 @@ export interface User {
   updated_at: string;
   password?: string;
   password_confirmation?: string;
+}
+
+export interface Comment {
+  id: string;
+  user: User,
+  content: string;
+  status: string;
+  post_id: string;
+  user_id: string;
+  parent_id?: string;
+  parent: Comment;
+  post: Post;
+  updated_at: string;
+  created_at: string;
 }
 
 export interface Page {

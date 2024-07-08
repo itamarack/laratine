@@ -36,7 +36,7 @@ import { PageHeader, Surface, TextEditor } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
 import { Category, PageProps, Tags, User } from '@/types';
 import { dashboardRoute, postRoute } from '@/routes';
-import { slugify, makeAuthorList, makeCategoryList, makeTagsList } from '@/Utils';
+import { slugify, makeSelectableList } from '@/Utils';
 
 const items = [
   { title: 'Dashboard', href: dashboardRoute() },
@@ -56,9 +56,9 @@ type PostProps = {
 
 export default function Create({ auth, authors, categories, tags }: PostProps) {
   const [featuredImage, setFeaturedImage] = useState<string>('');
-  const authorsList = makeAuthorList(authors);
-  const categoryList = makeCategoryList({ categories });
-  const tagList = makeTagsList({ tags });
+  const authorsList = makeSelectableList(authors, 'fullname');
+  const categoryList = makeSelectableList(categories, 'title');
+  const tagList = makeSelectableList(tags, 'title');
 
   const form = useForm({
     title: '',

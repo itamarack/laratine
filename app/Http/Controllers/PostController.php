@@ -34,10 +34,10 @@ class PostController extends Controller
    */
   public function index(Request $request, Post $post): Response
   {
-    $posts = $this->builderService->query($post, [
-      'allowedSorts' => ['title', 'status'],
-      'eagerLoaders' => ['user', 'category']
-    ]);
+    $options['allowedSorts'] = ['title', 'status', 'created_at', 'updated_at'];
+    $options['eagerLoaders'] = ['user', 'category'];
+
+    $posts = $this->builderService->query($post, $options);
 
     return Inertia::render('Posts/List', ['posts' => $posts]);
   }

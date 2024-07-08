@@ -30,7 +30,7 @@ class ProfileController extends Controller
    * @param Request $request
    * @return Response
    */
-  public function profileIndex(Request $request): Response
+  public function index(Request $request): Response
   {
     return Inertia::render('Account/Profile/Profile', [
       'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
@@ -44,7 +44,7 @@ class ProfileController extends Controller
    * @param ProfileRequest $request
    * @return RedirectResponse
    */
-  public function profileUpdate(ProfileRequest $request): RedirectResponse
+  public function update(ProfileRequest $request): RedirectResponse
   {
     $request->user()->fill($request->validated());
 
@@ -64,7 +64,7 @@ class ProfileController extends Controller
    * @param Request $request
    * @return RedirectResponse
    */
-  public function profileDestroy(Request $request): RedirectResponse
+  public function destroy(Request $request): RedirectResponse
   {
     $request->validate([
       'password' => ['required', 'current_password'],

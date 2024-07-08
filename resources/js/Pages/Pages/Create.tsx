@@ -36,8 +36,7 @@ import { PageHeader, Surface, TextEditor } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
 import { Page, PageProps, Tags, User } from '@/types';
 import { dashboardRoute, pageRoute } from '@/routes';
-import { slugify, makeAuthorList, makeTagsList } from '@/Utils';
-import { makePagesList } from '@/Utils/makeSelectableList';
+import { slugify, makeSelectableList } from '@/Utils';
 
 const items = [
   { title: 'Dashboard', href: dashboardRoute() },
@@ -57,9 +56,9 @@ type PagesProps = {
 
 export default function Create({ auth, authors, pages, tags }: PagesProps) {
   const [featuredImage, setFeaturedImage] = useState<string>('');
-  const authorsList = makeAuthorList(authors);
-  const pagesList = makePagesList({ pages });
-  const tagList = makeTagsList({ tags });
+  const authorsList = makeSelectableList(authors, 'fullname');
+  const pagesList = makeSelectableList(pages, 'title');
+  const tagList = makeSelectableList(tags, 'title');
 
   const form = useForm({
     title: '',

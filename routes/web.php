@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
@@ -25,32 +26,32 @@ Route::get('/dashboard', function () {
 
 Route::middleware('auth')->group(function () {
   Route::prefix('profile')->group(function () {
-    Route::get('/', [ProfileController::class, 'profileIndex'])->name('profile.index');
-    Route::patch('/', [ProfileController::class, 'profileUpdate'])->name('profile.update');
-    Route::delete('/', [ProfileController::class, 'profileDestroy'])->name('profile.destroy');
+    Route::get('/', [ProfileController::class, 'index'])->name('profile.index');
+    Route::patch('/', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/', [ProfileController::class, 'destroy'])->name('profile.destroy');
   });
 
   Route::prefix('users')->group(function () {
-    Route::get('/', [UserController::class, 'userIndex'])->name('user.index');
-    Route::get('/create', [UserController::class, 'userCreate'])->name('user.create');
-    Route::post('/create', [UserController::class, 'userStore'])->name('user.store');
-    Route::get('/{user}/edit/', [UserController::class, 'userShow'])->name('user.show');
-    Route::patch('/{user}/edit/', [UserController::class, 'userUpdate'])->name('user.update');
-    Route::delete('/{user}/delete', [UserController::class, 'userDestroy'])->name('user.destroy');
+    Route::get('/', [UserController::class, 'index'])->name('user.index');
+    Route::get('/create', [UserController::class, 'create'])->name('user.create');
+    Route::post('/create', [UserController::class, 'store'])->name('user.store');
+    Route::get('/{user}/edit/', [UserController::class, 'show'])->name('user.show');
+    Route::patch('/{user}/edit/', [UserController::class, 'update'])->name('user.update');
+    Route::delete('/{user}/delete', [UserController::class, 'destroy'])->name('user.destroy');
   });
 
   Route::prefix('categories')->group(function () {
-    Route::get('/', [CategoryController::class, 'categoryIndex'])->name('category.index');
-    Route::post('/create', [CategoryController::class, 'categoryStore'])->name('category.store');
-    Route::patch('/{category}/edit/', [CategoryController::class, 'categoryUpdate'])->name('category.update');
-    Route::delete('/{category}/delete', [CategoryController::class, 'categoryDestroy'])->name('category.destroy');
+    Route::get('/', [CategoryController::class, 'index'])->name('category.index');
+    Route::post('/create', [CategoryController::class, 'store'])->name('category.store');
+    Route::patch('/{category}/edit/', [CategoryController::class, 'update'])->name('category.update');
+    Route::delete('/{category}/delete', [CategoryController::class, 'destroy'])->name('category.destroy');
   });
 
   Route::prefix('tags')->group(function () {
-    Route::get('/', [TagController::class, 'tagIndex'])->name('tag.index');
-    Route::post('/create', [TagController::class, 'tagStore'])->name('tag.store');
-    Route::patch('/{tag}/edit/', [TagController::class, 'tagUpdate'])->name('tag.update');
-    Route::delete('/{tag}/delete', [TagController::class, 'tagDestroy'])->name('tag.destroy');
+    Route::get('/', [TagController::class, 'index'])->name('tag.index');
+    Route::post('/create', [TagController::class, 'store'])->name('tag.store');
+    Route::patch('/{tag}/edit/', [TagController::class, 'update'])->name('tag.update');
+    Route::delete('/{tag}/delete', [TagController::class, 'destroy'])->name('tag.destroy');
   });
 
   Route::prefix('posts')->group(function () {
@@ -69,6 +70,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/{page}/edit/', [PageController::class, 'show'])->name('page.show');
     Route::patch('/{page}/edit/', [PageController::class, 'update'])->name('page.update');
     Route::delete('/{page}/delete', [PageController::class, 'destroy'])->name('page.destroy');
+  });
+
+  Route::prefix('comments')->group(function () {
+    Route::get('/', [CommentController::class, 'index'])->name('comment.index');
+    Route::get('/create', [CommentController::class, 'create'])->name('comment.create');
+    Route::post('/create', [CommentController::class, 'store'])->name('comment.store');
+    Route::get('/{comment}/edit/', [CommentController::class, 'show'])->name('comment.show');
+    Route::patch('/{comment}/edit/', [CommentController::class, 'update'])->name('comment.update');
+    Route::delete('/{comment}/delete', [CommentController::class, 'destroy'])->name('comment.destroy');
   });
 });
 

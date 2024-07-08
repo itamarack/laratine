@@ -7,7 +7,8 @@ import {
   IconArticle,
   IconCategory,
   IconTags,
-  IconBooks
+  IconBooks,
+  IconMessage2
 } from '@tabler/icons-react';
 
 const navigationItems = [
@@ -25,6 +26,7 @@ const navigationItems = [
       { label: 'Categories', icon: IconCategory, link: '/categories' },
       { label: 'Tags', icon: IconTags, link: '/tags' },
       { label: 'Pages', icon: IconBooks, link: '/pages' },
+      { label: 'Comments', icon: IconMessage2, link: '/comments' },
     ]
   },
   {

@@ -3,13 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PageRequest;
-use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Http\Requests\PostRequest;
-use App\Models\Category;
 use App\Models\Page;
 use App\Models\Tag;
 use App\Models\User;
@@ -36,10 +33,10 @@ class PageController extends Controller
    */
   public function index(Request $request, Page $page): Response
   {
-    $pages = $this->builderService->query($page, [
-      'allowedSorts' => ['title', 'status'],
-      'eagerLoaders' => ['user', 'category']
-    ]);
+    $options['allowedSorts'] = ['title', 'status', 'created_at', 'updated_at'];
+    $options['eagerLoaders'] = ['user', 'category'];
+
+    $pages = $this->builderService->query($page, $options);
 
     return Inertia::render('Pages/List', ['pages' => $pages]);
   }

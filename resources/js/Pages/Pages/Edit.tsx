@@ -34,10 +34,9 @@ import {
 import { useDebouncedCallback } from '@mantine/hooks';
 import { PageHeader, Surface, TextEditor } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
-import { Category, Page, PageProps, Post, Tags, User } from '@/types';
+import { Page, PageProps, Tags, User } from '@/types';
 import { dashboardRoute, pageRoute } from '@/routes';
-import { slugify, makeAuthorList, makeTagsList } from '@/Utils';
-import { makePagesList } from '@/Utils/makeSelectableList';
+import { slugify, makeSelectableList } from '@/Utils';
 
 const items = [
   { title: 'Dashboard', href: dashboardRoute() },
@@ -58,9 +57,9 @@ type PagesProps = {
 
 export default function Edit({ auth, page, authors, pages, tags }: PagesProps) {
   const [featuredImage, setFeaturedImage] = useState<string | undefined>(page.featured_image);
-  const authorsList = makeAuthorList(authors);
-  const pagesList = makePagesList({ pages, page });
-  const tagList = makeTagsList({ tags });
+  const authorsList = makeSelectableList(authors, 'fullname');
+  const pagesList = makeSelectableList(pages, 'title', page);
+  const tagList = makeSelectableList(tags, 'title');
 
   const form = useForm({
     _method: 'patch',
@@ -324,7 +323,7 @@ export default function Edit({ auth, page, authors, pages, tags }: PagesProps) {
                               error={form.errors.layout_template}
                               disabled={form.processing}
                               checkIconPosition="right"
-                              data={['Post Template', 'Post With Sidebar']}
+                              data={['Page Template', 'Page With Sidebar']}
                               onChange={(t: any) => form.setData('layout_template', t)}
                             />
                             <Select

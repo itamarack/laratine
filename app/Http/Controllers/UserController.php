@@ -30,14 +30,12 @@ class UserController extends Controller
    * @param User $user
    * @return Response
    */
-  public function userIndex (Request $request, User $user): Response
+  public function index(Request $request, User $user): Response
   {
-    $users = $this->builderService->query($user, [
-      'allowedSorts' => ['firstname', 'created_at', 'updated_at'],
-      'conditions' => [
-        ['method' => 'whereNot', 'parameters' => ['id', $request->user()->id]]
-      ]
-    ]);
+    $options['allowedSorts'] = ['firstname', 'created_at', 'updated_at'];
+    $options['conditions'] = [['method' => 'whereNot', 'parameters' => ['id', $request->user()->id]]];
+
+    $users = $this->builderService->query($user, $options);
 
     return Inertia::render('Account/Users/List', ['users' => $users]);
   }
@@ -47,7 +45,7 @@ class UserController extends Controller
    *
    * @return Response
    */
-  public function userCreate (): Response
+  public function create(): Response
   {
     return Inertia::render('Account/Users/Create', []);
   }
@@ -58,7 +56,7 @@ class UserController extends Controller
    * @param UserRequest $request
    * @return RedirectResponse
    */
-  public function userStore (UserRequest $request, User $user): RedirectResponse
+  public function store(UserRequest $request, User $user): RedirectResponse
   {
     $user->fill($request->validated());
     $this->uploadService->uploadAvatar($request, $user);
@@ -75,7 +73,7 @@ class UserController extends Controller
    * @param User $user
    * @return Response
    */
-  public function userShow(User $user): Response
+  public function show(User $user): Response
   {
     return Inertia::render('Account/Users/Edit', ['user' => $user]);
   }
@@ -87,7 +85,7 @@ class UserController extends Controller
    * @param User $user
    * @return RedirectResponse
    */
-  public function userUpdate(UserRequest $request, User $user): RedirectResponse
+  public function update(UserRequest $request, User $user): RedirectResponse
   {
     $user->fill($request->validated());
     $this->uploadService->uploadAvatar($request, $user);
@@ -103,7 +101,7 @@ class UserController extends Controller
    * @param User $user
    * @return RedirectResponse
    */
-  public function userDestroy(User $user): RedirectResponse
+  public function destroy(User $user): RedirectResponse
   {
     $user->delete();
     return redirect()->route('user.index');

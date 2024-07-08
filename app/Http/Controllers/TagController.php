@@ -25,7 +25,7 @@ class TagController extends Controller
    * @param Request $request
    * @return Response
    */
-  public function tagIndex(Tag $tag): Response
+  public function index(Tag $tag): Response
   {
     $options['allowedSorts'] = ['title', 'created_at', 'updated_at'];
 
@@ -40,7 +40,7 @@ class TagController extends Controller
    * @param TagRequest $request
    * @return RedirectResponse
    */
-  public function tagStore(TagRequest $request, Tag $tag): RedirectResponse
+  public function store(TagRequest $request, Tag $tag): RedirectResponse
   {
     $tag->fill($request->validated());
     $tag->save();
@@ -55,7 +55,7 @@ class TagController extends Controller
    * @param Tag $tag
    * @return RedirectResponse
    */
-  public function tagUpdate(TagRequest $request, Tag $tag): RedirectResponse
+  public function update(TagRequest $request, Tag $tag): RedirectResponse
   {
     $tag->fill($request->validated());
     $tag->update();
@@ -70,7 +70,7 @@ class TagController extends Controller
    * @param Tag $tag
    * @return RedirectResponse
    */
-  public function tagDestroy(Tag $tag): RedirectResponse
+  public function destroy(Tag $tag): RedirectResponse
   {
     $tag->delete();
     return redirect()->route('tag.index');

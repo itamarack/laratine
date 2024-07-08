@@ -5,7 +5,7 @@ import { FormEventHandler, useEffect } from 'react';
 import { router, useForm } from '@inertiajs/react';
 import { notifications } from '@mantine/notifications';
 import { useDebouncedCallback } from '@mantine/hooks';
-import { slugify, makeCategoryList } from '@/Utils';
+import { slugify, makeSelectableList } from '@/Utils';
 import { Category } from '@/types';
 
 type CategoryProps = {
@@ -17,7 +17,7 @@ type CategoryProps = {
 };
 
 export default function Edit({ categories, category, isOpen, onClose, onSearch }: CategoryProps) {
-  const categoryList = makeCategoryList({ categories, category });
+  const categoryList = makeSelectableList(categories, 'title', category);
   const form = useForm({
     id: '',
     title: '',

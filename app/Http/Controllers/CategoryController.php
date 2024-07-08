@@ -25,7 +25,7 @@ class CategoryController extends Controller
    * @param Request $request
    * @return Response
    */
-  public function categoryIndex(Category $category): Response
+  public function index(Category $category): Response
   {
     $options['allowedSorts'] = ['title', 'created_at', 'updated_at'];
 
@@ -40,7 +40,7 @@ class CategoryController extends Controller
    * @param CategoryRequest $request
    * @return RedirectResponse
    */
-  public function categoryStore(CategoryRequest $request, Category $category): RedirectResponse
+  public function store(CategoryRequest $request, Category $category): RedirectResponse
   {
     $category->fill($request->validated());
     $category->save();
@@ -55,7 +55,7 @@ class CategoryController extends Controller
    * @param Category $category
    * @return RedirectResponse
    */
-  public function categoryUpdate(CategoryRequest $request, Category $category): RedirectResponse
+  public function update(CategoryRequest $request, Category $category): RedirectResponse
   {
     $category->fill($request->validated());
     $category->update();
@@ -70,7 +70,7 @@ class CategoryController extends Controller
    * @param Category $category
    * @return RedirectResponse
    */
-  public function categoryDestroy(Category $category): RedirectResponse
+  public function destroy(Category $category): RedirectResponse
   {
     $category->delete();
     return redirect()->route('category.index');

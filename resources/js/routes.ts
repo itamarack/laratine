@@ -17,3 +17,9 @@ export const userRoute = (userId?: string | number) => ({
   create: '/users/create',
   update: `/users/${userId}/edit`
 });
+
+export const commentRoute = (commentId?: string | number) => ({
+  list: '/comments/list',
+  create: '/comments/create',
+  update: `/comments/${commentId}/edit`
+});
