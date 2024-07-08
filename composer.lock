@@ -4,7 +4,7 @@
     "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
     "This file is @generated automatically"
   ],
-  "content-hash": "c2cb492adbefdf3341485cd6f039ae99",
+  "content-hash": "3e446f01bf3539af14208d7d92522464",
   "packages": [
     {
       "name": "brick/math",
@@ -3977,6 +3977,84 @@
         }
       ],
       "time": "2024-05-21T12:12:10+00:00"
+    },
+    {
+      "name": "spatie/laravel-stats",
+      "version": "2.3.0",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/spatie/laravel-stats.git",
+        "reference": "c996bf59b343e1f9b42f7e6b026955e43d27d1b0"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/spatie/laravel-stats/zipball/c996bf59b343e1f9b42f7e6b026955e43d27d1b0",
+        "reference": "c996bf59b343e1f9b42f7e6b026955e43d27d1b0",
+        "shasum": ""
+      },
+      "require": {
+        "illuminate/contracts": "^8.73|^9.0|^10.0|^11.0",
+        "php": "^8.0",
+        "spatie/laravel-package-tools": "^1.9.2"
+      },
+      "require-dev": {
+        "doctrine/dbal": "^3.6",
+        "nesbot/carbon": "^2.63|^3.0",
+        "orchestra/testbench": "^6.23|^7.0|^8.0|^9.0",
+        "phpunit/phpunit": "^9.4|^10.0"
+      },
+      "type": "library",
+      "extra": {
+        "laravel": {
+          "providers": [
+            "Spatie\\Stats\\StatsServiceProvider"
+          ]
+        }
+      },
+      "autoload": {
+        "psr-4": {
+          "Spatie\\Stats\\": "src"
+        }
+      },
+      "notification-url": "https://packagist.org/downloads/",
+      "license": [
+        "MIT"
+      ],
+      "authors": [
+        {
+          "name": "Alex Vanderbist",
+          "email": "alex@spatie.be",
+          "homepage": "https://spatie.be",
+          "role": "Developer"
+        },
+        {
+          "name": "Freek Van der Herten",
+          "email": "freek@spatie.be",
+          "homepage": "https://spatie.be",
+          "role": "Developer"
+        }
+      ],
+      "description": "Track application stat changes over time",
+      "homepage": "https://github.com/spatie/laravel-stats",
+      "keywords": [
+        "laravel-stats",
+        "spatie"
+      ],
+      "support": {
+        "issues": "https://github.com/spatie/laravel-stats/issues",
+        "source": "https://github.com/spatie/laravel-stats/tree/2.3.0"
+      },
+      "funding": [
+        {
+          "url": "https://github.com/sponsors/spatie",
+          "type": "github"
+        },
+        {
+          "url": "https://spatie.be/open-source/support-us",
+          "type": "other"
+        }
+      ],
+      "time": "2024-03-12T19:47:57+00:00"
     },
     {
       "name": "spatie/temporary-directory",

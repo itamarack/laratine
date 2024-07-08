@@ -11,6 +11,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use App\Services\FileUploadService;
 use App\Services\QueryBuilderService;
+use App\Stats\UserStats;
 
 class UserController extends Controller
 {
@@ -63,6 +64,7 @@ class UserController extends Controller
     $user->save();
 
     event(new Registered($user));
+    UserStats::increase();
 
     return redirect()->route('user.index');
   }
@@ -104,6 +106,8 @@ class UserController extends Controller
   public function destroy(User $user): RedirectResponse
   {
     $user->delete();
+    UserStats::decrease();
+
     return redirect()->route('user.index');
   }
 }
