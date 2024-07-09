@@ -1,16 +1,16 @@
-import { Badge, Group, Paper, PaperProps, Text } from '@mantine/core';
-import classes from './Stats.module.css';
+import { Badge, Box, Group, Paper, PaperProps, Text } from '@mantine/core';
 import { IconArrowDownRight, IconArrowUpRight } from '@tabler/icons-react';
 import { Surface } from '@/Components';
+import classes from './Stats.module.css';
 
 type StatsCardProps = {
-  data: { title: string; value: string; diff: number; period?: string };
+  title: string;
+  value: string;
+  difference: number;
+  period?: string;
 } & PaperProps;
 
-const StatsCard = ({ data, ...others }: StatsCardProps) => {
-  const { title, value, period, diff } = data;
-  const DiffIcon = diff > 0 ? IconArrowUpRight : IconArrowDownRight;
-
+const StatsCard = ({ title, value, period, difference, ...others }: StatsCardProps) => {
   return (
     <Surface component={Paper} {...others}>
       <Group justify="space-between">
@@ -26,9 +26,13 @@ const StatsCard = ({ data, ...others }: StatsCardProps) => {
 
       <Group align="flex-end" gap="xs" mt={25}>
         <Text className={classes.value}>{value}</Text>
-        <Text c={diff > 0 ? 'teal' : 'red'} fz="sm" fw={500} className={classes.diff}>
-          <span>{diff}%</span>
-          <DiffIcon size="1rem" stroke={1.5} />
+        <Text c={difference > 0 ? 'teal' : 'red'} fz="sm" fw={500} className={classes.diff}>
+          <Box>{difference}%</Box>
+          {difference > 0 ? (
+            <IconArrowUpRight size="1rem" stroke={1.5} />
+          ) : (
+            <IconArrowDownRight size="1rem" stroke={1.5} />
+          )}
         </Text>
       </Group>
 

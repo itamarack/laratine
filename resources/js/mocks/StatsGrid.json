@@ -25,7 +25,8 @@
       "title": "Pending Orders",
       "icon": "user",
       "value": "188",
-      "diff": -30
+      "diff": -30,
+      "period": "yearly"
     }
   ]
 }
