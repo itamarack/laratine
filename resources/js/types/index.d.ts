@@ -1,5 +1,17 @@
 import { Config } from 'ziggy-js';
 
+export interface Stat {
+  title: string;
+  icon?: string;
+  value: string | number;
+  difference: number;
+  increments?: number;
+  decrements?: number;
+  period?: string;
+  start?: number;
+  end?: number;
+};
+
 export interface User {
   id: number | string;
   fullname?: string;

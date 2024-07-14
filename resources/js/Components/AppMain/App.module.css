@@ -1,5 +1,6 @@
 .main {
   min-height: 90vh;
+  /* padding: 16px 12px; */
 
   @mixin light {
     background-color: var(--mantine-color-gray-0);

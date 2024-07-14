@@ -4,8 +4,102 @@
     "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
     "This file is @generated automatically"
   ],
-  "content-hash": "3e446f01bf3539af14208d7d92522464",
+  "content-hash": "73b2dbd819a8bc624320f86f9149d426",
   "packages": [
+    {
+      "name": "awssat/laravel-visits",
+      "version": "6.1.1",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/awssat/laravel-visits.git",
+        "reference": "8d6c165742e5bf0a8b6d1501771c3d409f1f8948"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/awssat/laravel-visits/zipball/8d6c165742e5bf0a8b6d1501771c3d409f1f8948",
+        "reference": "8d6c165742e5bf0a8b6d1501771c3d409f1f8948",
+        "shasum": ""
+      },
+      "require": {
+        "illuminate/support": "~5.5.0 || ~5.6.0 || ~5.7.0 || ~5.8.0 || ^6.0 || ^7.0 || ^8.0 || ^9.0 || ^10.0 || ^11.0",
+        "jaybizzle/crawler-detect": "^1.2",
+        "nesbot/carbon": "^2.0|^3.0",
+        "php": "^8.0",
+        "spatie/laravel-referer": "^1.6",
+        "torann/geoip": "^1.0|^3.0"
+      },
+      "require-dev": {
+        "doctrine/dbal": "^2.6|^3.0",
+        "illuminate/support": "~5.5.0 || ~5.6.0 || ~5.7.0 || ~5.8.0 || ^6.0 || ^7.0 || ^8.0 || ^9.0 || ^10.0 || ^11.0",
+        "mockery/mockery": "^1.4 || ^1.6",
+        "orchestra/testbench": "^3.5 || ^3.6 || ^3.7 || ^3.8 || ^4.0 || ^5.0 || ^6.0 || ^7.0 || ^8.0 || ^9.0",
+        "phpunit/phpunit": "^9.0 || ^10.1",
+        "predis/predis": "^1.1|^2.0"
+      },
+      "suggest": {
+        "ext-redis": "Needed if you are using redis as engine data of laravel-visits",
+        "illuminate/database": "Needed if you are using database as engine data of laravel-visits",
+        "predis/predis": "Needed if you are using redis as data engine of laravel-visits"
+      },
+      "type": "library",
+      "extra": {
+        "branch-alias": {
+          "dev-master": "2.0-dev"
+        },
+        "laravel": {
+          "providers": [
+            "Awssat\\Visits\\VisitsServiceProvider"
+          ],
+          "aliases": {
+            "Visits": "Awssat\\Visits\\Visits"
+          }
+        }
+      },
+      "autoload": {
+        "files": [
+          "src/helpers.php"
+        ],
+        "psr-4": {
+          "Awssat\\Visits\\": "src"
+        }
+      },
+      "notification-url": "https://packagist.org/downloads/",
+      "license": [
+        "MIT"
+      ],
+      "authors": [
+        {
+          "name": "Bader Almutairi",
+          "email": "bderemail@gmail.com"
+        },
+        {
+          "name": "Abdulrahman Alshuwayi",
+          "email": "hi@abdumu.com"
+        }
+      ],
+      "description": "Laravel Redis visits counter for Eloquent models",
+      "homepage": "https://github.com/awssat/laravel-visits",
+      "keywords": [
+        "cache",
+        "counter",
+        "laravel",
+        "package",
+        "php",
+        "redis",
+        "visits"
+      ],
+      "support": {
+        "issues": "https://github.com/awssat/laravel-visits/issues",
+        "source": "https://github.com/awssat/laravel-visits/tree/6.1.1"
+      },
+      "funding": [
+        {
+          "url": "https://github.com/awssat",
+          "type": "github"
+        }
+      ],
+      "time": "2024-07-07T22:47:10+00:00"
+    },
     {
       "name": "brick/math",
       "version": "0.12.1",
@@ -1206,6 +1300,58 @@
         }
       ],
       "time": "2024-05-17T22:12:22+00:00"
+    },
+    {
+      "name": "jaybizzle/crawler-detect",
+      "version": "v1.2.119",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/JayBizzle/Crawler-Detect.git",
+        "reference": "275002e22b0333c15a7c6792fdae5d5deefc9ef0"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/JayBizzle/Crawler-Detect/zipball/275002e22b0333c15a7c6792fdae5d5deefc9ef0",
+        "reference": "275002e22b0333c15a7c6792fdae5d5deefc9ef0",
+        "shasum": ""
+      },
+      "require": {
+        "php": ">=5.3.0"
+      },
+      "require-dev": {
+        "phpunit/phpunit": "^4.8|^5.5|^6.5|^9.4"
+      },
+      "type": "library",
+      "autoload": {
+        "psr-4": {
+          "Jaybizzle\\CrawlerDetect\\": "src/"
+        }
+      },
+      "notification-url": "https://packagist.org/downloads/",
+      "license": [
+        "MIT"
+      ],
+      "authors": [
+        {
+          "name": "Mark Beech",
+          "email": "m@rkbee.ch",
+          "role": "Developer"
+        }
+      ],
+      "description": "CrawlerDetect is a PHP class for detecting bots/crawlers/spiders via the user agent",
+      "homepage": "https://github.com/JayBizzle/Crawler-Detect/",
+      "keywords": [
+        "crawler",
+        "crawler detect",
+        "crawler detector",
+        "crawlerdetect",
+        "php crawler detect"
+      ],
+      "support": {
+        "issues": "https://github.com/JayBizzle/Crawler-Detect/issues",
+        "source": "https://github.com/JayBizzle/Crawler-Detect/tree/v1.2.119"
+      },
+      "time": "2024-06-07T07:58:43+00:00"
     },
     {
       "name": "laravel/breeze",
@@ -3979,6 +4125,77 @@
       "time": "2024-05-21T12:12:10+00:00"
     },
     {
+      "name": "spatie/laravel-referer",
+      "version": "1.9.0",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/spatie/laravel-referer.git",
+        "reference": "127ad9752f7bca860291ce38873d0985bd831b7c"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/spatie/laravel-referer/zipball/127ad9752f7bca860291ce38873d0985bd831b7c",
+        "reference": "127ad9752f7bca860291ce38873d0985bd831b7c",
+        "shasum": ""
+      },
+      "require": {
+        "illuminate/contracts": "^8.73|^9.0|^10.0|^11.0",
+        "illuminate/http": "^8.73|^9.0|^10.0|^11.0",
+        "illuminate/support": "^8.73|^9.0|^10.0|^11.0",
+        "php": "^7.4|^8.0"
+      },
+      "require-dev": {
+        "orchestra/testbench": "^6.23|^7.0|^8.0|^9.0",
+        "phpunit/phpunit": "^9.5|^10.5"
+      },
+      "type": "library",
+      "extra": {
+        "laravel": {
+          "providers": [
+            "Spatie\\Referer\\RefererServiceProvider"
+          ]
+        }
+      },
+      "autoload": {
+        "psr-4": {
+          "Spatie\\Referer\\": "src"
+        }
+      },
+      "notification-url": "https://packagist.org/downloads/",
+      "license": [
+        "MIT"
+      ],
+      "authors": [
+        {
+          "name": "Sebastian De Deyne",
+          "email": "sebastian@spatie.be",
+          "homepage": "https://spatie.be",
+          "role": "Developer"
+        }
+      ],
+      "description": "Keep a visitor's original referer in session",
+      "homepage": "https://github.com/spatie/laravel-referer",
+      "keywords": [
+        "laravel-referer",
+        "spatie"
+      ],
+      "support": {
+        "issues": "https://github.com/spatie/laravel-referer/issues",
+        "source": "https://github.com/spatie/laravel-referer/tree/1.9.0"
+      },
+      "funding": [
+        {
+          "url": "https://spatie.be/open-source/support-us",
+          "type": "custom"
+        },
+        {
+          "url": "https://github.com/spatie",
+          "type": "github"
+        }
+      ],
+      "time": "2024-04-08T07:56:33+00:00"
+    },
+    {
       "name": "spatie/laravel-stats",
       "version": "2.3.0",
       "source": {
@@ -6694,6 +6911,86 @@
         "source": "https://github.com/tijsverkoyen/CssToInlineStyles/tree/v2.2.7"
       },
       "time": "2023-12-08T13:03:43+00:00"
+    },
+    {
+      "name": "torann/geoip",
+      "version": "3.0.7",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/Torann/laravel-geoip.git",
+        "reference": "a0600618e2ea145e018361498ff4cadf773dbe5b"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/Torann/laravel-geoip/zipball/a0600618e2ea145e018361498ff4cadf773dbe5b",
+        "reference": "a0600618e2ea145e018361498ff4cadf773dbe5b",
+        "shasum": ""
+      },
+      "require": {
+        "illuminate/cache": "^8.0|^9.0|^10.0|^11.0",
+        "illuminate/console": "^8.0|^9.0|^10.0|^11.0",
+        "illuminate/support": "^8.0|^9.0|^10.0|^11.0",
+        "php": "^8.0|^8.1|^8.2|^8.3"
+      },
+      "require-dev": {
+        "geoip2/geoip2": "~2.1|~3.0",
+        "mockery/mockery": "^1.3",
+        "phpstan/phpstan": "^0.12.14|^1.9",
+        "phpunit/phpunit": "^8.0|^9.0|^10.0|^11.0",
+        "squizlabs/php_codesniffer": "^3.5",
+        "vlucas/phpdotenv": "^5.0"
+      },
+      "suggest": {
+        "geoip2/geoip2": "Required to use the MaxMind database or web service with GeoIP (~2.1).",
+        "monolog/monolog": "Allows for storing location not found errors to the log"
+      },
+      "type": "library",
+      "extra": {
+        "branch-alias": {
+          "dev-master": "1.0-dev"
+        },
+        "laravel": {
+          "providers": [
+            "Torann\\GeoIP\\GeoIPServiceProvider"
+          ],
+          "aliases": {
+            "GeoIP": "Torann\\GeoIP\\Facades\\GeoIP"
+          }
+        }
+      },
+      "autoload": {
+        "files": [
+          "src/helpers.php"
+        ],
+        "psr-4": {
+          "Torann\\GeoIP\\": "src/"
+        }
+      },
+      "notification-url": "https://packagist.org/downloads/",
+      "license": [
+        "BSD-2-Clause"
+      ],
+      "authors": [
+        {
+          "name": "Daniel Stainback",
+          "email": "torann@gmail.com"
+        }
+      ],
+      "description": "Support for multiple GeoIP services.",
+      "keywords": [
+        "IP API",
+        "geoip",
+        "geolocation",
+        "infoDB",
+        "laravel",
+        "location",
+        "maxmind"
+      ],
+      "support": {
+        "issues": "https://github.com/Torann/laravel-geoip/issues",
+        "source": "https://github.com/Torann/laravel-geoip/tree/3.0.7"
+      },
+      "time": "2024-03-22T18:39:18+00:00"
     },
     {
       "name": "vlucas/phpdotenv",

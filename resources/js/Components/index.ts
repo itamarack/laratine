@@ -3,7 +3,7 @@ export { default as Logo } from '@/Components/Logo/Logo';
 export { default as ToggleTheme } from '@/Components/ToggleTheme/ToggleTheme';
 export { default as LanguagePicker } from '@/Components/LanguagePicker/LanguagePicker';
 export { default as FilterDateMenu } from '@/Components/FilterDateMenu/FilterDateMenu';
-export { default as RevenueChart } from '@/Components/RevenueChart/RevenueChart';
+export { default as AreaChart } from '@/Components/AreaChart/AreaChart';
 export { default as SalesChart } from '@/Components/SalesChart/SalesChart';
 export { default as MobileDesktopChart } from '@/Components/MobileDesktopChart/MobileDesktopChart';
 export { default as ProjectsTable } from '@/Components/ProjectsTable/ProjectsTable';
