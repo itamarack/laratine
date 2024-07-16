@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Stats\CommentStats;
 use App\Stats\PageLikeStat;
 use App\Stats\PostStats;
@@ -19,9 +20,10 @@ class DashboardController extends Controller
     $stats['likes'] = PageLikeStat::compose();
     $stats['comments'] = CommentStats::compose();
     $stats['visitors'] = VisitorStats::compose();
+    $stats['categories'] = Category::withCount('posts')->get()->toArray();
 
     return Inertia::render('Account/Dashboard/Dashboard', [
-      'stats' => $stats
+      'stats' => $stats,
     ]);
   }
 }

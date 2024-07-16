@@ -32,6 +32,9 @@ const AreaChart = ({ title, series, categories }: ChartProps) => {
     dataLabels: {
       enabled: false,
     },
+    title: {
+      text: title,
+    },
     stroke: {
       curve: 'smooth',
     },
@@ -66,11 +69,6 @@ const AreaChart = ({ title, series, categories }: ChartProps) => {
 
   return (
     <Surface component={Paper} p="md" shadow="md" radius="md" h="100%">
-      <Group justify="space-between" mb="md">
-        <Text size="lg" fw={600}>
-          {title ? title : 'Chart'}
-        </Text>
-      </Group>
       <Suspense fallback={<span>Loading...</span>}>
         <Chart options={options} series={series} type="area" height={350} width={'100%'} />
       </Suspense>

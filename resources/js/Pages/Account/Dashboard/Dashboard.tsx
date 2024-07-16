@@ -26,10 +26,10 @@ import {
   PageHeader,
   ProjectsTable,
   AreaChart,
-  SalesChart,
+  ContentChart,
   StatsCard,
 } from '@/Components';
-import { PageProps, Stat } from '@/types';
+import { Category, PageProps, Stat } from '@/types';
 import { AuthenticatedLayout } from '@/Layouts';
 import ProjectsData from '@/mocks/Projects.json';
 import classes from './Dashboard.module.css';
@@ -49,6 +49,7 @@ type DashboardProps = {
     likes: Stat;
     comments: Stat;
     visitors: Stat[];
+    categories?: Category[];
   };
 } & PageProps;
 
@@ -56,15 +57,11 @@ export default function Dashboard({ auth, stats, loading }: DashboardProps) {
   const [categories, setCategories] = useState<(string | number | undefined)[]>();
   const [series, setSeries] = useState<any>([]);
 
-  console.log(stats.visitors);
-
-  // const series = [{ data: [31, 40, 28, 51, 42] }];
+  // console.log(stats.visitors);
 
   useEffect(() => {
     const categories = stats.visitors?.map(i => i.start);
     const data = stats.visitors.map(i => i.value);
-
-    console.log('VALUE', data);
 
     setCategories(() => categories);
     setSeries(() => [{ data: data }]);
@@ -121,12 +118,12 @@ export default function Dashboard({ auth, stats, loading }: DashboardProps) {
               </SimpleGrid>
             )}
           </Box>
-          <Grid gutter={{ base: 'md', sm: 'md', md: 'xl', xl: 50 }}>
+          <Grid gutter={{ base: 'md', sm: 'md', md: 'xl' }}>
             <Grid.Col span={{ base: 12, md: 8 }}>
               <AreaChart title="Visitors" series={series} categories={categories} />
             </Grid.Col>
             <Grid.Col span={{ base: 12, md: 4 }}>
-              <SalesChart {...PAPER_PROPS} />
+              <ContentChart categories={stats.categories} {...PAPER_PROPS} />
             </Grid.Col>
             <Grid.Col span={{ base: 12, md: 4 }}>
               <MobileDesktopChart {...PAPER_PROPS} />

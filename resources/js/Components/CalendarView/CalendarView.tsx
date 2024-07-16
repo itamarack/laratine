@@ -1,4 +1,5 @@
 import { Calendar, CalendarProps } from '@mantine/dates';
+import '@mantine/dates/styles.css';
 
 type CalendarViewProps = CalendarProps;
 

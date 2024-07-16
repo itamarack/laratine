@@ -97,6 +97,7 @@ export interface Category {
   parent_id: string;
   created_at: string;
   updated_at: string;
+  posts_count?: number;
 }
 
 export interface Tags {
