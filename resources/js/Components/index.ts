@@ -6,7 +6,8 @@ export { default as FilterDateMenu } from '@/Components/FilterDateMenu/FilterDat
 export { default as AreaChart } from '@/Components/AreaChart/AreaChart';
 export { default as ContentChart } from '@/Components/ContentChart/ContentChart';
 export { default as MobileDesktopChart } from '@/Components/MobileDesktopChart/MobileDesktopChart';
-export { default as ProjectsTable } from '@/Components/ProjectsTable/ProjectsTable';
+export { default as RecentPosts } from '@/Components/RecentPosts/RecentPosts';
+export { default as RecentComments } from '@/Components/RecentComments/RecentComments';
 export { default as StatsCard } from '@/Components/StatsCard/StatsCard';
 export { default as MapChart } from '@/Components/MapChart/MapChart';
 export { default as LanguageTable } from '@/Components/LanguageTable/LanguageTable';

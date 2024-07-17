@@ -1,13 +1,6 @@
 'use client';
 
-import {
-  Group,
-  Paper,
-  PaperProps,
-  Text,
-  useMantineColorScheme,
-  useMantineTheme,
-} from '@mantine/core';
+import { Paper, PaperProps, useMantineColorScheme, useMantineTheme } from '@mantine/core';
 import React, { Suspense } from 'react';
 import { Surface } from '@/Components';
 

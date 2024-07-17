@@ -99,7 +99,7 @@ const ContentChart = ({ categories, ...others }: ContentType) => {
   };
 
   return (
-    <Surface component={Paper} {...others}>
+    <Surface component={Paper} p="md" shadow="md" radius="md" h="100%" {...others}>
       <Suspense fallback={<div>Loading...</div>}>
         <Box>
           <Chart options={options} series={itemCount} type="radar" height={350} width={'100%'} />

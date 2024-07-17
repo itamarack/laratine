@@ -13,6 +13,7 @@ use App\Models\Tag;
 use App\Models\User;
 use App\Services\FileUploadService;
 use App\Services\QueryBuilderService;
+use App\Stats\PostStats;
 
 class PostController extends Controller
 {
@@ -72,6 +73,7 @@ class PostController extends Controller
     $post->fill($request->validated());
     $this->uploadService->uploadMedia($request, $post);
     $post->save();
+    PostStats::increase();
 
     return redirect()->route('post.index');
   }
@@ -122,6 +124,7 @@ class PostController extends Controller
   public function destroy(Post $post): RedirectResponse
   {
     $post->delete();
+    PostStats::decrease();
     return redirect()->route('post.index');
   }
 }

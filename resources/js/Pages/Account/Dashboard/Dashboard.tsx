@@ -1,46 +1,18 @@
+import { Box, Container, Grid, SimpleGrid, Skeleton, Stack } from '@mantine/core';
+import { IconArticle, IconEyeSearch, IconMessage, IconUsersGroup } from '@tabler/icons-react';
+import { Head } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  Group,
-  Paper,
-  PaperProps,
-  SimpleGrid,
-  Skeleton,
-  Stack,
-  Text,
-} from '@mantine/core';
-import {
-  IconArticle,
-  IconArticleFilled,
-  IconChevronRight,
-  IconEyeSearch,
-  IconMessage,
-  IconMessage2,
-  IconUsersGroup,
-} from '@tabler/icons-react';
-import { Head, Link } from '@inertiajs/react';
-import {
-  MobileDesktopChart,
   PageHeader,
-  ProjectsTable,
+  RecentPosts,
   AreaChart,
   ContentChart,
   StatsCard,
+  RecentComments,
 } from '@/Components';
-import { Category, PageProps, Stat } from '@/types';
+import { Category, Comment, PageProps, Post, Stat } from '@/types';
 import { AuthenticatedLayout } from '@/Layouts';
-import ProjectsData from '@/mocks/Projects.json';
-import classes from './Dashboard.module.css';
-import { useEffect, useState } from 'react';
-
-const PAPER_PROPS: PaperProps = {
-  p: 'md',
-  shadow: 'md',
-  radius: 'md',
-  style: { height: '100%' },
-};
+import classes from './dashboard.module.css';
 
 type DashboardProps = {
   stats: {
@@ -51,13 +23,24 @@ type DashboardProps = {
     visitors: Stat[];
     categories?: Category[];
   };
+  category_count: Category[];
+  recent_posts: Post[];
+  recent_comments: Comment[];
+  loading: boolean;
 } & PageProps;
 
-export default function Dashboard({ auth, stats, loading }: DashboardProps) {
+export default function Dashboard({
+  auth,
+  stats,
+  category_count,
+  recent_posts,
+  recent_comments,
+  loading,
+}: DashboardProps) {
   const [categories, setCategories] = useState<(string | number | undefined)[]>();
   const [series, setSeries] = useState<any>([]);
 
-  // console.log(stats.visitors);
+  console.log(stats.visitors);
 
   useEffect(() => {
     const categories = stats.visitors?.map(i => i.start);
@@ -123,28 +106,13 @@ export default function Dashboard({ auth, stats, loading }: DashboardProps) {
               <AreaChart title="Visitors" series={series} categories={categories} />
             </Grid.Col>
             <Grid.Col span={{ base: 12, md: 4 }}>
-              <ContentChart categories={stats.categories} {...PAPER_PROPS} />
+              <ContentChart categories={category_count} />
             </Grid.Col>
-            <Grid.Col span={{ base: 12, md: 4 }}>
-              <MobileDesktopChart {...PAPER_PROPS} />
+            <Grid.Col span={{ base: 12, md: 5 }}>
+              <RecentComments comments={recent_comments} loading={loading} />
             </Grid.Col>
-            <Grid.Col span={{ base: 12, md: 8 }}>
-              <Paper {...PAPER_PROPS}>
-                <Group justify="space-between" mb="md">
-                  <Text size="lg" fw={600}>
-                    Tasks
-                  </Text>
-                  <Button
-                    variant="subtle"
-                    component={Link}
-                    href={''}
-                    rightSection={<IconChevronRight size={18} />}
-                  >
-                    View all
-                  </Button>
-                </Group>
-                <ProjectsTable data={ProjectsData.slice(0, 6)} error={false} loading={false} />
-              </Paper>
+            <Grid.Col span={{ base: 12, md: 7 }}>
+              <RecentPosts posts={recent_posts} loading={loading} />
             </Grid.Col>
           </Grid>
         </Stack>

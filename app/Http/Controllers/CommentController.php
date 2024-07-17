@@ -7,6 +7,7 @@ use App\Models\Comment;
 use App\Models\Post;
 use App\Models\User;
 use App\Services\QueryBuilderService;
+use App\Stats\CommentStats;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -66,6 +67,7 @@ class CommentController extends Controller
   {
     $comment->fill($request->validated());
     $comment->save();
+    CommentStats::increase();
 
     return redirect()->route('comment.index');
   }
@@ -114,6 +116,7 @@ class CommentController extends Controller
   public function destroy(Comment $comment): RedirectResponse
   {
     $comment->delete();
+    CommentStats::decrease();
     return redirect()->route('comment.index');
   }
 }
