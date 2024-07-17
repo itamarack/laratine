@@ -1,9 +1,7 @@
 'use client';
 
 import {
-  ActionIcon,
   Breadcrumbs,
-  Button,
   Divider,
   Flex,
   Paper,
@@ -14,8 +12,8 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { ReactNode } from 'react';
-import { IconMoonStars, IconPlus, IconRefresh, IconSunHigh } from '@tabler/icons-react';
-import { FilterDateMenu, Surface } from '@/Components';
+import { IconMoonStars, IconSunHigh } from '@tabler/icons-react';
+import { Surface } from '@/Components';
 import { User } from '@/types';
 
 type PageHeaderProps = {
@@ -58,12 +56,6 @@ const PageHeader = (props: PageHeaderProps) => {
                 </Title>
                 <Text>How are you today, {props.user.firstname}</Text>
               </Stack>
-            </Flex>
-            <Flex align="center" gap="sm">
-              <ActionIcon variant="subtle">
-                <IconRefresh size={16} />
-              </ActionIcon>
-              <FilterDateMenu />
             </Flex>
           </Flex>
         ) : withActions ? (

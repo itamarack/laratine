@@ -14,6 +14,7 @@ import {
   Tooltip,
   useMantineColorScheme,
   useMantineTheme,
+  Box,
 } from '@mantine/core';
 import {
   IconCircleHalf2,
@@ -25,8 +26,9 @@ import {
 import { router, Link } from '@inertiajs/react';
 import { PropsWithChildren, ReactNode } from 'react';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
-import { LanguagePicker, UserProfileButton, AppMain, Navigation } from '@/Components';
+import { UserProfileButton, Navigation } from '@/Components';
 import { User } from '@/types';
+import classes from './layouts.module.css';
 
 interface AuthenticatedProps {
   user: User;
@@ -82,7 +84,6 @@ function AuthenticatedLayout(props: PropsWithChildren<AuthenticatedProps>) {
                   <IconSearch size={20} />
                 </ActionIcon>
               )}
-              <LanguagePicker type="collapsed" />
               <Menu shadow="lg" width={200}>
                 <Menu.Target>
                   <Tooltip label="Switch color modes">
@@ -152,7 +153,9 @@ function AuthenticatedLayout(props: PropsWithChildren<AuthenticatedProps>) {
         <Navigation user={props.user} onClose={onOpen} />
       </AppShell.Navbar>
       <AppShell.Main>
-        <AppMain>{props.children}</AppMain>
+        <Box py="lg" px="md" className={classes.main}>
+          {props.children}
+        </Box>
       </AppShell.Main>
       <AppShell.Footer p="md">
         <Container fluid px="lg">

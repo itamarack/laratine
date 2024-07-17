@@ -1,7 +1,7 @@
 import { Flex, Box, Text, UnstyledButton, UnstyledButtonProps } from '@mantine/core';
 import { IconApps } from '@tabler/icons-react';
 import { Link } from '@inertiajs/react';
-import classes from './Logo.module.css';
+import classes from './logo.module.css';
 
 type LogoProps = {
   width?: string | number;

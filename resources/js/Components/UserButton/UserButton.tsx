@@ -8,10 +8,10 @@ import {
   Flex,
   Stack,
 } from '@mantine/core';
-import { IconChevronRight } from '@tabler/icons-react';
-import classes from './UserButton.module.css';
-import { User } from '@/types';
 import { Link } from '@inertiajs/react';
+import { IconChevronRight } from '@tabler/icons-react';
+import classes from './user-button.module.css';
+import { User } from '@/types';
 
 type UserProfileButtonProps = {
   user?: User;

@@ -26,6 +26,8 @@ import { useSearchFilter } from '@/hooks';
 import { dashboardRoute, postRoute } from '@/routes';
 import { DeletePost } from '@/Pages/Posts';
 import { badgeVariant } from '@/Utils';
+import '@mantine/core/styles.layer.css';
+import 'mantine-datatable/styles.layer.css';
 
 type PostsProps = {
   posts: {
