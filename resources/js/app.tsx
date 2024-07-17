@@ -1,6 +1,9 @@
 import './bootstrap';
+
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
+import '@mantine/core/styles.layer.css';
+import 'mantine-datatable/styles.layer.css';
 import '../css/app.css';
 
 import { createRoot, hydrateRoot } from 'react-dom/client';
