@@ -8,7 +8,8 @@ import {
   IconCategory,
   IconTags,
   IconBooks,
-  IconMessage2
+  IconMessage2,
+  IconShield
 } from '@tabler/icons-react';
 
 const navigationItems = [
@@ -34,6 +35,7 @@ const navigationItems = [
     links: [
       { label: 'Profile', icon: IconUserCircle, link: '/profile' },
       { label: 'Users', icon: IconUsersGroup, link: '/users' },
+      { label: 'Roles & Permissions', icon: IconShield, link: '/roles-permissions' },
       { label: 'Settings', icon: IconSettings, link: '/settings' },
     ]
   }

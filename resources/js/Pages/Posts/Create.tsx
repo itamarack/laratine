@@ -103,8 +103,7 @@ export default function Create({ auth, authors, categories, tags }: PostProps) {
           message: 'Post created successfully.',
         });
       },
-      onError: error => {
-        console.log(error);
+      onError: () => {
         notifications.show({
           title: 'Failed!',
           message: 'Something went wrong, Try again.',

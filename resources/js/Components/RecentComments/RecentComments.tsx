@@ -4,7 +4,7 @@ import { IconChevronRight } from '@tabler/icons-react';
 import { Link } from '@inertiajs/react';
 import { Comment } from '@/types';
 import { commentStatusVariant } from '@/Utils';
-import { postRoute } from '@/routes';
+import { commentRoute } from '@/routes';
 
 const RecentComments = ({ comments, loading }: { comments?: Comment[]; loading: boolean }) => {
   return (
@@ -17,7 +17,7 @@ const RecentComments = ({ comments, loading }: { comments?: Comment[]; loading: 
           <Button
             variant="subtle"
             component={Link}
-            href={postRoute().list}
+            href={commentRoute().list}
             rightSection={<IconChevronRight size={18} />}
           >
             View all

@@ -110,6 +110,15 @@ export interface Tags {
   updated_at: string;
 }
 
+export interface Role {
+  _method?: string;
+  id: string;
+  name: string;
+  description: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface SelectableList {
   label: string;
   value: string;

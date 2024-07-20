@@ -20,8 +20,7 @@ import { PageHeader, Surface, TextEditor } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
 import { Comment, PageProps, Post, User } from '@/types';
 import { dashboardRoute, commentRoute } from '@/routes';
-import { makeAuthorList, makePostsList } from '@/Utils';
-import { makeCommentsList } from '@/Utils/makeSelectableList';
+import { makeSelectableList } from '@/Utils';
 
 const items = [
   { title: 'Dashboard', href: dashboardRoute() },
@@ -41,9 +40,9 @@ type PagesProps = {
 } & PageProps;
 
 export default function Create({ auth, authors, posts, comments, comment }: PagesProps) {
-  const commentsList = makeCommentsList({ comments, comment });
-  const authorsList = makeAuthorList(authors);
-  const postsList = makePostsList({ posts });
+  const commentsList = makeSelectableList(comments, 'content', comment);
+  const authorsList = makeSelectableList(authors, 'fullname');
+  const postsList = makeSelectableList(posts, 'title');
 
   const form = useForm({
     content: comment.content,
@@ -64,8 +63,7 @@ export default function Create({ auth, authors, posts, comments, comment }: Page
           message: 'Comment updated successfully.',
         });
       },
-      onError: error => {
-        console.log(error);
+      onError: () => {
         notifications.show({
           title: 'Failed!',
           message: 'Something went wrong, Try again.',

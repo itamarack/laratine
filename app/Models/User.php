@@ -14,10 +14,11 @@ use Illuminate\Support\Collection;
 use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements HasMedia
 {
-  use HasFactory, Notifiable, Searchable, InteractsWithMedia;
+  use HasFactory, Notifiable, Searchable, InteractsWithMedia, HasRoles;
 
   public $asYouType = true;
 

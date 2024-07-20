@@ -103,8 +103,7 @@ export default function Create({ auth, authors, pages, tags }: PagesProps) {
           message: 'Page created successfully.',
         });
       },
-      onError: error => {
-        console.log(error);
+      onError: () => {
         notifications.show({
           title: 'Failed!',
           message: 'Something went wrong, Try again.',

@@ -62,8 +62,7 @@ export default function Create({ auth, authors, posts, comments }: PagesProps) {
           message: 'Comment created successfully.',
         });
       },
-      onError: error => {
-        console.log(error);
+      onError: () => {
         notifications.show({
           title: 'Failed!',
           message: 'Something went wrong, Try again.',

@@ -40,8 +40,6 @@ export default function Dashboard({
   const [categories, setCategories] = useState<(string | number | undefined)[]>();
   const [series, setSeries] = useState<any>([]);
 
-  console.log(stats.visitors);
-
   useEffect(() => {
     const categories = stats.visitors?.map(i => i.start);
     const data = stats.visitors.map(i => i.value);

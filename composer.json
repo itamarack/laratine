@@ -13,6 +13,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "spatie/laravel-medialibrary": "^11.7",
+        "spatie/laravel-permission": "^6.9",
         "spatie/laravel-query-builder": "^6.0",
         "spatie/laravel-stats": "^2.3",
         "teamtnt/laravel-scout-tntsearch-driver": "^14.0",

@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
@@ -78,6 +79,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/{comment}/edit/', [CommentController::class, 'show'])->name('comment.show');
     Route::patch('/{comment}/edit/', [CommentController::class, 'update'])->name('comment.update');
     Route::delete('/{comment}/delete', [CommentController::class, 'destroy'])->name('comment.destroy');
+  });
+
+  Route::prefix('roles-permissions')->group(function () {
+    Route::get('/', [RoleController::class, 'index'])->name('role.index');
+    Route::post('/create', [RoleController::class, 'store'])->name('role.store');
+    Route::patch('/{role}/edit/', [RoleController::class, 'update'])->name('role.update');
+    Route::delete('/{role}/delete', [RoleController::class, 'destroy'])->name('role.destroy');
   });
 });
 
