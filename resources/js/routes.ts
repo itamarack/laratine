@@ -23,3 +23,9 @@ export const commentRoute = (commentId?: string | number) => ({
   create: '/comments/create',
   update: `/comments/${commentId}/edit`
 });
+
+export const permissionsRoute = (roleId?: string | number) => ({
+  list: '/roles-permissions',
+  create: '/roles-permissions/permissions/create',
+  update: `/roles-permissions/permissions/${roleId}/edit`
+});

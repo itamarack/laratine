@@ -34,7 +34,7 @@ import {
 import { PageHeader } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
 import { PageProps, Role } from '@/types';
-import { dashboardRoute } from '@/routes';
+import { dashboardRoute, pageRoute, permissionsRoute } from '@/routes';
 import { useSearchFilter } from '@/hooks';
 
 type RolesProps = {
@@ -113,7 +113,13 @@ export default function List({ auth, roles }: RolesProps) {
         <Menu withArrow width={200} shadow="md">
           <Menu.Target>
             <Flex justify="space-between">
-              <Button variant="filled" size="xs" leftSection={<IconShield size={16} />}>
+              <Button
+                variant="filled"
+                size="xs"
+                component={Link}
+                leftSection={<IconShield size={16} />}
+                href={permissionsRoute(role.id).update}
+              >
                 Manage Permissions
               </Button>
               <Button variant="filled" size="xs" rightSection={<IconDotsVertical size={16} />}>
@@ -147,8 +153,9 @@ export default function List({ auth, roles }: RolesProps) {
               fz="sm"
               color="green.9"
               variant="filled"
+              component={Link}
+              href={permissionsRoute(role.id).update}
               leftSection={<IconShieldCancel size={16} />}
-              onClick={() => onColumnAction(role, 'DELETE_ACTION')}
             >
               Revoke Permissions
             </Menu.Item>

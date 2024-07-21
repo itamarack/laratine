@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use App\Services\QueryBuilderService;
 use App\Http\Requests\CategoryRequest;
+use App\Models\Role;
 use Illuminate\Http\RedirectResponse;
 
 class PermissionController extends Controller
@@ -20,18 +21,14 @@ class PermissionController extends Controller
   }
 
   /**
-   * Display the list of posts.
+   * Display a specific posts's information for editing.
    *
-   * @param Request $request
+   * @param Role $role
    * @return Response
    */
-  public function index(Category $category): Response
+  public function show(Role $role): Response
   {
-    $options['allowedSorts'] = ['title', 'created_at', 'updated_at'];
-
-    $categories = $this->builder->query($category, $options);
-
-    return Inertia::render('Category/List', ['categories' => $categories]);
+    return Inertia::render('RolesPermissions/Permissions');
   }
 
   /**

@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Services\QueryBuilderService;
-use App\Http\Requests\CategoryRequest;
 use App\Http\Requests\RoleRequest;
 use App\Models\Role;
 use Illuminate\Http\RedirectResponse;

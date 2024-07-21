@@ -4,6 +4,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
@@ -83,9 +84,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
   Route::prefix('roles-permissions')->group(function () {
     Route::get('/', [RoleController::class, 'index'])->name('role.index');
-    Route::post('/create', [RoleController::class, 'store'])->name('role.store');
-    Route::patch('/{role}/edit/', [RoleController::class, 'update'])->name('role.update');
-    Route::delete('/{role}/delete', [RoleController::class, 'destroy'])->name('role.destroy');
+
+    Route::post('/roles/create', [RoleController::class, 'store'])->name('role.store');
+    Route::patch('/roles/{role}/edit/', [RoleController::class, 'update'])->name('role.update');
+    Route::delete('/roles/{role}/delete', [RoleController::class, 'destroy'])->name('role.destroy');
+
+    Route::get('/permissions/{role}/edit/', [PermissionController::class, 'show'])->name('permission.show');
+    Route::patch('/permissions/{role}/edit/', [PermissionController::class, 'update'])->name('permission.update');
+    Route::delete('/permissions/{role}/delete', [PermissionController::class, 'destroy'])->name('permission.destroy');
   });
 });
 
