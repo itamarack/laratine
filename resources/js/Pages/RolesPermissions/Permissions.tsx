@@ -43,10 +43,10 @@ import {
 import { useDebouncedCallback } from '@mantine/hooks';
 import { PageHeader, Surface, TextEditor } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
-import { Page, PageProps, Role, Tags, User } from '@/types';
+import { Page, PageProps, Role, Tags, User, Permission } from '@/types';
 import { dashboardRoute, permissionsRoute } from '@/routes';
 import { slugify, makeSelectableList, getSelectedPermissions } from '@/Utils';
-import { Permission, permissionsOptions } from './permissions';
+import { permissionsOptions } from './permissions';
 
 const items = [
   { title: 'Dashboard', href: dashboardRoute() },
@@ -60,34 +60,34 @@ const items = [
 
 type RoleProps = {
   role: Role;
+  permissionList: Permission[];
 } & PageProps;
 
-export default function ManagePermissions({ auth, role }: RoleProps) {
+export default function ManagePermissions({ auth, role, permissionList }: RoleProps) {
   const theme = useMantineTheme();
-  const [permissions, setPermission] = useState<Permission[]>(permissionsOptions);
-
-  // console.log(role);
+  const [permissions, setPermission] = useState<Permission[]>(permissionList);
 
   const form = useForm({
     name: role.name ?? '',
+    description: role.description ?? '',
     guard_name: role.guard_name ?? '',
     enable_all: false,
     permissions: [] as string[],
   });
 
   useEffect(() => {
-    const filtered = permissions.filter(i => i.checked);
+    const filtered = permissions.filter(i => i.active);
     form.setData('enable_all', filtered.length < permissions.length ? false : true);
     form.setData('permissions', getSelectedPermissions(permissions));
   }, [permissions]);
 
   const OnEnablePermissions = (event: any) => {
-    const checked = event.currentTarget.checked;
-    form.setData('enable_all', checked);
+    const active = event.currentTarget.checked;
+    form.setData('enable_all', active);
 
     const permission = permissions.map((item: Permission) => {
-      const perm = item.permission.map(i => ({ ...i, checked }));
-      return { ...item, checked, permission: [...perm] };
+      const perm = item.permission.map(i => ({ ...i, active }));
+      return { ...item, active, permission: [...perm] };
     });
 
     setPermission(() => [...permission]);
@@ -142,27 +142,27 @@ export default function ManagePermissions({ auth, role }: RoleProps) {
                       <Group key={perm.name} w="100%" gap={6}>
                         <Switch
                           size="sm"
-                          checked={perm.checked}
+                          checked={perm.active}
                           label={perm.name}
                           onChange={event => {
                             const target = permissions.find(p => p.name === perm.name);
-                            if (target) target.checked = event.currentTarget.checked;
+                            if (target) target.active = event.currentTarget.checked;
                             setPermission(() => [...permissions]);
                           }}
-                          thumbIcon={CheckboxThumbIcon(perm.checked)}
+                          thumbIcon={CheckboxThumbIcon(perm.active as boolean)}
                         />
                         <Fieldset w="100%" legend="Permissions">
                           <SimpleGrid cols={2}>
-                            {perm.permission.map((item, index) => (
+                            {perm.permission.map(item => (
                               <Checkbox
                                 size="xs"
                                 key={item.name}
-                                label={item.name}
-                                disabled={!perm.checked}
-                                checked={item.checked}
+                                label={item.name.split(' ')[0]}
+                                disabled={!perm.active}
+                                checked={item.active}
                                 onChange={e => {
                                   const target = perm.permission.find(p => p.name === item.name);
-                                  if (target) target.checked = e.currentTarget.checked;
+                                  if (target) target.active = e.currentTarget.checked;
                                   setPermission(() => [...permissions]);
                                 }}
                               />
@@ -194,6 +194,14 @@ export default function ManagePermissions({ auth, role }: RoleProps) {
                         </Accordion.Control>
                         <Accordion.Panel>
                           <Stack>
+                            <Switch
+                              size="sm"
+                              label="Enable all Permisions for this role"
+                              disabled={form.errors.enable_all as any}
+                              checked={form.data.enable_all}
+                              onChange={OnEnablePermissions}
+                              thumbIcon={CheckboxThumbIcon(form.data.enable_all)}
+                            />
                             <TextInput
                               withAsterisk
                               label="Role Name"
@@ -210,14 +218,15 @@ export default function ManagePermissions({ auth, role }: RoleProps) {
                               disabled={form.processing}
                               onChange={(a: any) => form.setData('guard_name', a)}
                             />
-                            <Switch
-                              size="sm"
-                              label="Enable all Permisions for this role"
-                              disabled={form.errors.enable_all as any}
-                              checked={form.data.enable_all}
-                              onChange={OnEnablePermissions}
-                              thumbIcon={CheckboxThumbIcon(form.data.enable_all)}
+                            <Textarea
+                              label="Description"
+                              placeholder="Description"
+                              value={form.data.description}
+                              error={form.errors.description}
+                              disabled={form.processing}
+                              onChange={e => form.setData('description', e.target.value)}
                             />
+
                             <Flex justify="flex-end" mt={16}>
                               <Button
                                 size="sm"

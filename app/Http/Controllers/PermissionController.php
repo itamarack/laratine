@@ -11,7 +11,8 @@ use App\Http\Requests\CategoryRequest;
 use App\Http\Requests\PermissionRequest;
 use App\Models\Role;
 use Illuminate\Http\RedirectResponse;
-use Spatie\Permission\Contracts\Permission;
+use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Str;
 
 class PermissionController extends Controller
 {
@@ -30,8 +31,18 @@ class PermissionController extends Controller
    */
   public function show(Role $role): Response
   {
+    $permissionList = collect(Permission::all())->groupBy(function ($item) {
+      return Str::of($item->name)->explode(' ')->last();
+    })->map(function ($items, $name) {
+      $permissions = $items->values()->map(fn ($item) => [...$item->toArray(), 'active' => false]);
+      return ['name' => $name, 'active' => false, 'permission' => $permissions];
+    })->values()->toArray();
+
+    // dd($permissions);
+
     return Inertia::render('RolesPermissions/Permissions', [
-      'role' => $role
+      'role' => $role,
+      'permissionList' => $permissionList
     ]);
   }
 

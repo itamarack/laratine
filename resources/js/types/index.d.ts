@@ -120,6 +120,15 @@ export interface Role {
   updated_at: string;
 }
 
+export type Permission = {
+  name: string;
+  active?: boolean;
+  permission: {
+    name: string;
+    active?: boolean;
+  }[]
+}
+
 export interface SelectableList {
   label: string;
   value: string;
