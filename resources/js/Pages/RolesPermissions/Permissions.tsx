@@ -43,9 +43,9 @@ import {
 import { useDebouncedCallback } from '@mantine/hooks';
 import { PageHeader, Surface, TextEditor } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
-import { Page, PageProps, Tags, User } from '@/types';
+import { Page, PageProps, Role, Tags, User } from '@/types';
 import { dashboardRoute, permissionsRoute } from '@/routes';
-import { slugify, makeSelectableList } from '@/Utils';
+import { slugify, makeSelectableList, getSelectedPermissions } from '@/Utils';
 import { Permission, permissionsOptions } from './permissions';
 
 const items = [
@@ -58,22 +58,27 @@ const items = [
   </Anchor>
 ));
 
-type RoleProps = {} & PageProps;
+type RoleProps = {
+  role: Role;
+} & PageProps;
 
-export default function ManagePermissions({ auth }: RoleProps) {
+export default function ManagePermissions({ auth, role }: RoleProps) {
   const theme = useMantineTheme();
   const [permissions, setPermission] = useState<Permission[]>(permissionsOptions);
 
+  // console.log(role);
+
   const form = useForm({
-    name: '',
-    guard_name: '',
+    name: role.name ?? '',
+    guard_name: role.guard_name ?? '',
     enable_all: false,
-    permissions: [],
+    permissions: [] as string[],
   });
 
   useEffect(() => {
     const filtered = permissions.filter(i => i.checked);
     form.setData('enable_all', filtered.length < permissions.length ? false : true);
+    form.setData('permissions', getSelectedPermissions(permissions));
   }, [permissions]);
 
   const OnEnablePermissions = (event: any) => {
@@ -91,21 +96,34 @@ export default function ManagePermissions({ auth }: RoleProps) {
   const onSubmit: FormEventHandler = event => {
     event.preventDefault();
 
-    form.post(route('page.store'), {
+    form.patch(route('permission.update', role.id), {
       preserveScroll: true,
       onSuccess: () => {
         notifications.show({
           title: 'Success!',
-          message: 'Page created successfully.',
+          message: 'Permission updated successfully.',
         });
       },
-      onError: () => {
+      onError: error => {
+        console.log(error);
         notifications.show({
           title: 'Failed!',
           message: 'Something went wrong, Try again.',
         });
       },
     });
+  };
+
+  const CheckboxThumbIcon = (active: boolean) => {
+    return active ? (
+      <IconCheck
+        style={{ width: rem(12), height: rem(12) }}
+        color={theme.colors.teal[6]}
+        stroke={3}
+      />
+    ) : (
+      <IconX style={{ width: rem(12), height: rem(12) }} color={theme.colors.red[6]} stroke={3} />
+    );
   };
 
   return (
@@ -115,22 +133,7 @@ export default function ManagePermissions({ auth }: RoleProps) {
       <Container fluid>
         <form onSubmit={onSubmit}>
           <Stack gap="lg">
-            <PageHeader
-              user={auth.user}
-              title="Manage Permissions"
-              breadcrumbItems={items}
-              withActions={
-                <Button
-                  type="submit"
-                  mt={{ base: 12, sm: 0 }}
-                  w={{ base: '100%', sm: 'fit-content' }}
-                  loading={form.processing}
-                  leftSection={<IconDeviceFloppy size={16} />}
-                >
-                  Save Changes
-                </Button>
-              }
-            />
+            <PageHeader user={auth.user} title="Manage Permissions" breadcrumbItems={items} />
             <Grid gutter={{ base: 'lg', lg: 'xl' }}>
               <Grid.Col span={{ base: 12, md: 8 }}>
                 <Surface component={Paper} p="md" shadow="md" radius="md" h="100%">
@@ -146,21 +149,7 @@ export default function ManagePermissions({ auth }: RoleProps) {
                             if (target) target.checked = event.currentTarget.checked;
                             setPermission(() => [...permissions]);
                           }}
-                          thumbIcon={
-                            perm.checked ? (
-                              <IconCheck
-                                style={{ width: rem(12), height: rem(12) }}
-                                color={theme.colors.teal[6]}
-                                stroke={3}
-                              />
-                            ) : (
-                              <IconX
-                                style={{ width: rem(12), height: rem(12) }}
-                                color={theme.colors.red[6]}
-                                stroke={3}
-                              />
-                            )
-                          }
+                          thumbIcon={CheckboxThumbIcon(perm.checked)}
                         />
                         <Fieldset w="100%" legend="Permissions">
                           <SimpleGrid cols={2}>
@@ -227,26 +216,14 @@ export default function ManagePermissions({ auth }: RoleProps) {
                               disabled={form.errors.enable_all as any}
                               checked={form.data.enable_all}
                               onChange={OnEnablePermissions}
-                              thumbIcon={
-                                form.data.enable_all ? (
-                                  <IconCheck
-                                    style={{ width: rem(12), height: rem(12) }}
-                                    color={theme.colors.teal[6]}
-                                    stroke={3}
-                                  />
-                                ) : (
-                                  <IconX
-                                    style={{ width: rem(12), height: rem(12) }}
-                                    color={theme.colors.red[6]}
-                                    stroke={3}
-                                  />
-                                )
-                              }
+                              thumbIcon={CheckboxThumbIcon(form.data.enable_all)}
                             />
                             <Flex justify="flex-end" mt={16}>
                               <Button
-                                size="xs"
+                                size="sm"
+                                type="submit"
                                 disabled={form.processing}
+                                loading={form.processing}
                                 leftSection={<IconDeviceFloppy size={16} />}
                               >
                                 Save Changes

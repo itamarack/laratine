@@ -8,8 +8,10 @@ use Inertia\Inertia;
 use Inertia\Response;
 use App\Services\QueryBuilderService;
 use App\Http\Requests\CategoryRequest;
+use App\Http\Requests\PermissionRequest;
 use App\Models\Role;
 use Illuminate\Http\RedirectResponse;
+use Spatie\Permission\Contracts\Permission;
 
 class PermissionController extends Controller
 {
@@ -28,7 +30,9 @@ class PermissionController extends Controller
    */
   public function show(Role $role): Response
   {
-    return Inertia::render('RolesPermissions/Permissions');
+    return Inertia::render('RolesPermissions/Permissions', [
+      'role' => $role
+    ]);
   }
 
   /**
@@ -48,16 +52,19 @@ class PermissionController extends Controller
   /**
    * Update a specific user's information.
    *
-   * @param CategoryRequest $request
-   * @param Category $category
+   * @param PermissionRequest $request
+   * @param Role $role
    * @return RedirectResponse
    */
-  public function update(CategoryRequest $request, Category $category): RedirectResponse
+  public function update(PermissionRequest $request, Role $role): RedirectResponse
   {
-    $category->fill($request->validated());
-    $category->update();
+    $validated = $request->validated();
+    $role->fill($validated);
+    $role->update();
 
-    return redirect()->route('category.index', ['category' => $category]);
+    dd($validated['permissions']);
+
+    return redirect()->route('permission.show', ['role' => $role]);
   }
 
   /**
