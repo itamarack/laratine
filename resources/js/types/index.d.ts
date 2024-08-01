@@ -114,7 +114,8 @@ export interface Role {
   _method?: string;
   id: string;
   name: string;
-  guard_name?: string;
+  guard_name: string;
+  enable_all: boolean;
   description: string;
   created_at: string;
   updated_at: string;

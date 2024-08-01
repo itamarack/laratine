@@ -2,12 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use App\Services\QueryBuilderService;
-use App\Http\Requests\CategoryRequest;
 use App\Http\Requests\PermissionRequest;
 use App\Models\Role;
 use Illuminate\Http\RedirectResponse;
@@ -16,13 +12,6 @@ use Illuminate\Support\Str;
 
 class PermissionController extends Controller
 {
-  protected $builder;
-
-  public function __construct(QueryBuilderService $builderService)
-  {
-    $this->builder = $builderService;
-  }
-
   /**
    * Display a specific posts's information for editing.
    *
@@ -31,33 +20,27 @@ class PermissionController extends Controller
    */
   public function show(Role $role): Response
   {
-    $permissionList = collect(Permission::all())->groupBy(function ($item) {
-      return Str::of($item->name)->explode(' ')->last();
-    })->map(function ($items, $name) {
-      $permissions = $items->values()->map(fn ($item) => [...$item->toArray(), 'active' => false]);
-      return ['name' => $name, 'active' => false, 'permission' => $permissions];
-    })->values()->toArray();
+    $rolePermissions = $role->getAllPermissions()->pluck('name');
+    $permissionList = collect(Permission::all());
 
-    // dd($permissions);
+    $permissionList = $permissionList->groupBy(function ($item) {
+      return Str::of($item->name)->explode(' ')->last();
+    })->map(function ($items, $name) use ($rolePermissions) {
+      $permissions = $items->values()->map(function ($item) use ($rolePermissions) {
+        return [...$item->toArray(), 'active' => $rolePermissions->contains($item->name)];
+      });
+
+      $active = $permissions->contains('active', true);
+      return ['name' => $name, 'permission' => $permissions, 'active' => $active];
+    })->values();
+
 
     return Inertia::render('RolesPermissions/Permissions', [
       'role' => $role,
-      'permissionList' => $permissionList
+      'permissionList' => $permissionList,
+      'rolePermissions' => $rolePermissions,
+      'enable_all' => $permissionList->every('active', true),
     ]);
-  }
-
-  /**
-   * Store a new category in the database.
-   *
-   * @param CategoryRequest $request
-   * @return RedirectResponse
-   */
-  public function store(CategoryRequest $request, Category $category): RedirectResponse
-  {
-    $category->fill($request->validated());
-    $category->save();
-
-    return redirect()->route('category.index');
   }
 
   /**
@@ -70,24 +53,9 @@ class PermissionController extends Controller
   public function update(PermissionRequest $request, Role $role): RedirectResponse
   {
     $validated = $request->validated();
-    $role->fill($validated);
-    $role->update();
-
-    dd($validated['permissions']);
+    $role->fill($validated)->update();
+    $role->syncPermissions($validated['permissions']);
 
     return redirect()->route('permission.show', ['role' => $role]);
-  }
-
-  /**
-   * Delete a specific user from the database.
-   *
-   * @param Request $request
-   * @param Category $category
-   * @return RedirectResponse
-   */
-  public function destroy(Category $category): RedirectResponse
-  {
-    $category->delete();
-    return redirect()->route('category.index');
   }
 }

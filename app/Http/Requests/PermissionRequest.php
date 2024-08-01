@@ -18,7 +18,8 @@ class PermissionRequest extends FormRequest
         'name' => ['required', 'string', 'max:255', Rule::unique('roles')->ignore($this->role)],
         'guard_name' => ['required', 'string', 'max:255'],
         'enable_all' => ['nullable', 'boolean'],
-        'permissions.*' => ['string', 'string', 'max:255'],
+        'permissions' => ['present', 'array'],
+        'permissions.*' => ['string', 'max:255'],
       ];
     }
 }

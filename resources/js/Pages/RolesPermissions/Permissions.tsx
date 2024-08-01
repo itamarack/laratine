@@ -4,49 +4,30 @@ import {
   Anchor,
   Button,
   Container,
-  FileButton,
   Grid,
   Paper,
   Stack,
-  Text,
   TextInput,
   rem,
   Textarea,
   Accordion,
-  Select,
-  Image,
   Flex,
-  TagsInput,
   SimpleGrid,
   Group,
   Switch,
   useMantineTheme,
   Fieldset,
   Checkbox,
-  Divider,
 } from '@mantine/core';
 import { FormEventHandler, useEffect, useState } from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { notifications } from '@mantine/notifications';
-import {
-  IconCloudUpload,
-  IconDeviceFloppy,
-  IconTrash,
-  IconPhoto,
-  IconPrinter,
-  IconHomeSearch,
-  IconEye,
-  IconLayout,
-  IconCheck,
-  IconX,
-} from '@tabler/icons-react';
-import { useDebouncedCallback } from '@mantine/hooks';
-import { PageHeader, Surface, TextEditor } from '@/Components';
+import { IconDeviceFloppy, IconPrinter, IconCheck, IconX } from '@tabler/icons-react';
+import { PageHeader, Surface } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
-import { Page, PageProps, Role, Tags, User, Permission } from '@/types';
+import { PageProps, Role, Permission } from '@/types';
 import { dashboardRoute, permissionsRoute } from '@/routes';
-import { slugify, makeSelectableList, getSelectedPermissions } from '@/Utils';
-import { permissionsOptions } from './permissions';
+import { getSelectedPermissions } from '@/Utils';
 
 const items = [
   { title: 'Dashboard', href: dashboardRoute() },
@@ -61,9 +42,10 @@ const items = [
 type RoleProps = {
   role: Role;
   permissionList: Permission[];
+  enable_all: boolean;
 } & PageProps;
 
-export default function ManagePermissions({ auth, role, permissionList }: RoleProps) {
+export default function ManagePermissions({ auth, role, enable_all, permissionList }: RoleProps) {
   const theme = useMantineTheme();
   const [permissions, setPermission] = useState<Permission[]>(permissionList);
 
@@ -71,14 +53,17 @@ export default function ManagePermissions({ auth, role, permissionList }: RolePr
     name: role.name ?? '',
     description: role.description ?? '',
     guard_name: role.guard_name ?? '',
-    enable_all: false,
+    enable_all: enable_all,
     permissions: [] as string[],
   });
 
   useEffect(() => {
+    const permissionList = getSelectedPermissions(permissions);
+    form.setData(data => ({ ...data, permissions: permissionList }));
+
     const filtered = permissions.filter(i => i.active);
-    form.setData('enable_all', filtered.length < permissions.length ? false : true);
-    form.setData('permissions', getSelectedPermissions(permissions));
+    const enabledAll = filtered.length < permissions.length ? false : true;
+    form.setData(data => ({ ...data, enable_all: enabledAll }));
   }, [permissions]);
 
   const OnEnablePermissions = (event: any) => {
@@ -105,7 +90,6 @@ export default function ManagePermissions({ auth, role, permissionList }: RolePr
         });
       },
       onError: error => {
-        console.log(error);
         notifications.show({
           title: 'Failed!',
           message: 'Something went wrong, Try again.',
@@ -145,8 +129,10 @@ export default function ManagePermissions({ auth, role, permissionList }: RolePr
                           checked={perm.active}
                           label={perm.name}
                           onChange={event => {
-                            const target = permissions.find(p => p.name === perm.name);
-                            if (target) target.active = event.currentTarget.checked;
+                            perm.active = event.currentTarget.checked;
+                            perm.permission = perm.permission.map(permission => {
+                              return { ...permission, active: perm.active };
+                            });
                             setPermission(() => [...permissions]);
                           }}
                           thumbIcon={CheckboxThumbIcon(perm.active as boolean)}
