@@ -91,7 +91,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/permissions/{role}/edit/', [PermissionController::class, 'show'])->name('permission.show');
     Route::patch('/permissions/{role}/edit/', [PermissionController::class, 'update'])->name('permission.update');
-    Route::delete('/permissions/{role}/delete', [PermissionController::class, 'destroy'])->name('permission.destroy');
   });
 });
 

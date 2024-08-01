@@ -23,7 +23,6 @@ import {
   IconPlus,
   IconSearch,
   IconShield,
-  IconShieldCancel,
   IconTrash,
 } from '@tabler/icons-react';
 import {
@@ -34,7 +33,7 @@ import {
 import { PageHeader } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
 import { PageProps, Role } from '@/types';
-import { dashboardRoute, pageRoute, permissionsRoute } from '@/routes';
+import { dashboardRoute, permissionsRoute } from '@/routes';
 import { useSearchFilter } from '@/hooks';
 
 type RolesProps = {
@@ -62,12 +61,6 @@ export default function List({ auth, roles }: RolesProps) {
   const [isOpenEdit, { open: onOpenEdit, close: onCloseEdit }] = useDisclosure(false);
   const [selectedRecords, setSelectedRecords] = useState<Role[]>([]);
   const searchFilter = useSearchFilter('role.index');
-
-  const onColumnAction = (selected: Role, action: string) => {
-    setSelected(() => selected);
-    if (action === 'DELETE_ACTION') onOpenDelete();
-    else if (action === 'EDIT_ACTION') onOpenEdit();
-  };
 
   const columns: DataTableProps<Role>['columns'] = [
     {
@@ -134,7 +127,10 @@ export default function List({ auth, roles }: RolesProps) {
               color="blue"
               variant="filled"
               leftSection={<IconEdit size={16} />}
-              onClick={() => onColumnAction(role, 'EDIT_ACTION')}
+              onClick={() => {
+                setSelected(() => role);
+                onOpenEdit();
+              }}
             >
               Edit
             </Menu.Item>
@@ -144,20 +140,12 @@ export default function List({ auth, roles }: RolesProps) {
               color="red"
               variant="filled"
               leftSection={<IconTrash size={16} />}
-              onClick={() => onColumnAction(role, 'DELETE_ACTION')}
+              onClick={() => {
+                setSelected(() => role);
+                onOpenDelete();
+              }}
             >
               Delete
-            </Menu.Item>
-            <Menu.Item
-              fw={600}
-              fz="sm"
-              color="green.9"
-              variant="filled"
-              component={Link}
-              href={permissionsRoute(role.id).update}
-              leftSection={<IconShieldCancel size={16} />}
-            >
-              Revoke Permissions
             </Menu.Item>
           </Menu.Dropdown>
         </Menu>
