@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { User, SelectableList, Category, Tags, Page, Post, Comment } from "@/types";
+import { SelectableList } from "@/types";
 
 function createSelectableList<T extends { id?: number | string; title?: string; fullname?: string; content?: string }>(
   items: T[] | undefined,

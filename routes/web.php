@@ -27,9 +27,14 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
   Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
   Route::prefix('profile')->group(function () {
-    Route::get('/', [ProfileController::class, 'index'])->name('profile.index');
+    Route::get('/', [ProfileController::class, 'show'])->name('profile.show');
     Route::patch('/', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/', [ProfileController::class, 'destroy'])->name('profile.destroy');
+  });
+
+  Route::prefix('account-security')->group(function () {
+    Route::get('/', [ProfileController::class, 'securityShow'])->name('security.show');
+    Route::patch('/', [ProfileController::class, 'securityUpdate'])->name('securityUpdate');
   });
 
   Route::prefix('users')->group(function () {

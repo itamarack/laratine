@@ -14,6 +14,7 @@ export interface Stat {
 
 export interface User {
   id: number | string;
+  role?: string;
   fullname?: string;
   firstname?: string;
   lastname?: string;

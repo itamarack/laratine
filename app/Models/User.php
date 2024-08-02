@@ -68,7 +68,7 @@ class User extends Authenticatable implements HasMedia
    *
    * @return array<string, string>
    */
-  protected $appends = ['fullname'];
+  protected $appends = ['fullname', 'role'];
 
   /**
    * Get the user's full name.
@@ -134,5 +134,18 @@ class User extends Authenticatable implements HasMedia
   public function comments(): HasMany
   {
     return $this->hasMany(Comment::class);
+  }
+
+  /**
+   * Get the role attribute.
+   *
+   * This accessor function returns the user role.
+   *
+   * @param  string|null
+   * @return string|null
+   */
+  public function getRoleAttribute(): ?string
+  {
+    return optional($this->roles->first())->name;
   }
 }

@@ -12,6 +12,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use App\Services\FileUploadService;
 use App\Services\QueryBuilderService;
+use Spatie\Permission\Models\Role;
 
 class ProfileController extends Controller
 {
@@ -30,11 +31,12 @@ class ProfileController extends Controller
    * @param Request $request
    * @return Response
    */
-  public function index(Request $request): Response
+  public function show(Request $request): Response
   {
     return Inertia::render('Account/Profile/Profile', [
       'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
       'status' => session('status'),
+      'roles' => Role::all()->pluck('name')
     ]);
   }
 
@@ -54,8 +56,9 @@ class ProfileController extends Controller
 
     $this->uploadService->uploadAvatar($request, $request->user());
     $request->user()->save();
+    $request->user()->syncRoles($request->role);
 
-    return Redirect::route('profile.index');
+    return Redirect::route('profile.show');
   }
 
   /**
@@ -77,5 +80,20 @@ class ProfileController extends Controller
     $request->session()->regenerateToken();
 
     return Redirect::to('/');
+  }
+
+  /**
+   * Display the user's profile form.
+   *
+   * @param Request $request
+   * @return Response
+   */
+  public function securityShow(Request $request): Response
+  {
+    return Inertia::render('Account/Profile/AccountSecurity', [
+      'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+      'status' => session('status'),
+      'roles' => Role::all()->pluck('name')
+    ]);
   }
 }

@@ -29,7 +29,7 @@ const UserProfileButton = ({
 }: UserProfileButtonProps) => {
   return (
     <UnstyledButton
-      href={route('profile.index')}
+      href={route('profile.show')}
       component={Link}
       className={classes.user}
       {...others}

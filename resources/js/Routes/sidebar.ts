@@ -9,7 +9,8 @@ import {
   IconTags,
   IconBooks,
   IconMessage2,
-  IconShield
+  IconShield,
+  IconLock
 } from '@tabler/icons-react';
 
 const ADMIN_PREFIX = "/admin";
@@ -33,11 +34,17 @@ const sidebarNavigation = [
     ]
   },
   {
-    title: 'Account',
+    title: 'User Management',
     links: [
-      { label: 'Profile', icon: IconUserCircle, link: `${ADMIN_PREFIX}/profile` },
       { label: 'Users', icon: IconUsersGroup, link: `${ADMIN_PREFIX}/users` },
       { label: 'Roles & Permissions', icon: IconShield, link: `${ADMIN_PREFIX}/roles-permissions` },
+    ]
+  },
+  {
+    title: 'My Account',
+    links: [
+      { label: 'Profile', icon: IconUserCircle, link: `${ADMIN_PREFIX}/profile` },
+      { label: 'Account Security', icon: IconLock, link: `${ADMIN_PREFIX}/account-security` },
       // { label: 'Settings', icon: IconSettings, link: 'v/settings' },
     ]
   }
