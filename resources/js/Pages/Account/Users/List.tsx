@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  Anchor,
   Avatar,
   Badge,
   Button,
@@ -25,8 +24,8 @@ import { IconDotsVertical, IconEdit, IconPlus, IconSearch, IconTrash } from '@ta
 import { PageHeader } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
 import { PageProps, User } from '@/types';
-import { useSearchFilter } from '@/hooks';
-import { dashboardRoute, userRoute } from '@/routes';
+import { useSearchFilter } from '@/Hooks';
+import { dashboardRoute, userRoute } from '@/Routes';
 import Delete from './Delete';
 
 type UsersProps = {
@@ -37,15 +36,6 @@ type UsersProps = {
     current_page: number;
   };
 } & PageProps;
-
-const items = [
-  { title: 'Dashboard', href: dashboardRoute() },
-  { title: 'Users', href: '#' },
-].map((item, index) => (
-  <Anchor component={Link} href={item.href} key={index}>
-    {item.title}
-  </Anchor>
-));
 
 export default function List({ auth, users }: UsersProps) {
   const theme = useMantineTheme();
@@ -142,7 +132,7 @@ export default function List({ auth, users }: UsersProps) {
               variant="filled"
               component={Link}
               leftSection={<IconEdit size={16} />}
-              href={userRoute(user.id).update}
+              href={userRoute.update(user.id)}
             >
               Edit
             </Menu.Item>
@@ -175,13 +165,12 @@ export default function List({ auth, users }: UsersProps) {
           <PageHeader
             user={auth.user}
             title="Users"
-            breadcrumbItems={items}
+            breadcrumbItems={[
+              { title: 'Dashboard', href: dashboardRoute.dashboard },
+              { title: 'Users', href: userRoute.list },
+            ]}
             withActions={
-              <Button
-                component={Link}
-                href={userRoute().create}
-                leftSection={<IconPlus size={18} />}
-              >
+              <Button component={Link} href={userRoute.create} leftSection={<IconPlus size={18} />}>
                 New User
               </Button>
             }

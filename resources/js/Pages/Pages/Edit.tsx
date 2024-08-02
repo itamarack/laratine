@@ -35,18 +35,8 @@ import { useDebouncedCallback } from '@mantine/hooks';
 import { PageHeader, Surface, TextEditor } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
 import { Page, PageProps, Tags, User } from '@/types';
-import { dashboardRoute, pageRoute } from '@/routes';
+import { dashboardRoute, pageRoute } from '@/Routes';
 import { slugify, makeSelectableList } from '@/Utils';
-
-const items = [
-  { title: 'Dashboard', href: dashboardRoute() },
-  { title: 'Pages', href: pageRoute().list },
-  { title: 'Edit', href: '#' },
-].map((item, index) => (
-  <Anchor component={Link} href={item.href} key={index}>
-    {item.title}
-  </Anchor>
-));
 
 type PagesProps = {
   page: Page;
@@ -123,7 +113,11 @@ export default function Edit({ auth, page, authors, pages, tags }: PagesProps) {
             <PageHeader
               user={auth.user}
               title="Edit Page"
-              breadcrumbItems={items}
+              breadcrumbItems={[
+                { title: 'Dashboard', href: dashboardRoute.dashboard },
+                { title: 'Pages', href: pageRoute.list },
+                { title: 'Edit', href: '#' },
+              ]}
               withActions={
                 <Button
                   type="submit"

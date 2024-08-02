@@ -4,7 +4,7 @@ import { IconChevronRight } from '@tabler/icons-react';
 import { Link } from '@inertiajs/react';
 import { Post } from '@/types';
 import { badgeVariant } from '@/Utils';
-import { postRoute } from '@/routes';
+import { postRoute } from '@/Routes';
 
 const RecentPosts = ({ posts, loading }: { posts?: Post[]; loading: boolean }) => {
   return (
@@ -17,7 +17,7 @@ const RecentPosts = ({ posts, loading }: { posts?: Post[]; loading: boolean }) =
           <Button
             variant="subtle"
             component={Link}
-            href={postRoute().list}
+            href={postRoute.list}
             rightSection={<IconChevronRight size={18} />}
           >
             View all

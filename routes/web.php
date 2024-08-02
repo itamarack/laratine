@@ -23,7 +23,7 @@ Route::get('/', function () {
   ]);
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
   Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
   Route::prefix('profile')->group(function () {

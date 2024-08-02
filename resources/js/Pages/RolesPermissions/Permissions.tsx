@@ -26,18 +26,8 @@ import { IconDeviceFloppy, IconPrinter, IconCheck, IconX } from '@tabler/icons-r
 import { PageHeader, Surface } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
 import { PageProps, Role, Permission } from '@/types';
-import { dashboardRoute, permissionsRoute } from '@/routes';
+import { dashboardRoute, permissionsRoute } from '@/Routes';
 import { getSelectedPermissions } from '@/Utils';
-
-const items = [
-  { title: 'Dashboard', href: dashboardRoute() },
-  { title: 'Role & Permissions', href: permissionsRoute().list },
-  { title: 'Manage Permissions', href: '#' },
-].map((item, index) => (
-  <Anchor component={Link} href={item.href} key={index}>
-    {item.title}
-  </Anchor>
-));
 
 type RoleProps = {
   role: Role;
@@ -117,7 +107,15 @@ export default function ManagePermissions({ auth, role, enable_all, permissionLi
       <Container fluid>
         <form onSubmit={onSubmit}>
           <Stack gap="lg">
-            <PageHeader user={auth.user} title="Manage Permissions" breadcrumbItems={items} />
+            <PageHeader
+              user={auth.user}
+              title="Manage Permissions"
+              breadcrumbItems={[
+                { title: 'Dashboard', href: dashboardRoute.dashboard },
+                { title: 'Role & Permissions', href: permissionsRoute.list },
+                { title: 'Manage Permissions', href: '#' },
+              ]}
+            />
             <Grid gutter={{ base: 'lg', lg: 'xl' }}>
               <Grid.Col span={{ base: 12, md: 8 }}>
                 <Surface component={Paper} p="md" shadow="md" radius="md" h="100%">

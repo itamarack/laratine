@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  Anchor,
   Breadcrumbs,
   Divider,
   Flex,
@@ -15,6 +16,7 @@ import { ReactNode } from 'react';
 import { IconMoonStars, IconSunHigh } from '@tabler/icons-react';
 import { Surface } from '@/Components';
 import { User } from '@/types';
+import { Link } from '@inertiajs/react';
 
 type PageHeaderProps = {
   title: string;
@@ -67,14 +69,26 @@ const PageHeader = (props: PageHeaderProps) => {
           >
             <Stack>
               <Title order={3}>{title}</Title>
-              <Breadcrumbs separator="→">{breadcrumbItems}</Breadcrumbs>
+              <Breadcrumbs separator="→">
+                {breadcrumbItems.map((item: { title: string; href: string }, index: number) => (
+                  <Anchor component={Link} href={item.href} key={index}>
+                    {item.title}
+                  </Anchor>
+                ))}
+              </Breadcrumbs>
             </Stack>
             {withActions}
           </Flex>
         ) : (
           <Stack gap="sm">
             <Title order={3}>{title}</Title>
-            <Breadcrumbs separator="→">{breadcrumbItems}</Breadcrumbs>
+            <Breadcrumbs separator="→">
+              {breadcrumbItems.map((item: { title: string; href: string }, index: number) => (
+                <Anchor component={Link} href={item.href} key={index}>
+                  {item.title}
+                </Anchor>
+              ))}
+            </Breadcrumbs>
           </Stack>
         )}
       </Surface>

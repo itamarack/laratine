@@ -8,7 +8,6 @@ import {
   FileButton,
   Grid,
   Paper,
-  PaperProps,
   SimpleGrid,
   Stack,
   Text,
@@ -31,24 +30,7 @@ import {
 import { PageHeader, Surface, TextEditor } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
 import { PageProps } from '@/types';
-
-const items = [
-  { title: 'Dashboard', href: '/dashboard' },
-  { title: 'Users', href: '/users' },
-  { title: 'Create', href: '#' },
-].map((item, index) => (
-  <Anchor component={Link} href={item.href} key={index}>
-    {item.title}
-  </Anchor>
-));
-
-const ICON_SIZE = 16;
-const PAPER_PROPS: PaperProps = {
-  p: 'md',
-  shadow: 'md',
-  radius: 'md',
-  style: { height: '100%' },
-};
+import { dashboardRoute, userRoute } from '@/Routes';
 
 export default function Create({ auth }: PageProps) {
   const [avatar, setAvatar] = useState<string>('');
@@ -118,8 +100,16 @@ export default function Create({ auth }: PageProps) {
 
       <Container fluid>
         <Stack gap="lg">
-          <PageHeader user={auth.user} title="Create New User" breadcrumbItems={items} />
-          <Surface component={Paper} {...PAPER_PROPS}>
+          <PageHeader
+            user={auth.user}
+            title="Create New User"
+            breadcrumbItems={[
+              { title: 'Dashboard', href: dashboardRoute.dashboard },
+              { title: 'Users', href: userRoute.create },
+              { title: 'Create', href: '#' },
+            ]}
+          />
+          <Surface component={Paper} p="md" shadow="md" radius="md" h="100%">
             <Text size="lg" fw={600} mb="md">
               Account information
             </Text>
@@ -263,7 +253,7 @@ export default function Create({ auth }: PageProps) {
                               <Button
                                 {...props}
                                 variant="subtle"
-                                leftSection={<IconCloudUpload size={ICON_SIZE} />}
+                                leftSection={<IconCloudUpload size={16} />}
                               >
                                 Upload image
                               </Button>
@@ -273,7 +263,7 @@ export default function Create({ auth }: PageProps) {
                         {avatar && (
                           <Grid.Col span={4}>
                             <Button onClick={onDeleteAvatar} variant="subtle" color="red">
-                              <IconTrash size={ICON_SIZE} />
+                              <IconTrash size={16} />
                             </Button>
                           </Grid.Col>
                         )}
@@ -289,7 +279,7 @@ export default function Create({ auth }: PageProps) {
                   mt={16}
                   style={{ width: 'fit-content' }}
                   loading={userInfo.processing}
-                  leftSection={<IconDeviceFloppy size={ICON_SIZE} />}
+                  leftSection={<IconDeviceFloppy size={16} />}
                 >
                   Create User
                 </Button>

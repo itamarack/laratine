@@ -19,18 +19,8 @@ import { IconDeviceFloppy, IconPrinter, IconEye } from '@tabler/icons-react';
 import { PageHeader, Surface, TextEditor } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
 import { Comment, PageProps, Post, User } from '@/types';
-import { dashboardRoute, commentRoute } from '@/routes';
+import { dashboardRoute, commentRoute } from '@/Routes';
 import { makeSelectableList } from '@/Utils';
-
-const items = [
-  { title: 'Dashboard', href: dashboardRoute() },
-  { title: 'Comments', href: commentRoute().list },
-  { title: 'Create', href: '#' },
-].map((item, index) => (
-  <Anchor component={Link} href={item.href} key={index}>
-    {item.title}
-  </Anchor>
-));
 
 type PagesProps = {
   authors?: User[];
@@ -81,7 +71,11 @@ export default function Create({ auth, authors, posts, comments }: PagesProps) {
             <PageHeader
               user={auth.user}
               title="Create Comment"
-              breadcrumbItems={items}
+              breadcrumbItems={[
+                { title: 'Dashboard', href: dashboardRoute.dashboard },
+                { title: 'Comments', href: commentRoute.list },
+                { title: 'Create', href: '#' },
+              ]}
               withActions={
                 <Button
                   type="submit"

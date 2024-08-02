@@ -33,8 +33,8 @@ import {
 import { PageHeader } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
 import { PageProps, Role } from '@/types';
-import { dashboardRoute, permissionsRoute } from '@/routes';
-import { useSearchFilter } from '@/hooks';
+import { dashboardRoute, permissionsRoute } from '@/Routes';
+import { useSearchFilter } from '@/Hooks';
 
 type RolesProps = {
   roles: {
@@ -44,15 +44,6 @@ type RolesProps = {
     current_page: number;
   };
 } & PageProps;
-
-const items = [
-  { title: 'Dashboard', href: dashboardRoute() },
-  { title: 'Roles & Permissions ', href: '#' },
-].map((item, index) => (
-  <Anchor component={Link} href={item.href} key={index}>
-    {item.title}
-  </Anchor>
-));
 
 export default function List({ auth, roles }: RolesProps) {
   const [selected, setSelected] = useState<Role>();
@@ -111,7 +102,7 @@ export default function List({ auth, roles }: RolesProps) {
                 size="xs"
                 component={Link}
                 leftSection={<IconShield size={16} />}
-                href={permissionsRoute(role.id).update}
+                href={permissionsRoute.update(role.id)}
               >
                 Manage Permissions
               </Button>
@@ -166,7 +157,10 @@ export default function List({ auth, roles }: RolesProps) {
           <PageHeader
             user={auth.user}
             title="Roles & Permissions"
-            breadcrumbItems={items}
+            breadcrumbItems={[
+              { title: 'Dashboard', href: dashboardRoute.dashboard },
+              { title: 'Roles & Permissions ', href: permissionsRoute.list },
+            ]}
             withActions={
               <Button leftSection={<IconPlus size={18} />} onClick={onOpenCreate}>
                 New Role

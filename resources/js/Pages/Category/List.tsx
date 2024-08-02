@@ -22,8 +22,8 @@ import { CreateCategory, DeleteCategory, EditCategory } from '@/Pages/Category';
 import { PageHeader } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
 import { Category, PageProps } from '@/types';
-import { dashboardRoute } from '@/routes';
-import { useSearchFilter } from '@/hooks';
+import { dashboardRoute, categoryRoute } from '@/Routes';
+import { useSearchFilter } from '@/Hooks';
 
 type CategoryProps = {
   categories: {
@@ -33,15 +33,6 @@ type CategoryProps = {
     current_page: number;
   };
 } & PageProps;
-
-const items = [
-  { title: 'Dashboard', href: dashboardRoute() },
-  { title: 'Categories', href: '#' },
-].map((item, index) => (
-  <Anchor component={Link} href={item.href} key={index}>
-    {item.title}
-  </Anchor>
-));
 
 export default function List({ auth, categories }: CategoryProps) {
   const [selected, setSelected] = useState<Category>();
@@ -165,7 +156,10 @@ export default function List({ auth, categories }: CategoryProps) {
           <PageHeader
             user={auth.user}
             title="Categories"
-            breadcrumbItems={items}
+            breadcrumbItems={[
+              { title: 'Dashboard', href: dashboardRoute.dashboard },
+              { title: 'Categories', href: '#' },
+            ]}
             withActions={
               <Button leftSection={<IconPlus size={18} />} onClick={onOpenCreate}>
                 New Category

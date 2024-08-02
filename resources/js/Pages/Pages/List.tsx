@@ -22,8 +22,8 @@ import { IconDotsVertical, IconEdit, IconPlus, IconSearch, IconTrash } from '@ta
 import { PageHeader } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
 import { Page, PageProps } from '@/types';
-import { useSearchFilter } from '@/hooks';
-import { dashboardRoute, pageRoute } from '@/routes';
+import { useSearchFilter } from '@/Hooks';
+import { dashboardRoute, pageRoute } from '@/Routes';
 import { badgeVariant } from '@/Utils';
 import { DeletePage } from '@/Pages/Pages';
 
@@ -35,15 +35,6 @@ type PagesProps = {
     current_page: number;
   };
 } & PageProps;
-
-const items = [
-  { title: 'Dashboard', href: dashboardRoute() },
-  { title: 'Pages', href: '#' },
-].map((item, index) => (
-  <Anchor component={Link} href={item.href} key={index}>
-    {item.title}
-  </Anchor>
-));
 
 export default function List({ auth, pages }: PagesProps) {
   const [selected, setSelected] = useState<Page>();
@@ -143,7 +134,7 @@ export default function List({ auth, pages }: PagesProps) {
               variant="filled"
               component={Link}
               leftSection={<IconEdit size={16} />}
-              href={pageRoute(page.id).update}
+              href={pageRoute.update(page.id)}
             >
               Edit
             </Menu.Item>
@@ -176,13 +167,12 @@ export default function List({ auth, pages }: PagesProps) {
           <PageHeader
             user={auth.user}
             title="Pages"
-            breadcrumbItems={items}
+            breadcrumbItems={[
+              { title: 'Dashboard', href: dashboardRoute.dashboard },
+              { title: 'Pages', href: pageRoute.list },
+            ]}
             withActions={
-              <Button
-                component={Link}
-                href={pageRoute().create}
-                leftSection={<IconPlus size={18} />}
-              >
+              <Button component={Link} href={pageRoute.create} leftSection={<IconPlus size={18} />}>
                 New Page
               </Button>
             }

@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  Anchor,
   Avatar,
   Box,
   Button,
@@ -31,15 +30,7 @@ import {
 import { PageHeader, Surface, TextEditor } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
 import { PageProps } from '@/types';
-
-const items = [
-  { title: 'Dashboard', href: '/dashboard' },
-  { title: 'Profile', href: '#' },
-].map((item, index) => (
-  <Anchor href={item.href} key={index}>
-    {item.title}
-  </Anchor>
-));
+import { dashboardRoute } from '@/Routes';
 
 function Profile({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: string }>) {
   const [avatar, setAvatar] = useState<string | undefined>(auth.user.avatar);
@@ -146,7 +137,14 @@ function Profile({ auth }: PageProps<{ mustVerifyEmail: boolean; status?: string
 
       <Container fluid>
         <Stack gap="lg">
-          <PageHeader user={auth.user} title="Profile" breadcrumbItems={items} />
+          <PageHeader
+            user={auth.user}
+            title="Profile"
+            breadcrumbItems={[
+              { title: 'Dashboard', href: dashboardRoute.dashboard },
+              { title: 'Profile', href: '#' },
+            ]}
+          />
           <Grid>
             <Grid.Col span={{ base: 12, md: 8 }}>
               <Surface component={Paper} p="md" shadow="md" radius="md" h="100%">

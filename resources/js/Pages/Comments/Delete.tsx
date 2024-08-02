@@ -4,24 +4,24 @@ import { Button, Stack, Modal, SimpleGrid, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
-import { Page } from '@/types';
+import { Comment } from '@/types';
 
 type TagProps = {
-  page?: Page;
+  comment?: Comment;
   isOpen: boolean;
   onClose: () => void;
 };
 
-export default function Delete({ page, isOpen, onClose }: TagProps) {
+export default function Delete({ comment, isOpen, onClose }: TagProps) {
   const [fetching, setFetching] = useState<boolean>(false);
 
   router.on('start', () => setFetching(() => true));
   router.on('finish', () => setFetching(() => false));
 
   const onSubmit = () => {
-    if (!page) return;
+    if (!comment) return;
 
-    router.delete(route('page.destroy', page.id), {
+    router.delete(route('page.destroy', comment.id), {
       onSuccess: () => {
         onClose();
         notifications.show({

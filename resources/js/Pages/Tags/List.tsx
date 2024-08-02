@@ -1,16 +1,6 @@
 'use client';
 
-import {
-  Anchor,
-  Button,
-  Container,
-  Flex,
-  Menu,
-  Paper,
-  Stack,
-  Text,
-  TextInput,
-} from '@mantine/core';
+import { Button, Container, Flex, Menu, Paper, Stack, Text, TextInput } from '@mantine/core';
 import { useState } from 'react';
 import dayjs from 'dayjs';
 import _first from 'lodash/first';
@@ -22,8 +12,8 @@ import { CreateTag, DeleteTag, EditTag } from '@/Pages/Tags';
 import { PageHeader } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
 import { Category, PageProps } from '@/types';
-import { dashboardRoute } from '@/routes';
-import { useSearchFilter } from '@/hooks';
+import { dashboardRoute } from '@/Routes';
+import { useSearchFilter } from '@/Hooks';
 
 type CategoryProps = {
   tags: {
@@ -33,15 +23,6 @@ type CategoryProps = {
     current_page: number;
   };
 } & PageProps;
-
-const items = [
-  { title: 'Dashboard', href: dashboardRoute() },
-  { title: 'Tags', href: '#' },
-].map((item, index) => (
-  <Anchor component={Link} href={item.href} key={index}>
-    {item.title}
-  </Anchor>
-));
 
 export default function List({ auth, tags }: CategoryProps) {
   const [selected, setSelected] = useState<Category>();
@@ -154,7 +135,10 @@ export default function List({ auth, tags }: CategoryProps) {
           <PageHeader
             user={auth.user}
             title="Tags"
-            breadcrumbItems={items}
+            breadcrumbItems={[
+              { title: 'Dashboard', href: dashboardRoute.dashboard },
+              { title: 'Tags', href: '#' },
+            ]}
             withActions={
               <Button leftSection={<IconPlus size={18} />} onClick={onOpenCreate}>
                 New Tag

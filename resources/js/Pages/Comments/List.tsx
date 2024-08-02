@@ -25,10 +25,10 @@ import { IconDotsVertical, IconEdit, IconPlus, IconSearch, IconTrash } from '@ta
 import { PageHeader } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
 import { PageProps, Comment } from '@/types';
-import { useSearchFilter } from '@/hooks';
-import { commentRoute, dashboardRoute } from '@/routes';
+import { useSearchFilter } from '@/Hooks';
+import { commentRoute, dashboardRoute } from '@/Routes';
 import { commentStatusVariant } from '@/Utils';
-import { DeletePage } from '@/Pages/Pages';
+import { DeleteComment } from '@/Pages/Comments';
 
 type CommentProps = {
   comments: {
@@ -38,15 +38,6 @@ type CommentProps = {
     current_page: number;
   };
 } & PageProps;
-
-const items = [
-  { title: 'Dashboard', href: dashboardRoute() },
-  { title: 'Comments', href: '#' },
-].map((item, index) => (
-  <Anchor component={Link} href={item.href} key={index}>
-    {item.title}
-  </Anchor>
-));
 
 export default function List({ auth, comments }: CommentProps) {
   const theme = useMantineTheme();
@@ -146,7 +137,7 @@ export default function List({ auth, comments }: CommentProps) {
               variant="filled"
               component={Link}
               leftSection={<IconEdit size={16} />}
-              href={commentRoute(comment.id).update}
+              href={commentRoute.update(comment.id)}
             >
               Edit
             </Menu.Item>
@@ -172,18 +163,21 @@ export default function List({ auth, comments }: CommentProps) {
   return (
     <AuthenticatedLayout user={auth.user}>
       <Head title="Comments | Publishing" />
-      <DeletePage comment={selected} isOpen={isOpen} onClose={onClose} />
+      <DeleteComment comment={selected} isOpen={isOpen} onClose={onClose} />
 
       <Container fluid>
         <Stack gap="lg">
           <PageHeader
             user={auth.user}
             title="Comments"
-            breadcrumbItems={items}
+            breadcrumbItems={[
+              { title: 'Dashboard', href: dashboardRoute.dashboard },
+              { title: 'Comments', href: commentRoute.list },
+            ]}
             withActions={
               <Button
                 component={Link}
-                href={commentRoute().create}
+                href={commentRoute.create}
                 leftSection={<IconPlus size={18} />}
               >
                 New Comment

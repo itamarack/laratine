@@ -35,18 +35,8 @@ import { useDebouncedCallback } from '@mantine/hooks';
 import { PageHeader, Surface, TextEditor } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
 import { Category, PageProps, Tags, User } from '@/types';
-import { dashboardRoute, postRoute } from '@/routes';
+import { dashboardRoute, postRoute } from '@/Routes';
 import { slugify, makeSelectableList } from '@/Utils';
-
-const items = [
-  { title: 'Dashboard', href: dashboardRoute() },
-  { title: 'Posts', href: postRoute().list },
-  { title: 'Create', href: '#' },
-].map((item, index) => (
-  <Anchor component={Link} href={item.href} key={index}>
-    {item.title}
-  </Anchor>
-));
 
 type PostProps = {
   authors?: User[];
@@ -122,7 +112,11 @@ export default function Create({ auth, authors, categories, tags }: PostProps) {
             <PageHeader
               user={auth.user}
               title="Create Post"
-              breadcrumbItems={items}
+              breadcrumbItems={[
+                { title: 'Dashboard', href: dashboardRoute },
+                { title: 'Posts', href: postRoute.list },
+                { title: 'Create', href: postRoute.create },
+              ]}
               withActions={
                 <Button
                   type="submit"

@@ -8,7 +8,6 @@ import {
   FileButton,
   Grid,
   Paper,
-  PaperProps,
   SimpleGrid,
   Stack,
   Text,
@@ -43,13 +42,6 @@ const items = [
     {item.title}
   </Anchor>
 ));
-
-const PAPER_PROPS: PaperProps = {
-  p: 'md',
-  shadow: 'md',
-  radius: 'md',
-  style: { height: '100%' },
-};
 
 type UsersProps = {
   user: User;
@@ -164,7 +156,7 @@ export default function Edit({ auth, user }: UsersProps) {
               </Button>
             }
           />
-          <Surface component={Paper} {...PAPER_PROPS}>
+          <Surface component={Paper} p="md" shadow="md" radius="md" h="100%">
             <Text size="lg" fw={600} mb="md">
               Account information
             </Text>
