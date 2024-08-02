@@ -2,9 +2,9 @@ import { Button, PasswordInput, Center, Paper, Text, Stack } from '@mantine/core
 import { Head, useForm } from '@inertiajs/react';
 import { AuthLayout } from '@/Layouts';
 import { Surface } from '@/Components';
-import classes from './Auth.module.css';
 import { FormEventHandler } from 'react';
 import { notifications } from '@mantine/notifications';
+import classes from './auth.module.css';
 
 function ConfirmPassword() {
   const form = useForm({

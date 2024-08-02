@@ -19,7 +19,7 @@ import { IconCheck, IconX } from '@tabler/icons-react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { AuthLayout } from '@/Layouts';
 import { Surface } from '@/Components';
-import classes from './Auth.module.css';
+import classes from './auth.module.css';
 
 function Register() {
   const [popoverOpened, setPopoverOpened] = useState(false);

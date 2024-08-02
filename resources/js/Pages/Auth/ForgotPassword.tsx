@@ -16,8 +16,8 @@ import { IconChevronLeft } from '@tabler/icons-react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { AuthLayout } from '@/Layouts';
 import { Surface } from '@/Components';
-import classes from './Auth.module.css';
 import { FormEventHandler } from 'react';
+import classes from './auth.module.css';
 
 function ResetPassword({ status }: { status: string }) {
   const mobile_match = useMediaQuery('(max-width: 425px)');

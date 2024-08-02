@@ -15,7 +15,7 @@ import { notifications } from '@mantine/notifications';
 import { FormEventHandler } from 'react';
 import { AuthLayout } from '@/Layouts';
 import { Surface } from '@/Components';
-import classes from './Auth.module.css';
+import classes from './auth.module.css';
 
 type LoginType = {
   status?: string;

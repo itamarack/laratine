@@ -1,0 +1,13 @@
+.logo {
+  padding: 0;
+  font-size: var(--mantine-font-size-md);
+  border-radius: var(--mantine-radius-sm);
+  color: var(--mantine-primary-color-filled);
+  font-weight: 600;
+  text-decoration: none;
+
+  @mixin hover {
+    transition: all ease 150ms;
+    font-weight: 800;
+  }
+}

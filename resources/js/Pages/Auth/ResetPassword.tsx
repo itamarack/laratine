@@ -18,7 +18,7 @@ import { Head, useForm } from '@inertiajs/react';
 import { notifications } from '@mantine/notifications';
 import { AuthLayout } from '@/Layouts';
 import { Surface } from '@/Components';
-import classes from './Auth.module.css';
+import classes from './auth.module.css';
 
 function ResetPassword({ token, email }: { token: string; email: string }) {
   const [popoverOpened, setPopoverOpened] = useState(false);

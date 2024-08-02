@@ -2,7 +2,7 @@ import { ActionIcon, createTheme, Loader } from '@mantine/core';
 import { generateColors } from '@mantine/colors-generator';
 
 export const myTheme = createTheme({
-  primaryColor: 'cyan',
+  primaryColor: 'blue',
   focusRing: 'always',
   fontFamily: 'Open Sans, sans-serif',
   headings: { fontFamily: 'Open Sans, sans-serif' },
