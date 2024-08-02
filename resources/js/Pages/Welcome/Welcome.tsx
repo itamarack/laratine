@@ -16,7 +16,7 @@ export default function Welcome({ laravelVersion }: PageProps<{ laravelVersion: 
       <Head title="Laratine Admin | Welcome!" />
 
       <Stack h="100vh" w="100%" justify={'space-between'} align="center" p={32}>
-        <Flex></Flex>
+        <Text></Text>
         <Stack>
           <Flex justify={'center'} align={'center'} gap={12} className={classes.logo}>
             <IconApps size={mobile_match ? 36 : 80} />
