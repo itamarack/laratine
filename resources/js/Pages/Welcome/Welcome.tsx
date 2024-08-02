@@ -1,4 +1,5 @@
 import { Link, Head } from '@inertiajs/react';
+import { useMediaQuery } from '@mantine/hooks';
 import { Button, Flex, Stack, Text, useMantineTheme } from '@mantine/core';
 import { IconApps, IconDashboard, IconGitFork } from '@tabler/icons-react';
 import classes from './welcome.module.css';
@@ -6,6 +7,9 @@ import { PageProps } from '@/types';
 
 export default function Welcome({ laravelVersion }: PageProps<{ laravelVersion: string }>) {
   const theme = useMantineTheme();
+  const laptop_match = useMediaQuery('(max-width: 992px)');
+  const tablet_match = useMediaQuery('(max-width: 768px)');
+  const mobile_match = useMediaQuery('(max-width: 425px)');
 
   return (
     <>
@@ -14,9 +18,9 @@ export default function Welcome({ laravelVersion }: PageProps<{ laravelVersion: 
       <Stack h="100vh" w="100%" justify={'space-between'} align="center" p={32}>
         <Flex></Flex>
         <Stack>
-          <Flex justify={'flex-start'} align={'center'} gap={12} className={classes.logo}>
-            <IconApps size={80} />
-            <Text fz={60} fw={700}>
+          <Flex justify={'center'} align={'center'} gap={12} className={classes.logo}>
+            <IconApps size={mobile_match ? 36 : 80} />
+            <Text fz={{ base: 28, sm: 60 }} fw={700}>
               Laratine Admin
             </Text>
           </Flex>
@@ -33,9 +37,9 @@ export default function Welcome({ laravelVersion }: PageProps<{ laravelVersion: 
               component={Link}
               href="www.github.com"
               variant="subtle"
-              leftSection={<IconGitFork />}
+              leftSection={<IconGitFork size={16} />}
             >
-              Github
+              GITHUB
             </Button>
           </Flex>
         </Stack>
