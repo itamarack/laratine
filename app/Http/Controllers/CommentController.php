@@ -10,16 +10,29 @@ use App\Services\QueryBuilderService;
 use App\Stats\CommentStats;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\Permission\Middleware\PermissionMiddleware;
 
-class CommentController extends Controller
+class CommentController extends Controller implements HasMiddleware
 {
   protected $builder;
 
   public function __construct(QueryBuilderService $builderService)
   {
     $this->builder = $builderService;
+  }
+
+  public static function middleware(): array
+  {
+    return [
+      new Middleware(PermissionMiddleware::using('View Comments'), only:['index']),
+      new Middleware(PermissionMiddleware::using('Create Comments'), only:['create', 'store']),
+      new Middleware(PermissionMiddleware::using('Update Comments'), only:['show', 'update']),
+      new Middleware(PermissionMiddleware::using('Delete Comments'), only:['destroy'])
+    ];
   }
 
   /**

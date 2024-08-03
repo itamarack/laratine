@@ -6,15 +6,18 @@ use App\Http\Requests\ProfileRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Services\FileUploadService;
 use App\Services\QueryBuilderService;
+use Illuminate\Routing\Controllers\Middleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Models\Role;
 
-class ProfileController extends Controller
+class ProfileController extends Controller implements HasMiddleware
 {
   protected $uploadService;
   protected $builderService;
@@ -23,6 +26,15 @@ class ProfileController extends Controller
   {
     $this->uploadService = $uploadService;
     $this->builderService = $builderService;
+  }
+
+  public static function middleware(): array
+  {
+    return [
+      new Middleware(PermissionMiddleware::using('View Profiles'), only:['show', 'securityShow']),
+      new Middleware(PermissionMiddleware::using('Update Profiles1'), only:['update', 'securityUpdate']),
+      new Middleware(PermissionMiddleware::using('Delete Profiles'), only:['destroy']),
+    ];
   }
 
   /**

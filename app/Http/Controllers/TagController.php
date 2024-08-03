@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use App\Services\QueryBuilderService;
 use App\Http\Requests\TagRequest;
+use Illuminate\Routing\Controllers\Middleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
 
 class TagController extends Controller
 {
@@ -17,6 +19,16 @@ class TagController extends Controller
   public function __construct(QueryBuilderService $builderService)
   {
     $this->builder = $builderService;
+  }
+
+  public static function middleware(): array
+  {
+    return [
+      new Middleware(PermissionMiddleware::using('View Tags'), only:['index']),
+      new Middleware(PermissionMiddleware::using('Create Tags'), only:['store']),
+      new Middleware(PermissionMiddleware::using('Update Tags'), only:['update']),
+      new Middleware(PermissionMiddleware::using('Delete Tags'), only:['destroy'])
+    ];
   }
 
   /**

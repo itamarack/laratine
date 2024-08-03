@@ -7,13 +7,16 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Services\FileUploadService;
 use App\Services\QueryBuilderService;
 use App\Stats\UserStats;
+use Illuminate\Routing\Controllers\Middleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
 
-class UserController extends Controller
+class UserController extends Controller implements HasMiddleware
 {
   protected $uploadService;
   protected $builderService;
@@ -22,6 +25,16 @@ class UserController extends Controller
   {
     $this->uploadService = $uploadService;
     $this->builderService = $builderService;
+  }
+
+  public static function middleware(): array
+  {
+    return [
+      new Middleware(PermissionMiddleware::using('View Users'), only:['index']),
+      new Middleware(PermissionMiddleware::using('Create Users'), only:['create', 'store']),
+      new Middleware(PermissionMiddleware::using('Update Users'), only:['show', 'update']),
+      new Middleware(PermissionMiddleware::using('Delete Users'), only:['destroy']),
+    ];
   }
 
   /**

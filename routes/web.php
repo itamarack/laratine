@@ -34,7 +34,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
 
   Route::prefix('account-security')->group(function () {
     Route::get('/', [ProfileController::class, 'securityShow'])->name('security.show');
-    Route::patch('/', [ProfileController::class, 'securityUpdate'])->name('securityUpdate');
+    Route::patch('/', [ProfileController::class, 'securityUpdate'])->name('security.update');
   });
 
   Route::prefix('users')->group(function () {
@@ -89,7 +89,6 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
 
   Route::prefix('roles-permissions')->group(function () {
     Route::get('/', [RoleController::class, 'index'])->name('role.index');
-
     Route::post('/roles/create', [RoleController::class, 'store'])->name('role.store');
     Route::patch('/roles/{role}/edit/', [RoleController::class, 'update'])->name('role.update');
     Route::delete('/roles/{role}/delete', [RoleController::class, 'destroy'])->name('role.destroy');

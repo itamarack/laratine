@@ -4,19 +4,32 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Services\QueryBuilderService;
 use App\Http\Requests\CategoryRequest;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\Middleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
 
-class CategoryController extends Controller
+class CategoryController extends Controller implements HasMiddleware
 {
   protected $builder;
 
   public function __construct(QueryBuilderService $builderService)
   {
     $this->builder = $builderService;
+  }
+
+  public static function middleware(): array
+  {
+    return [
+      new Middleware(PermissionMiddleware::using('View Categories'), only:['index']),
+      new Middleware(PermissionMiddleware::using('Create Categories'), only:['store']),
+      new Middleware(PermissionMiddleware::using('Update Categories'), only:['update']),
+      new Middleware(PermissionMiddleware::using('Delete Categories'), only:['destroy'])
+    ];
   }
 
   /**

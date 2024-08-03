@@ -34,6 +34,8 @@ import { dashboardRoute } from '@/Routes';
 function Profile({ auth, roles }: PageProps & { roles: any }) {
   const [avatar, setAvatar] = useState<string | undefined>(auth.user.avatar);
 
+  console.log(auth.can);
+
   const form = useForm({
     _method: 'patch',
     avatar: avatar ?? null,
@@ -93,15 +95,17 @@ function Profile({ auth, roles }: PageProps & { roles: any }) {
               { title: 'Profile', href: '#' },
             ]}
             withActions={
-              <Button
-                type="submit"
-                style={{ width: 'fit-content' }}
-                loading={form.processing}
-                leftSection={<IconDeviceFloppy size={16} />}
-                onClick={onSubmitAccount}
-              >
-                Save Changes
-              </Button>
+              auth.can['Update Profiles'] && (
+                <Button
+                  type="submit"
+                  style={{ width: 'fit-content' }}
+                  loading={form.processing}
+                  leftSection={<IconDeviceFloppy size={16} />}
+                  onClick={onSubmitAccount}
+                >
+                  Save Changes
+                </Button>
+              )
             }
           />
           <Grid>

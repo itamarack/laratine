@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Http\Requests\PostRequest;
@@ -14,8 +15,10 @@ use App\Models\User;
 use App\Services\FileUploadService;
 use App\Services\QueryBuilderService;
 use App\Stats\PostStats;
+use Illuminate\Routing\Controllers\Middleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
 
-class PostController extends Controller
+class PostController extends Controller implements HasMiddleware
 {
   protected $builderService;
   protected $uploadService;
@@ -24,6 +27,16 @@ class PostController extends Controller
   {
     $this->uploadService = $uploadService;
     $this->builderService = $builderService;
+  }
+
+  public static function middleware(): array
+  {
+    return [
+      new Middleware(PermissionMiddleware::using('View Posts'), only:['index']),
+      new Middleware(PermissionMiddleware::using('Create Posts'), only:['create', 'store']),
+      new Middleware(PermissionMiddleware::using('Update Posts'), only:['show', 'update']),
+      new Middleware(PermissionMiddleware::using('Delete Posts'), only:['destroy'])
+    ];
   }
 
   /**

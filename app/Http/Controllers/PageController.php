@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PageRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Page;
@@ -12,8 +13,10 @@ use App\Models\Tag;
 use App\Models\User;
 use App\Services\FileUploadService;
 use App\Services\QueryBuilderService;
+use Illuminate\Routing\Controllers\Middleware;
+use Spatie\Permission\Middleware\PermissionMiddleware;
 
-class PageController extends Controller
+class PageController extends Controller implements HasMiddleware
 {
   protected $builderService;
   protected $uploadService;
@@ -22,6 +25,16 @@ class PageController extends Controller
   {
     $this->uploadService = $uploadService;
     $this->builderService = $builderService;
+  }
+
+  public static function middleware(): array
+  {
+    return [
+      new Middleware(PermissionMiddleware::using('View Pages'), only:['index']),
+      new Middleware(PermissionMiddleware::using('Create Pages'), only:['create', 'store']),
+      new Middleware(PermissionMiddleware::using('Update Pages'), only:['show', 'update']),
+      new Middleware(PermissionMiddleware::using('Delete Pages'), only:['destroy'])
+    ];
   }
 
   /**

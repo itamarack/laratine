@@ -139,6 +139,7 @@ export interface SelectableList {
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
   auth: {
     user: User;
+    can: { [key: string]: boolean };
   };
   ziggy: Config & { location: string };
 };

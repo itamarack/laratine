@@ -34,6 +34,12 @@ class HandleInertiaRequests extends Middleware
       ...parent::share($request),
       'auth' => [
         'user' => $request->user(),
+        'can' => $request->user()?->loadMissing('roles.permissions')
+          ->roles->flatMap(function ($role) {
+              return $role->permissions;
+          })->map(function ($permission) use ($request) {
+              return [$permission['name'] => $request->user()->can($permission['name'])];
+          })->collapse()->all(),
       ],
       'ziggy' => fn () => [
         ...(new Ziggy)->toArray(),
