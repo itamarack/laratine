@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  Box,
   Button,
   Container,
   Grid,
@@ -15,24 +14,24 @@ import {
   Progress,
   Accordion,
   Fieldset,
-  Select,
+  Group,
 } from '@mantine/core';
+import dayjs from 'dayjs';
 import { FormEventHandler, useRef, useState } from 'react';
 import { Head, useForm } from '@inertiajs/react';
 import { notifications } from '@mantine/notifications';
-import { IconCheck, IconDeviceFloppy, IconUserHexagon, IconX } from '@tabler/icons-react';
+import { IconCheck, IconDeviceFloppy, IconInfoCircle, IconX } from '@tabler/icons-react';
 import { PageHeader, Surface } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
 import { PageProps } from '@/types';
 import { dashboardRoute } from '@/Routes';
 
-function AccountSecurity({ auth, roles }: PageProps & { roles: any }) {
+function AccountSecurity({ auth }: PageProps & { roles: any }) {
   const [popoverOpened, setPopoverOpened] = useState(false);
   const passwordInput = useRef<HTMLInputElement>(null);
   const currentPasswordInput = useRef<HTMLInputElement>(null);
 
   const form = useForm({
-    role: '',
     password: '',
     current_password: '',
     password_confirmation: '',
@@ -173,7 +172,7 @@ function AccountSecurity({ auth, roles }: PageProps & { roles: any }) {
                     <Accordion.Item value="layout">
                       <Accordion.Control
                         icon={
-                          <IconUserHexagon
+                          <IconInfoCircle
                             style={{
                               color: 'var(--mantine-color-green-6',
                               width: rem(20),
@@ -182,20 +181,24 @@ function AccountSecurity({ auth, roles }: PageProps & { roles: any }) {
                           />
                         }
                       >
-                        User Role
+                        User Information
                       </Accordion.Control>
                       <Accordion.Panel>
                         <Stack>
-                          <Select
-                            label="Role"
-                            placeholder="Select User Role"
-                            value={form.data.role}
-                            error={form.errors.role}
-                            disabled={form.processing}
-                            checkIconPosition="right"
-                            data={roles}
-                            onChange={(t: any) => form.setData('role', t)}
-                          />
+                          <Group>
+                            <Text fw={700}>Name:</Text>
+                            <Text>{auth.user.fullname}</Text>
+                          </Group>
+                          <Group>
+                            <Text fw={700}>Role:</Text>
+                            <Text>{auth.user.role}</Text>
+                          </Group>
+                          <Group>
+                            <Text fw={700}>Last Modified:</Text>
+                            <Text>
+                              {dayjs(new Date(auth.user.updated_at)).format('MMM D, YYYY')}
+                            </Text>
+                          </Group>
                         </Stack>
                       </Accordion.Panel>
                     </Accordion.Item>

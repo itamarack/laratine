@@ -14,24 +14,17 @@ import {
   rem,
   Accordion,
   Fieldset,
-  Select,
 } from '@mantine/core';
 import { FormEventHandler, useState } from 'react';
 import { Head, useForm } from '@inertiajs/react';
 import { notifications } from '@mantine/notifications';
-import {
-  IconCloudUpload,
-  IconDeviceFloppy,
-  IconPhoto,
-  IconTrash,
-  IconUserHexagon,
-} from '@tabler/icons-react';
+import { IconCloudUpload, IconDeviceFloppy, IconPhoto, IconTrash } from '@tabler/icons-react';
 import { PageHeader, Surface, TextEditor } from '@/Components';
 import { AuthenticatedLayout } from '@/Layouts';
 import { PageProps } from '@/types';
 import { dashboardRoute } from '@/Routes';
 
-function Profile({ auth, roles }: PageProps & { roles: any }) {
+function Profile({ auth }: PageProps) {
   const [avatar, setAvatar] = useState<string | undefined>(auth.user.avatar);
 
   console.log(auth.can);
@@ -39,7 +32,6 @@ function Profile({ auth, roles }: PageProps & { roles: any }) {
   const form = useForm({
     _method: 'patch',
     avatar: avatar ?? null,
-    role: auth.user.role ?? '',
     firstname: auth.user.firstname ?? '',
     lastname: auth.user.lastname ?? '',
     email: auth.user.email ?? '',
@@ -71,8 +63,7 @@ function Profile({ auth, roles }: PageProps & { roles: any }) {
           message: 'Profile has been updated successfully.',
         });
       },
-      onError: error => {
-        console.log(error);
+      onError: () => {
         notifications.show({
           title: 'Failed!',
           message: 'Something went wrong, Try again.',
@@ -95,17 +86,15 @@ function Profile({ auth, roles }: PageProps & { roles: any }) {
               { title: 'Profile', href: '#' },
             ]}
             withActions={
-              auth.can['Update Profiles'] && (
-                <Button
-                  type="submit"
-                  style={{ width: 'fit-content' }}
-                  loading={form.processing}
-                  leftSection={<IconDeviceFloppy size={16} />}
-                  onClick={onSubmitAccount}
-                >
-                  Save Changes
-                </Button>
-              )
+              <Button
+                type="submit"
+                style={{ width: 'fit-content' }}
+                loading={form.processing}
+                leftSection={<IconDeviceFloppy size={16} />}
+                onClick={onSubmitAccount}
+              >
+                Save Changes
+              </Button>
             }
           />
           <Grid>
@@ -241,35 +230,6 @@ function Profile({ auth, roles }: PageProps & { roles: any }) {
                           <Text ta="center" size="xs" c="dimmed">
                             For best results, use an image at least 128px by 128px in .jpg format
                           </Text>
-                        </Stack>
-                      </Accordion.Panel>
-                    </Accordion.Item>
-                    <Accordion.Item value="layout">
-                      <Accordion.Control
-                        icon={
-                          <IconUserHexagon
-                            style={{
-                              color: 'var(--mantine-color-green-6',
-                              width: rem(20),
-                              height: rem(20),
-                            }}
-                          />
-                        }
-                      >
-                        User Role
-                      </Accordion.Control>
-                      <Accordion.Panel>
-                        <Stack>
-                          <Select
-                            label="Role"
-                            placeholder="Select User Role"
-                            value={form.data.role}
-                            error={form.errors.role}
-                            disabled={form.processing}
-                            checkIconPosition="right"
-                            data={roles}
-                            onChange={(t: any) => form.setData('role', t)}
-                          />
                         </Stack>
                       </Accordion.Panel>
                     </Accordion.Item>
