@@ -32,39 +32,59 @@ You can also use VSCode Dev Container to develop Laratine. Simply open the proje
 
 #### Local Development
 
-1. **Clone the repository:**
+**Clone the repository:**
 
 ```sh
 git clone https://github.com/itamarack/laratine.git
 cd laratine
+```
 
-2. **Install dependencies:**
-- composer install
-- npm install
+**Install dependencies:**
 
-3. **Copy the .env.example file to .env:**
-- cp .env.example .env
+```sh
+composer install
+npm install
+```
 
-4. **Generate an application key:**
-- php artisan key:generate
+**Copy the .env.example file to .env:**
 
-5. **Update the following lines in your .env file to match your database configuration:**
+```sh
+cp .env.example .env
+```
+
+**Generate an application key:**
+
+```sh
+php artisan key:generate
+```
+
+**Update the following lines in your .env file to match your database configuration:**
+
+```sh
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=your_database
 DB_USERNAME=your_username
 DB_PASSWORD=your_password
+```
 
-6. **Run the database migrations:**
-- php artisan migrate
+**Run the database migrations:**
 
-7. **Build the front-end assets:**
+```sh
+php artisan migrate
+```
+
+**Build the front-end assets:**
+
+```sh
 npm run dev
+```
 
-8. **Start the development server:**
-- php artisan serve
+**Start the development server:**
 
+```sh
+php artisan serve
 ```
 
 Usage
