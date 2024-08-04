@@ -8,6 +8,7 @@ import { useMatchPath } from '@/Hooks';
 interface LinksGroupProps {
   icon?: any;
   label: string;
+  permission?: string;
   initiallyOpened?: boolean;
   link?: string;
   links?: {
@@ -60,6 +61,7 @@ export function LinksGroup({ icon: Icon, label, initiallyOpened, link, links }: 
           )}
         </Group>
       </UnstyledButton>
+
       {Array.isArray(links) ? <Collapse in={isOpen}>{items}</Collapse> : null}
     </>
   );

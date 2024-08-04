@@ -15,12 +15,12 @@ type NavigationProps = {
 const Navigation = ({ user, onClose }: NavigationProps) => {
   const tablet_match = useMediaQuery('(max-width: 768px)');
 
-  const links = sidebarNavigation.map(m => (
-    <Box pl={0} mb="md" key={m.title}>
+  const links = sidebarNavigation.map(navigationItem => (
+    <Box pl={0} mb="md" key={navigationItem.title}>
       <Text tt="uppercase" size="xs" pl="md" fw={500} mb="sm" className={classes.linkHeader}>
-        {m.title}
+        {navigationItem.title}
       </Text>
-      {m.links.map(item => (
+      {navigationItem.links.map(item => (
         <LinksGroup
           key={item.label}
           {...item}

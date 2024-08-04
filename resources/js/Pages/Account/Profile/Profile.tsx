@@ -27,8 +27,6 @@ import { dashboardRoute } from '@/Routes';
 function Profile({ auth }: PageProps) {
   const [avatar, setAvatar] = useState<string | undefined>(auth.user.avatar);
 
-  console.log(auth.can);
-
   const form = useForm({
     _method: 'patch',
     avatar: avatar ?? null,
