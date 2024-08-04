@@ -26,6 +26,10 @@ Before you begin, ensure you have met the following requirements:
 
 ### Steps
 
+#### VSCode Dev Container
+
+You can also use VSCode Dev Container to develop Laratine. Simply open the project folder in VSCode, and the Dev Container will take care of setting up the environment for you.
+
 #### Local Development
 
 1. **Clone the repository:**
