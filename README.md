@@ -61,6 +61,8 @@ npm run dev
 8. **Start the development server:**
 - php artisan serve
 
+```
+
 Usage
 Laratine comes with a default user to help you get started quickly.
 
@@ -83,13 +85,12 @@ License
 Distributed under the MIT License. See LICENSE for more information.
 
 Contact
-Your Tamara - @itamarack - innosabel@gmail.com
+Your Tamara - @itamarack - <innosabel@gmail.com>
 
-Project Link: https://github.com/itamarack/laratine
+Project Link: <https://github.com/itamarack/laratine>
 
 Acknowledgements
 Laravel
 Inertia.js
 React
 Tailwind CSS
-```
