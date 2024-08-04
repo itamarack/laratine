@@ -18,7 +18,7 @@ class FileUploadService
   {
     if ($request->hasFile('avatar')) {
       $user->addMediaFromRequest('avatar')->toMediaCollection('avatars');
-    } else if (empty($request->query('avatar'))) {
+    } else if (blank($user->avatar)) {
       optional($user->getFirstMedia('avatars'))->delete();
     }
   }

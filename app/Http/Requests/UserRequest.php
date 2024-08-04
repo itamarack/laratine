@@ -39,6 +39,7 @@ class UserRequest extends FormRequest
   public function rules(): array
   {
     return [
+      'role' => ['required', 'string', 'max:255'],
       'firstname' => ['required', 'string', 'max:255'],
       'lastname' => ['required', 'string', 'max:255'],
       'avatar' => ['nullable', new ImageRule(), 'max:2048'],

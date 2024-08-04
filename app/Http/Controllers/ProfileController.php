@@ -65,7 +65,6 @@ class ProfileController extends Controller implements HasMiddleware
 
     $this->uploadService->uploadAvatar($request, $request->user());
     $request->user()->save();
-    $request->user()->syncRoles($request->role);
 
     return redirect()->route('profile.show');
   }

@@ -57,13 +57,13 @@ function Profile({ auth }: PageProps) {
   const onSubmitAccount: FormEventHandler = () => {
     form.post(route('profile.update'), {
       preserveScroll: true,
-      onSuccess: () => {
+      onSuccess: response => {
         notifications.show({
           title: 'Account updated!',
           message: 'Profile has been updated successfully.',
         });
       },
-      onError: () => {
+      onError: error => {
         notifications.show({
           title: 'Failed!',
           message: 'Something went wrong, Try again.',

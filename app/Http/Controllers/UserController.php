@@ -15,6 +15,7 @@ use App\Services\QueryBuilderService;
 use App\Stats\UserStats;
 use Illuminate\Routing\Controllers\Middleware;
 use Spatie\Permission\Middleware\PermissionMiddleware;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller implements HasMiddleware
 {
@@ -61,7 +62,9 @@ class UserController extends Controller implements HasMiddleware
    */
   public function create(): Response
   {
-    return Inertia::render('Account/Users/Create', []);
+    return Inertia::render('Account/Users/Create', [
+      'roles' => Role::all()->pluck('name')
+    ]);
   }
 
   /**
@@ -90,7 +93,10 @@ class UserController extends Controller implements HasMiddleware
    */
   public function show(User $user): Response
   {
-    return Inertia::render('Account/Users/Edit', ['user' => $user]);
+    return Inertia::render('Account/Users/Edit', [
+      'user' => $user,
+      'roles' => Role::all()->pluck('name')
+    ]);
   }
 
   /**
@@ -105,8 +111,12 @@ class UserController extends Controller implements HasMiddleware
     $user->fill($request->validated());
     $this->uploadService->uploadAvatar($request, $user);
     $user->update();
+    $user->syncRoles($request->role);
 
-    return redirect()->route('user.update', ['user' => $user]);
+    return redirect()->route('user.update', [
+      'user' => $user,
+      'roles' => Role::all()->pluck('name')
+    ]);
   }
 
   /**

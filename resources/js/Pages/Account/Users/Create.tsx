@@ -16,6 +16,10 @@ import {
   rem,
   Popover,
   Progress,
+  Accordion,
+  Fieldset,
+  Group,
+  Select,
 } from '@mantine/core';
 import { FormEventHandler, useRef, useState } from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
@@ -24,7 +28,9 @@ import {
   IconCheck,
   IconCloudUpload,
   IconDeviceFloppy,
+  IconPhoto,
   IconTrash,
+  IconUserPin,
   IconX,
 } from '@tabler/icons-react';
 import { PageHeader, Surface, TextEditor } from '@/Components';
@@ -32,13 +38,14 @@ import { AuthenticatedLayout } from '@/Layouts';
 import { PageProps } from '@/types';
 import { dashboardRoute, userRoute } from '@/Routes';
 
-export default function Create({ auth }: PageProps) {
+export default function Create({ auth, roles }: PageProps & { roles?: string[] }) {
   const [avatar, setAvatar] = useState<string>('');
   const [popoverOpened, setPopoverOpened] = useState(false);
   const passwordInput = useRef<HTMLInputElement>(null);
 
-  const userInfo = useForm({
+  const form = useForm({
     avatar: '',
+    role: '',
     firstname: '',
     lastname: '',
     email: '',
@@ -54,30 +61,30 @@ export default function Create({ auth }: PageProps) {
   const onFileUpload = (file: File | null) => {
     const objectURL = URL.createObjectURL(file as File);
     setAvatar(() => objectURL);
-    userInfo.setData('avatar', file as any);
+    form.setData('avatar', file as any);
     return () => URL.revokeObjectURL(objectURL);
   };
 
   const onDeleteAvatar = () => {
     setAvatar(() => '');
-    userInfo.setData('avatar', '');
+    form.setData('avatar', '');
   };
 
   const checks = requirements.map((requirement, index) => (
     <PasswordRequirement
       key={index}
       label={requirement.label}
-      meets={requirement.re.test(userInfo.data.password)}
+      meets={requirement.re.test(form.data.password)}
     />
   ));
 
-  const strength = getStrength(userInfo.data.password);
+  const strength = getStrength(form.data.password);
   const color = strength === 100 ? 'teal' : strength > 50 ? 'yellow' : 'red';
 
   const onSubmitAccount: FormEventHandler = event => {
     event.preventDefault();
 
-    userInfo.post(route('user.store'), {
+    form.post(route('user.store'), {
       preserveScroll: true,
       onSuccess: () => {
         notifications.show({
@@ -102,190 +109,243 @@ export default function Create({ auth }: PageProps) {
         <Stack gap="lg">
           <PageHeader
             user={auth.user}
-            title="Create New User"
+            title="Edit User"
             breadcrumbItems={[
               { title: 'Dashboard', href: dashboardRoute.dashboard },
-              { title: 'Users', href: userRoute.create },
+              { title: 'Users', href: userRoute.list },
               { title: 'Create', href: '#' },
             ]}
+            withActions={
+              <Button
+                style={{ width: 'fit-content' }}
+                loading={form.processing}
+                leftSection={<IconDeviceFloppy size={16} />}
+                onClick={onSubmitAccount}
+              >
+                Create User
+              </Button>
+            }
           />
-          <Surface component={Paper} p="md" shadow="md" radius="md" h="100%">
-            <Text size="lg" fw={600} mb="md">
-              Account information
-            </Text>
-            <form onSubmit={onSubmitAccount}>
-              <Stack justify="space-between" gap={16} h="100%">
-                <Grid gutter={{ base: 'lg', lg: 'xl' }}>
-                  <Grid.Col span={{ base: 12, md: 8 }}>
+
+          <Grid gutter={{ base: 'lg', lg: 'xl' }}>
+            <Grid.Col span={{ base: 12, md: 8 }}>
+              <Surface component={Paper} p="md" shadow="md" radius="md" h="100%">
+                <Stack gap={32}>
+                  <Fieldset legend="Account Information">
                     <Stack>
-                      <TextInput
-                        withAsterisk
-                        type="email"
-                        label="Email"
-                        placeholder="Email"
-                        value={userInfo.data.email}
-                        error={userInfo.errors.email}
-                        disabled={userInfo.processing}
-                        onChange={e => userInfo.setData('email', e.target.value)}
-                      />
-                      <SimpleGrid cols={{ base: 1, md: 2 }}>
-                        <Popover
-                          opened={popoverOpened}
-                          position="bottom"
-                          width="target"
-                          transitionProps={{ transition: 'pop' }}
-                        >
-                          <Popover.Target>
-                            <div
-                              onFocusCapture={() => setPopoverOpened(true)}
-                              onBlurCapture={() => setPopoverOpened(false)}
-                            >
-                              <PasswordInput
-                                withAsterisk
-                                label="Password"
-                                placeholder="Enter password"
-                                ref={passwordInput}
-                                value={userInfo.data.password}
-                                disabled={userInfo.processing}
-                                error={userInfo.errors.password}
-                                onChange={e => userInfo.setData('password', e.target.value)}
-                              />
-                            </div>
-                          </Popover.Target>
-                          <Popover.Dropdown>
-                            <Progress color={color} value={strength} size={5} mb="xs" />
-                            <PasswordRequirement
-                              label="Includes at least 6 characters"
-                              meets={userInfo.data.password.length > 5}
-                            />
-                            {checks}
-                          </Popover.Dropdown>
-                        </Popover>
-                        <PasswordInput
-                          withAsterisk
-                          label="Confirm Password"
-                          placeholder="Confirm password"
-                          disabled={userInfo.processing}
-                          error={userInfo.errors.password}
-                          value={userInfo.data.password_confirmation}
-                          onChange={e => userInfo.setData('password_confirmation', e.target.value)}
-                        />
-                      </SimpleGrid>
                       <SimpleGrid cols={{ base: 1, md: 2 }}>
                         <TextInput
                           withAsterisk
                           label="Firstname"
                           placeholder="Firstname"
-                          value={userInfo.data.firstname}
-                          error={userInfo.errors.firstname}
-                          disabled={userInfo.processing}
-                          onChange={e => userInfo.setData('firstname', e.target.value)}
+                          value={form.data.firstname}
+                          error={form.errors.firstname}
+                          disabled={form.processing}
+                          onChange={e => form.setData('firstname', e.target.value)}
                         />
                         <TextInput
                           withAsterisk
                           label="Lastname"
                           placeholder="Lastname"
-                          value={userInfo.data.lastname}
-                          error={userInfo.errors.lastname}
-                          disabled={userInfo.processing}
-                          onChange={e => userInfo.setData('lastname', e.target.value)}
+                          value={form.data.lastname}
+                          error={form.errors.lastname}
+                          disabled={form.processing}
+                          onChange={e => form.setData('lastname', e.target.value)}
                         />
                       </SimpleGrid>
+                      <TextInput
+                        withAsterisk
+                        type="email"
+                        label="Email"
+                        placeholder="Email"
+                        value={form.data.email}
+                        error={form.errors.email}
+                        disabled={form.processing}
+                        onChange={e => form.setData('email', e.target.value)}
+                      />
                       <TextInput
                         withAsterisk
                         type="address"
                         label="Address"
                         placeholder="Address"
-                        value={userInfo.data.address}
-                        error={userInfo.errors.address}
-                        disabled={userInfo.processing}
-                        onChange={e => userInfo.setData('address', e.target.value)}
+                        value={form.data.address}
+                        error={form.errors.address}
+                        disabled={form.processing}
+                        onChange={e => form.setData('address', e.target.value)}
                       />
                       <SimpleGrid cols={{ base: 1, md: 3 }}>
                         <TextInput
                           withAsterisk
                           label="City"
                           placeholder="City"
-                          value={userInfo.data.city}
-                          error={userInfo.errors.city}
-                          disabled={userInfo.processing}
-                          onChange={e => userInfo.setData('city', e.target.value)}
+                          value={form.data.city}
+                          error={form.errors.city}
+                          disabled={form.processing}
+                          onChange={e => form.setData('city', e.target.value)}
                         />
                         <TextInput
                           withAsterisk
                           label="State"
                           placeholder="State"
-                          value={userInfo.data.state}
-                          error={userInfo.errors.state}
-                          disabled={userInfo.processing}
-                          onChange={e => userInfo.setData('state', e.target.value)}
+                          value={form.data.state}
+                          error={form.errors.state}
+                          disabled={form.processing}
+                          onChange={e => form.setData('state', e.target.value)}
                         />
                         <TextInput
                           withAsterisk
                           label="Postcode"
                           placeholder="Postcode"
-                          value={userInfo.data.postcode}
-                          error={userInfo.errors.postcode}
-                          disabled={userInfo.processing}
-                          onChange={e => userInfo.setData('postcode', e.target.value)}
+                          value={form.data.postcode}
+                          error={form.errors.postcode}
+                          disabled={form.processing}
+                          onChange={e => form.setData('postcode', e.target.value)}
                         />
                       </SimpleGrid>
                       <TextEditor
                         label="Biography"
-                        content={userInfo.data.biography}
-                        editable={!userInfo.processing}
-                        onChange={(content: any) => userInfo.setData('biography', content)}
+                        content={form.data.biography}
+                        editable={!form.processing}
+                        onChange={(content: any) => form.setData('biography', content)}
                       />
                     </Stack>
-                  </Grid.Col>
-                  <Grid.Col span={{ base: 12, md: 4 }}>
-                    <Stack justify="center" align="center">
-                      <Avatar size={'100%'} variant="filled" radius="sm" src={avatar} />
-                      {userInfo.errors.avatar && (
-                        <Text size="xs" c="red" ta="center">
-                          {userInfo.errors.avatar}
-                        </Text>
-                      )}
-                      <Grid gutter={12} justify="center">
-                        <Grid.Col span={avatar ? 8 : 12}>
-                          <FileButton onChange={onFileUpload} accept="image/png,image/jpeg">
-                            {props => (
-                              <Button
-                                {...props}
-                                variant="subtle"
-                                leftSection={<IconCloudUpload size={16} />}
-                              >
-                                Upload image
-                              </Button>
+                  </Fieldset>
+                  <Fieldset legend="Password & Security">
+                    <SimpleGrid cols={{ base: 1, md: 2 }}>
+                      <Popover
+                        opened={popoverOpened}
+                        position="bottom"
+                        width="target"
+                        transitionProps={{ transition: 'pop' }}
+                      >
+                        <Popover.Target>
+                          <div
+                            onFocusCapture={() => setPopoverOpened(true)}
+                            onBlurCapture={() => setPopoverOpened(false)}
+                          >
+                            <PasswordInput
+                              withAsterisk
+                              label="Password"
+                              placeholder="Enter password"
+                              ref={passwordInput}
+                              value={form.data.password}
+                              disabled={form.processing}
+                              error={form.errors.password}
+                              onChange={e => form.setData('password', e.target.value)}
+                            />
+                          </div>
+                        </Popover.Target>
+                        <Popover.Dropdown>
+                          <Progress color={color} value={strength} size={5} mb="xs" />
+                          <PasswordRequirement
+                            label="Includes at least 6 characters"
+                            meets={form.data.password.length > 5}
+                          />
+                          {checks}
+                        </Popover.Dropdown>
+                      </Popover>
+                      <PasswordInput
+                        withAsterisk
+                        label="Confirm Password"
+                        placeholder="Confirm password"
+                        disabled={form.processing}
+                        error={form.errors.password}
+                        value={form.data.password_confirmation}
+                        onChange={e => form.setData('password_confirmation', e.target.value)}
+                      />
+                    </SimpleGrid>
+                  </Fieldset>
+                </Stack>
+              </Surface>
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, md: 4 }} h="100%">
+              <Surface component={Paper} p="md" shadow="md" radius="md" h="100%">
+                <Stack justify="space-between" gap={16} h="100%">
+                  <Accordion variant="contained" defaultValue="featuredImage">
+                    <Accordion.Item value="featuredImage">
+                      <Accordion.Control
+                        icon={
+                          <IconPhoto
+                            style={{
+                              color: 'var(--mantine-color-red-6',
+                              width: rem(20),
+                              height: rem(20),
+                            }}
+                          />
+                        }
+                      >
+                        Avatar
+                      </Accordion.Control>
+                      <Accordion.Panel>
+                        <Stack justify="center" align="center">
+                          <Avatar size={'100%'} variant="filled" radius="sm" src={avatar} />
+                          {form.errors.avatar && (
+                            <Text size="xs" c="red" ta="center">
+                              {form.errors.avatar}
+                            </Text>
+                          )}
+                          <Grid gutter={12} justify="center">
+                            <Grid.Col span={avatar ? 8 : 12}>
+                              <FileButton onChange={onFileUpload} accept="image/png,image/jpeg">
+                                {props => (
+                                  <Button
+                                    {...props}
+                                    variant="subtle"
+                                    leftSection={<IconCloudUpload size={16} />}
+                                  >
+                                    Upload image
+                                  </Button>
+                                )}
+                              </FileButton>
+                            </Grid.Col>
+                            {avatar && (
+                              <Grid.Col span={4}>
+                                <Button onClick={onDeleteAvatar} variant="subtle" color="red">
+                                  <IconTrash size={16} />
+                                </Button>
+                              </Grid.Col>
                             )}
-                          </FileButton>
-                        </Grid.Col>
-                        {avatar && (
-                          <Grid.Col span={4}>
-                            <Button onClick={onDeleteAvatar} variant="subtle" color="red">
-                              <IconTrash size={16} />
-                            </Button>
-                          </Grid.Col>
-                        )}
-                      </Grid>
-                      <Text ta="center" size="xs" c="dimmed">
-                        For best results, use an image at least 128px by 128px in .jpg format
-                      </Text>
-                    </Stack>
-                  </Grid.Col>
-                </Grid>
-                <Button
-                  type="submit"
-                  mt={16}
-                  style={{ width: 'fit-content' }}
-                  loading={userInfo.processing}
-                  leftSection={<IconDeviceFloppy size={16} />}
-                >
-                  Create User
-                </Button>
-              </Stack>
-            </form>
-          </Surface>
+                          </Grid>
+                          <Text ta="center" size="xs" c="dimmed">
+                            For best results, use an image at least 128px by 128px in .jpg format
+                          </Text>
+                        </Stack>
+                      </Accordion.Panel>
+                    </Accordion.Item>
+                    <Accordion.Item value="Role">
+                      <Accordion.Control
+                        icon={
+                          <IconUserPin
+                            style={{
+                              color: 'var(--mantine-color-green-6',
+                              width: rem(20),
+                              height: rem(20),
+                            }}
+                          />
+                        }
+                      >
+                        Role
+                      </Accordion.Control>
+                      <Accordion.Panel>
+                        <Stack>
+                          <Select
+                            label="Role"
+                            placeholder="Select User Role"
+                            value={form.data.role}
+                            error={form.errors.role}
+                            disabled={form.processing}
+                            checkIconPosition="right"
+                            data={roles}
+                            onChange={(t: any) => form.setData('role', t)}
+                          />
+                        </Stack>
+                      </Accordion.Panel>
+                    </Accordion.Item>
+                  </Accordion>
+                </Stack>
+              </Surface>
+            </Grid.Col>
+          </Grid>
         </Stack>
       </Container>
     </AuthenticatedLayout>

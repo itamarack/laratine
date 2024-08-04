@@ -7,7 +7,7 @@ import { notifications } from '@mantine/notifications';
 import { User } from '@/types';
 
 type UserProps = {
-  user?: User;
+  user: User;
   isOpen: boolean;
   onClose: () => void;
 };
