@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-if [ "$SUPERVISOR_PHP_USER" != "root" ]; then
-    echo "You should set SUPERVISOR_PHP_USER to 'root'."
+if [ "$SUPERVISOR_PHP_USER" != "root" ] && [ "$SUPERVISOR_PHP_USER" != "laratine" ]; then
+    echo "You should set SUPERVISOR_PHP_USER to either 'sail' or 'laratine'."
     exit 1
 fi
 
 if [ ! -z "$WWWUSER" ]; then
-    usermod -u $WWWUSER root
+    usermod -u $WWWUSER laratine
 fi
 
 if [ ! -d /.composer ]; then
@@ -16,7 +16,7 @@ fi
 chmod -R ugo+rw /.composer
 
 if [ $# -gt 0 ]; then
-    if [ "$SUPERVISOR_PHP_USER" = "root" ]; then
+    if [ "$SUPERVISOR_PHP_USER" = "laratine" ]; then
         exec "$@"
     else
         exec gosu $WWWUSER "$@"
