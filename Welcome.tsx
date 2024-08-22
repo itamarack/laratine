@@ -34,18 +34,17 @@ export default function Welcome({ laravelVersion }: PageProps<{ laravelVersion: 
               DASHBOARD
             </Button>
             <Button
-              component={'a'}
-              href="https://github.com/itamarack/laratine"
+              component={Link}
+              href="www.github.com"
               variant="subtle"
               target='_blank'
-              rel="noopener noreferrer"
               leftSection={<IconGitFork size={16} />}
             >
               GITHUB
             </Button>
           </Flex>
         </Stack>
-        <Text c={theme.primaryColor}>Laravel Version: {laravelVersion}</Text>
+        <Text c={theme.primaryColor}>Components: {laravelVersion}</Text>
       </Stack>
     </>
   );
