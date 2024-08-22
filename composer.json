@@ -20,6 +20,7 @@
         "tightenco/ziggy": "^2.0"
     },
     "require-dev": {
+        "blamebutton/laravel-docker-builder": "^0.0.1",
         "fakerphp/faker": "^1.23",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.29",

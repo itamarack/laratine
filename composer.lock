@@ -4,7 +4,7 @@
     "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
     "This file is @generated automatically"
   ],
-  "content-hash": "d43fec106462a6b45bda7eb7a13ea7e9",
+  "content-hash": "8cc5cb36078e77919b2e954a69d55b99",
   "packages": [
     {
       "name": "awssat/laravel-visits",
@@ -7292,6 +7292,47 @@
     }
   ],
   "packages-dev": [
+    {
+      "name": "blamebutton/laravel-docker-builder",
+      "version": "0.0.1",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/blamebutton/laravel-docker-builder.git",
+        "reference": "ca1c6f2f9a12f84e40e63fbbe236af5082758cf4"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/blamebutton/laravel-docker-builder/zipball/ca1c6f2f9a12f84e40e63fbbe236af5082758cf4",
+        "reference": "ca1c6f2f9a12f84e40e63fbbe236af5082758cf4",
+        "shasum": ""
+      },
+      "bin": [
+        "bin/docker-build",
+        "bin/docker-php-entrypoint"
+      ],
+      "type": "library",
+      "autoload": {
+        "psr-4": {
+          "BlameButton\\LaravelDockerBuilder\\": "src/"
+        }
+      },
+      "notification-url": "https://packagist.org/downloads/",
+      "license": [
+        "MIT"
+      ],
+      "authors": [
+        {
+          "name": "Bram Ceulemans",
+          "email": "bram@ceulemans.dev"
+        }
+      ],
+      "description": "Production ready Docker files for Laravel",
+      "support": {
+        "issues": "https://github.com/blamebutton/laravel-docker-builder/issues",
+        "source": "https://github.com/blamebutton/laravel-docker-builder/tree/0.0.1"
+      },
+      "time": "2023-01-11T03:37:22+00:00"
+    },
     {
       "name": "brianium/paratest",
       "version": "v7.4.3",
