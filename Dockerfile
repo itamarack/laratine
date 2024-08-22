@@ -24,10 +24,10 @@ RUN chown -R www-data.www-data /var/www/
 RUN mkdir /run/php
 
 # Set up cron
-ADD crontab /var/spool/cron/crontabs/www-data
-RUN chown www-data.crontab /var/spool/cron/crontabs/www-data
-RUN chmod 0600 /var/spool/cron/crontabs/www-data
-RUN touch /etc/default/locale
+# ADD crontab /var/spool/cron/crontabs/www-data
+# RUN chown www-data.crontab /var/spool/cron/crontabs/www-data
+# RUN chmod 0600 /var/spool/cron/crontabs/www-data
+# RUN touch /etc/default/locale
 
 # Configure supervisord
 ADD supervisord.conf /etc/supervisor/
