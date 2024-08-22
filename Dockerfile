@@ -1,40 +1,66 @@
-FROM debian:stretch
+FROM ubuntu:22.04
 
-# Using this UID / GID allows local and live file modification of web site
-RUN usermod -u 1000 www-data
-RUN groupmod -g 1000 www-data
+LABEL maintainer="Taylor Otwell"
 
-#RUN apt-get clean && apt-get update && apt-get install -y php5-fpm php5-mysql php5-sqlite php5-pgsql php5-mcrypt php5-curl php5-memcached php5-gd nginx supervisor cron git ssmtp sudo
-RUN apt-get update && apt-get install -y php7.0-fpm php7.0-mysql php7.0-sqlite3 php7.0-pgsql php7.0-mcrypt php7.0-mbstring php7.0-json php7.0-curl php7.0-gd php7.0-zip php7.0-xml php7.0-soap php-memcached nginx supervisor cron git ssmtp sudo
+ARG WWWGROUP
+ARG NODE_VERSION=20
+ARG MYSQL_CLIENT="mysql-client"
+ARG POSTGRES_VERSION=15
 
-# Install composer
-ADD https://getcomposer.org/composer.phar /usr/bin/composer
-RUN chmod 0755 /usr/bin/composer
+WORKDIR /var/www/html
 
-# Set up web site.
-ADD nginx-default-server.conf /etc/nginx/sites-available/default
-ADD domain.crt /etc/nginx/conf.d/
-ADD domain.key /etc/nginx/conf.d/
-RUN echo "daemon off;" >> /etc/nginx/nginx.conf
-RUN rm -rf /var/www && mkdir /var/www && chown www-data.www-data /var/www
-RUN sudo -u www-data composer create-project --prefer-dist laravel/laravel /tmp/www && cp -r /tmp/www/. /var/www/ && rm -r /tmp/www
-RUN chown -R www-data.www-data /var/www/
+ENV DEBIAN_FRONTEND noninteractive
+ENV TZ=UTC
+ENV SUPERVISOR_PHP_COMMAND="/usr/bin/php -d variables_order=EGPCS /var/www/html/artisan serve --host=0.0.0.0 --port=80"
+ENV SUPERVISOR_PHP_USER="sail"
 
-# Make php-fpm happy
-RUN mkdir /run/php
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# Set up cron
-# ADD crontab /var/spool/cron/crontabs/www-data
-# RUN chown www-data.crontab /var/spool/cron/crontabs/www-data
-# RUN chmod 0600 /var/spool/cron/crontabs/www-data
-# RUN touch /etc/default/locale
+RUN apt-get update \
+    && mkdir -p /etc/apt/keyrings \
+    && apt-get install -y gnupg gosu curl ca-certificates zip unzip git supervisor sqlite3 libcap2-bin libpng-dev python2 dnsutils librsvg2-bin fswatch ffmpeg nano  \
+    && curl -sS 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x14aa40ec0831756756d7f66c4f4ea0aae5267a6c' | gpg --dearmor | tee /etc/apt/keyrings/ppa_ondrej_php.gpg > /dev/null \
+    && echo "deb [signed-by=/etc/apt/keyrings/ppa_ondrej_php.gpg] https://ppa.launchpadcontent.net/ondrej/php/ubuntu jammy main" > /etc/apt/sources.list.d/ppa_ondrej_php.list \
+    && apt-get update \
+    && apt-get install -y php8.3-cli php8.3-dev \
+       php8.3-pgsql php8.3-sqlite3 php8.3-gd \
+       php8.3-curl \
+       php8.3-imap php8.3-mysql php8.3-mbstring \
+       php8.3-xml php8.3-zip php8.3-bcmath php8.3-soap \
+       php8.3-intl php8.3-readline \
+       php8.3-ldap \
+       php8.3-msgpack php8.3-igbinary php8.3-redis php8.3-swoole \
+       php8.3-memcached php8.3-pcov php8.3-imagick php8.3-xdebug \
+    && curl -sLS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer \
+    && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
+    && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_VERSION.x nodistro main" > /etc/apt/sources.list.d/nodesource.list \
+    && apt-get update \
+    && apt-get install -y nodejs \
+    && npm install -g npm \
+    && npm install -g pnpm \
+    && npm install -g bun \
+    && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /etc/apt/keyrings/yarn.gpg >/dev/null \
+    && echo "deb [signed-by=/etc/apt/keyrings/yarn.gpg] https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list \
+    && curl -sS https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor | tee /etc/apt/keyrings/pgdg.gpg >/dev/null \
+    && echo "deb [signed-by=/etc/apt/keyrings/pgdg.gpg] http://apt.postgresql.org/pub/repos/apt jammy-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
+    && apt-get update \
+    && apt-get install -y yarn \
+    && apt-get install -y $MYSQL_CLIENT \
+    && apt-get install -y postgresql-client-$POSTGRES_VERSION \
+    && apt-get -y autoremove \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Configure supervisord
-ADD supervisord.conf /etc/supervisor/
-ADD supervisor_conf/* /etc/supervisor/conf.d/
+RUN setcap "cap_net_bind_service=+ep" /usr/bin/php8.3
 
-EXPOSE 80
-EXPOSE 443
+RUN groupadd --force -g $WWWGROUP sail
+RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 sail
 
-ADD docker-entrypoint.sh /root/docker-entrypoint.sh
-ENTRYPOINT ["/root/docker-entrypoint.sh"]
+COPY start-container /usr/local/bin/start-container
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY php.ini /etc/php/8.3/cli/conf.d/99-sail.ini
+RUN chmod +x /usr/local/bin/start-container
+
+EXPOSE 8000
+
+ENTRYPOINT ["start-container"]
