@@ -13,9 +13,6 @@ export default defineConfig({
       refresh: true,
     }),
   ],
-  server: {
-    https: true,
-  },
   test: {
     globals: true,
     environment: 'jsdom',
