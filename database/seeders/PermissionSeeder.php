@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
-
+use Spatie\Permission\Models\Role;
 
 class PermissionSeeder extends Seeder
 {
@@ -13,6 +13,8 @@ class PermissionSeeder extends Seeder
    */
   public function run(): void
   {
+    app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+
     Permission::firstOrCreate(['name' => 'View Users']);
     Permission::firstOrCreate(['name' => 'Create Users']);
     Permission::firstOrCreate(['name' => 'Update Users']);
@@ -52,5 +54,8 @@ class PermissionSeeder extends Seeder
     Permission::firstOrCreate(['name' => 'Create Roles & Permissions']);
     Permission::firstOrCreate(['name' => 'Update Roles & Permissions']);
     Permission::firstOrCreate(['name' => 'Delete Roles & Permissions']);
+
+    $role = Role::firstOrCreate(['name' => 'Administrator']);
+    $role->givePermissionTo(Permission::all());
   }
 }

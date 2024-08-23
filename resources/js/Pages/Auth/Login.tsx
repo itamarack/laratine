@@ -24,8 +24,8 @@ type LoginType = {
 
 function Login({ status, canResetPassword }: LoginType) {
   const form = useForm({
-    email: '',
-    password: '',
+    email: 'laratine@email.com',
+    password: 'password',
     remember: false,
   });
 
