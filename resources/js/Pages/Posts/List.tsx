@@ -83,7 +83,7 @@ export default function List({ auth, posts }: PostsProps) {
       title: 'Tags',
       render: ({ meta_tags }: Post) => (
         <Flex gap={4}>
-          {meta_tags.map((tag: string) => (
+          {meta_tags?.map((tag: string) => (
             <Badge key={tag} size="xs">
               {tag}
             </Badge>
