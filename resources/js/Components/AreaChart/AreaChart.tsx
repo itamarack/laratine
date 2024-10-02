@@ -2,9 +2,8 @@
 
 import { Paper, PaperProps, useMantineColorScheme, useMantineTheme } from '@mantine/core';
 import React, { Suspense } from 'react';
+import Chart from 'react-apexcharts'
 import { Surface } from '@/Components';
-
-const Chart = React.lazy(() => import('react-apexcharts'));
 
 type ChartProps = {
   title?: string;

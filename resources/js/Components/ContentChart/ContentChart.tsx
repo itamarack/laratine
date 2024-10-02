@@ -1,11 +1,10 @@
 'use client';
 
 import React, { Suspense, useEffect, useState } from 'react';
+import Chart from 'react-apexcharts'
 import { Box, Paper, PaperProps, useMantineColorScheme, useMantineTheme } from '@mantine/core';
 import { Surface } from '@/Components';
 import { Category } from '@/types';
-
-const Chart = React.lazy(() => import('react-apexcharts'));
 
 type ContentType = {
   categories?: Category[];
