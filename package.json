@@ -15,10 +15,6 @@
     "vitest:watch": "vitest",
     "test": "npm run typecheck && npm run prettier && npm run lint && npm run vitest && npm run build"
   },
-  "engines": {
-      "node": ">=22.12.0",
-      "npm": ">=10.9.0"
-  },
   "devDependencies": {
     "@headlessui/react": "^1.4.2",
     "@inertiajs/react": "^1.0.0",
